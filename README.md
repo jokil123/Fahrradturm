@@ -24,7 +24,7 @@
       },
       box: Reference("towers/<id>/boxes/<id>"),
       keys: Collection[{
-          enabled: Boolean
+          enabled: Boolean,
           start: Timestamp || null,
           end: Timestamp || null,
           storeCount: Number || null,
