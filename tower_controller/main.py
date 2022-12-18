@@ -1,5 +1,9 @@
 import asyncio
+from enum import Enum
 import os
+from queue import Queue
+from threading import Thread
+import threading
 import aioconsole
 from dotenv import load_dotenv
 
@@ -9,65 +13,56 @@ from firebase_admin import firestore
 from google.cloud.firestore_v1.client import Client
 
 import classes
+from queue_message import ConsoleInput, FirebaseUpdate, QueueMessage
 
 
 def main():
-    # print("Starting up...")
-    # load_dotenv()
+    load_dotenv()
+    print("Starting up...")
 
-    # cred = credentials.Certificate("adminsdk.json")
-    # app = firebase_admin.initialize_app(cred)
+    queue: Queue[QueueMessage] = Queue()
 
-    # db: Client = firestore.client(app)
+    quit_event: threading.Event = threading.Event()
+    Thread(target=listen_for_console_input,
+           args=[queue, quit_event], name="console").start()
+    Thread(target=listen_for_firebase_updates,
+           args=[queue, quit_event], name="firebase").start()
 
-    # tower_id = os.getenv("TOWER_ID")
-    # if not tower_id:
-    #     raise Exception("Tower ID not found")
+    while True:
+        message = queue.get()
 
-    # tower_watch = db.collection("towers").document(
-    #     tower_id).on_snapshot(on_snapshot)
+        match message:
+            case ConsoleInput():
+                match message.input:
+                    case "help" | "h":
+                        print("helptext.txt lol")
+                    case "exit" | "quit" | "q" | "EOF":
+                        break
+                    case _:
+                        print(format("Unknown command: {message.input}"))
+            case FirebaseUpdate():
+                print(message)
+            case _:
+                raise Exception("Unknown message type")
 
-    # while True:
-    #     match input():
-    #         case "q":
-    #             break
-    #         case "h":
-    #             print_help()
-
-    # tower_watch.close()
-    # print("Shutting down...")
-
-    loop = asyncio.new_event_loop()
-    task_set = set()
-
-    task_set.add(loop.create_task(asyncio.sleep(10)))
-    task_set.add(loop.create_task(aioconsole.ainput()))
-
-    first, pending = loop.run_until_complete(
-        asyncio.wait(task_set, return_when=asyncio.FIRST_COMPLETED)
-    )
-
-    for task in pending:
-        task.cancel()
-
-    for task in first:
-        print(task.result())
-
-    loop.close()
-
-    print("Done")
+    print("Shutting down...")
+    quit_event.set()
 
 
-def on_snapshot(doc_snapshot, changes, read_time):
-    for doc in doc_snapshot:
-        print(f"Received document snapshot: {doc.id}")
+def listen_for_console_input(queue: Queue[QueueMessage], quit_event: threading.Event):
+    while True and not quit_event.is_set():
+        try:
+            i = input()
+        except EOFError:
+            i = "EOF"
+        queue.put(ConsoleInput(i))
+
+    print("Console input thread shutting down...")
 
 
-def print_help():
-    print("q - quit")
-    print("h - help")
+def listen_for_firebase_updates(queue: Queue[QueueMessage], quit_event: threading.Event):
+    pass
 
 
 if __name__ == "__main__":
-    # asyncio.run(main())
     main()
