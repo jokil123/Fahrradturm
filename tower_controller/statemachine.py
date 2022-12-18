@@ -1,10 +1,8 @@
 from __future__ import annotations
 from abc import ABC, abstractmethod
-import asyncio
-
-import aioconsole
 
 from context import Context
+from queue_message import ConsoleInput, FirebaseUpdate, RetrieveBicycle, StoreBicycle
 
 
 class State(ABC):
@@ -21,47 +19,54 @@ class Idle(State):
     async def next(self) -> State:
         print("Idle")
 
-        loop = asyncio.new_event_loop()
-        task_set = set()
+        message = self.context.queue.get()
 
-        task_set.add(loop.create_task(asyncio.sleep(10)))
-        task_set.add(loop.create_task(aioconsole.ainput()))
+        match message:
+            case ConsoleInput():
+                match message.input:
+                    case "help" | "h":
+                        print("helptext.txt lol")
+                    case "exit" | "quit" | "q" | "EOF":
+                        return Exiting(self.context)
+                    case _:
+                        print("Unknown command: {}".format(message.input))
+            case StoreBicycle():
+                print(message)
+                return StoringBicycle(self.context)
+            case RetrieveBicycle():
+                print(message)
+                return RetrievingBicycle(self.context)
+            case _:
+                raise Exception("Unknown message type")
 
-        done, pending = await asyncio.wait(task_set, return_when=asyncio.FIRST_COMPLETED)
-
-        match input():
-            case "insert":
-                return UserInsertingBicycle(self.context)
-            case "retrieve":
-                return UserRemovingBicycle(self.context)
         # catch all
         return self
 
 
-class UserInsertingBicycle(State):
-    def next(self) -> State:
-        pass
+class Exiting(State):
+    pass
 
-    def __init__(self, user) -> None:
-        super().__init__()
+
+class UserInsertingBicycle(State):
+    async def next(self) -> State:
+        return self
+
+    def __init__(self, context, user) -> None:
+        super().__init__(context)
         self.user = user
 
 
 class StoringBicycle(State):
-    def next(self) -> State:
-        pass
+    pass
 
 
 class RetrievingBicycle(State):
-    def next(self) -> State:
-        pass
+    pass
 
 
 class UserRemovingBicycle(State):
-    def next(self) -> State:
-        pass
+    pass
 
 
 class IdleAnimation(State):
-    def next(self) -> State:
-        pass
+    pass
