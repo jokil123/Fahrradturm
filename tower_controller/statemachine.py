@@ -1,8 +1,9 @@
 from __future__ import annotations
 from abc import ABC, abstractmethod
+import asyncio
 
 from context import Context
-from queue_message import ConsoleInput, FirebaseUpdate, RetrieveBicycle, StoreBicycle
+from event import ConsoleInputEvent, DatabaseStoreEvent, TimeoutEvent, listen_to
 
 
 class State(ABC):
@@ -19,23 +20,20 @@ class Idle(State):
     async def next(self) -> State:
         print("Idle")
 
-        message = self.context.queue.get()
+        event = await listen_to(events=[
+            ConsoleInputEvent(),
+            DatabaseStoreEvent(
+                self.context.db, self.context.tower_id)])
 
-        match message:
-            case ConsoleInput():
-                match message.input:
-                    case "help" | "h":
-                        print("helptext.txt lol")
-                    case "exit" | "quit" | "q" | "EOF":
+        match event:
+            case ConsoleInputEvent():
+                print(event.input_value)
+                match event.input_value:
+                    case "q" | "quit" | "exit":
                         return Exiting(self.context)
-                    case _:
-                        print("Unknown command: {}".format(message.input))
-            case StoreBicycle():
-                print(message)
-                return StoringBicycle(self.context)
-            case RetrieveBicycle():
-                print(message)
-                return RetrievingBicycle(self.context)
+            case DatabaseStoreEvent():
+                print(event.snap)
+                return UserInsertingBicycle(self.context)
             case _:
                 raise Exception("Unknown message type")
 
@@ -49,11 +47,15 @@ class Exiting(State):
 
 class UserInsertingBicycle(State):
     async def next(self) -> State:
+        print("UserInsertingBicycle")
+
+        event = await listen_to(events=[TimeoutEvent(1)])
+
         return self
 
-    def __init__(self, context, user) -> None:
+    def __init__(self, context) -> None:
         super().__init__(context)
-        self.user = user
+        # self.user = user
 
 
 class StoringBicycle(State):
