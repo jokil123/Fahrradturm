@@ -3,13 +3,17 @@ from abc import ABC, abstractmethod
 import asyncio
 
 from context import Context
-from event import ConsoleInputEvent, DatabaseStoreEvent, TimeoutEvent, listen_to
+from event import ConsoleInputEvent, DatabaseStoreEvent, KeyboardButtonPressedEvent, TimeoutEvent, listen_to
 
 
 class State(ABC):
     context: Context
 
     async def next(self) -> State:
+        print(self.__class__.__name__)
+
+        event = await listen_to(events=[TimeoutEvent(1)])
+
         return self
 
     def __init__(self, context: Context) -> None:
@@ -21,9 +25,11 @@ class Idle(State):
         print("Idle")
 
         event = await listen_to(events=[
-            ConsoleInputEvent(),
+            # ConsoleInputEvent(),
             DatabaseStoreEvent(
-                self.context.db, self.context.tower_id)])
+                self.context.db, self.context.tower_id),
+            # TimeoutEvent(10)
+        ])
 
         match event:
             case ConsoleInputEvent():
@@ -34,6 +40,8 @@ class Idle(State):
             case DatabaseStoreEvent():
                 print(event.snap)
                 return UserInsertingBicycle(self.context)
+            case TimeoutEvent():
+                return IdleAnimation(self.context)
             case _:
                 raise Exception("Unknown message type")
 
@@ -49,7 +57,15 @@ class UserInsertingBicycle(State):
     async def next(self) -> State:
         print("UserInsertingBicycle")
 
-        event = await listen_to(events=[TimeoutEvent(1)])
+        event = await listen_to(events=[TimeoutEvent(2),
+                                        KeyboardButtonPressedEvent("a"),
+                                        ])
+        print(event)
+        match event:
+            case TimeoutEvent():
+                return Idle(self.context)
+            case KeyboardButtonPressedEvent():
+                return StoringBicycle(self.context)
 
         return self
 
@@ -59,7 +75,14 @@ class UserInsertingBicycle(State):
 
 
 class StoringBicycle(State):
-    pass
+    async def next(self) -> State:
+        print("StoringBicycle")
+
+        event = await listen_to(events=[TimeoutEvent(5)])
+
+        print("StoringBicycle done")
+
+        return Idle(self.context)
 
 
 class RetrievingBicycle(State):

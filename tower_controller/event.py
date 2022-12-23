@@ -13,9 +13,15 @@ from google.cloud.firestore_v1.base_document import DocumentSnapshot
 from proto.datetime_helpers import DatetimeWithNanoseconds
 
 
+from console.utils import wait_key
+
+
 class Event():
     async def subscribe(self) -> Event:
         return self
+
+    def get_event_name(self) -> str:
+        return self.__class__.__name__
 
 
 class ButtonPressedEvent(Event):
@@ -69,6 +75,9 @@ class DatabaseStoreEvent(Event):
         watch.close()
         return self
 
+    def get_event_name(self) -> str:
+        return super().get_event_name() + " " + self.tower_id
+
 
 class DatabaseRetrieveEvent(Event):
     pass
@@ -84,9 +93,32 @@ class TimeoutEvent(Event):
         await asyncio.sleep(self.seconds)
         return self
 
+    def get_event_name(self) -> str:
+        return super().get_event_name() + " " + str(self.seconds)
+
+
+class KeyboardButtonPressedEvent(Event):
+    button: str
+    result: str | None
+
+    def __init__(self, button: str) -> None:
+        self.button = button
+
+    async def subscribe(self) -> KeyboardButtonPressedEvent:
+        self.result = wait_key(self.button)
+
+        return self
+
+    def get_event_name(self) -> str:
+        return super().get_event_name() + " " + self.button
+
 
 async def listen_to(events: list[Event]) -> Event:
     tasks = map(lambda e: asyncio.create_task(e.subscribe()), events)
+    task_names = map(lambda e: e.get_event_name(), events)
+
+    # for task, task_name in zip(tasks, task_names):
+    #     task.set_name(task_name)
 
     done, pending = await asyncio.wait(tasks, return_when=asyncio.FIRST_COMPLETED)
 
