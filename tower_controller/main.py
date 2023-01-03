@@ -12,11 +12,8 @@ from firebase_admin import credentials
 from firebase_admin import firestore
 from google.cloud.firestore_v1.client import Client
 
-import db_model
-# from listeners import listen_for_console_input, listen_for_firebase_updates
-# from queue_message import ConsoleInput, FirebaseUpdate, QueueMessage
-from context import Context
-import statemachine
+from job import Job
+from joboperator import JobOperator
 
 
 async def main():
@@ -31,14 +28,17 @@ async def main():
     if not tower_id:
         raise Exception("TOWER_ID not found")
 
-    state: statemachine.State = statemachine.Idle(Context(db, tower_id))
+    job_queue: Queue[Job] = Queue()
 
-    # main thread handles input from queue
+    job_operator = JobOperator()
+
     while True:
-        state = await state.next()
-
-        if isinstance(state, statemachine.Exiting):
-            break
+        print("Waiting for job...")
+        job = job_queue.get()
+        print("Got job: ", job)
+        print("Executing job...")
+        await job_operator.execute(job)
+        print("Job executed")
 
     print("Shutting down...")
 
