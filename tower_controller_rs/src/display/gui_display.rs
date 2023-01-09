@@ -20,6 +20,8 @@ use std::{
     thread,
 };
 
+use fltk_grid::Grid;
+
 // use super::tower_display::TowerDisplay;
 
 pub struct GUIDisplay {
@@ -69,11 +71,10 @@ impl GUIDisplay {
 
         window_lock.begin();
 
-        let mut grid = fltk::group::HGrid::new(0, 0, 400, 300, "");
-        grid.set_params(
+        let mut grid = fltk_grid::Grid::default_fill();
+        grid.set_layout(
             tower_lock.storage_layout.0 as i32,
             tower_lock.storage_layout.1 as i32,
-            5,
         );
 
         let mut boxes = tower_lock
@@ -99,12 +100,9 @@ impl GUIDisplay {
                 },
             });
 
-            // grid.insert(&mut frame, location.level as usize, location.index as usize);
+            grid.insert(&mut frame, location.level as usize, location.index as usize);
         });
 
-        grid.end();
-
-        // window_lock.add(&grid);
         window_lock.end();
 
         window_lock.set_damage(true);
