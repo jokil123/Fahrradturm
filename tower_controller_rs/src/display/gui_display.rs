@@ -12,7 +12,7 @@ use crate::{storage_box, tower::Tower};
 
 use std::{
     ops::{Deref, DerefMut},
-    sync::{mpsc::Receiver, Arc, Mutex, RwLock},
+    sync::{mpsc::Receiver, Arc, Mutex},
     thread,
 };
 
@@ -38,46 +38,58 @@ impl GUIDisplay {
         let window = Window::new(100, 100, 400, 300, "Tower Controller");
         window.end();
 
-        GUIDisplay {
+        let mut display = GUIDisplay {
             app,
             window: Arc::new(Mutex::new(window)),
             reciever: Arc::new(Mutex::new(reciever)),
             tower: tower,
-        }
+        };
+
+        display.generate_content();
+
+        return display;
     }
 
-    pub fn generate_content(window: &mut Window, tower: &Tower) {
+    pub fn generate_content(&mut self) {
+        println!("generating content");
         // window.clear();
-        // window.add(&Button::new(0, 0, 100, 100, "Hello World!"));
+        let tower_lock = self.tower.lock().unwrap();
 
-        let window = Window::new(100, 100, 400, 300, "Tower Controller");
+        self.window
+            .lock()
+            .unwrap()
+            .add(&Button::new(0, 0, 100, 100, "Hello World!"));
 
-        let mut grid = Grid::default_fill();
+        println!("generating content done");
 
-        // grid.set_layout(tower.storage_layout.0 - 1, tower.storage_layout.0 - 1);
-        grid.set_layout(5, 5);
-        // grid.debug(true);
+        // let window = Window::new(100, 100, 400, 300, "Tower Controller");
 
-        tower.storage.iter().for_each(|(location, storage_box)| {
-            let mut frame = Frame::default()
-                .with_size(15, 15)
-                .with_label(format!("Box {}", location).as_str());
+        // let mut grid = Grid::default_fill();
 
-            frame.set_frame(FrameType::FlatBox);
+        // // grid.set_layout(tower.storage_layout.0 - 1, tower.storage_layout.0 - 1);
+        // grid.set_layout(5, 5);
+        // // grid.debug(true);
 
-            frame.set_color(match storage_box {
-                None => Color::White,
-                Some(box_type) => match box_type.logistic_state {
-                    storage_box::LogisticState::Stored(_) => Color::Green,
-                    storage_box::LogisticState::InTransit => Color::Yellow,
-                    storage_box::LogisticState::Retrieved => Color::Red,
-                },
-            });
+        // tower.storage.iter().for_each(|(location, storage_box)| {
+        //     let mut frame = Frame::default()
+        //         .with_size(15, 15)
+        //         .with_label(format!("Box {}", location).as_str());
 
-            grid.insert(&mut frame, location.level as usize, location.index as usize);
-        });
+        //     frame.set_frame(FrameType::FlatBox);
 
-        window.end();
+        //     frame.set_color(match storage_box {
+        //         None => Color::White,
+        //         Some(box_type) => match box_type.logistic_state {
+        //             storage_box::LogisticState::Stored(_) => Color::Green,
+        //             storage_box::LogisticState::InTransit => Color::Yellow,
+        //             storage_box::LogisticState::Retrieved => Color::Red,
+        //         },
+        //     });
+
+        //     grid.insert(&mut frame, location.level as usize, location.index as usize);
+        // });
+
+        // window.end();
 
         // TODO: make sure the grid is added to the window
         // self.window.add(&grid);
@@ -85,27 +97,36 @@ impl GUIDisplay {
 
     pub fn run(&mut self) {
         {
+            println!("aquiring window lock");
             self.window.lock().unwrap().show();
+            println!("released window lock");
         }
+
+        println!("creating proxy channel");
+        let (a_s, a_r) = app::channel::<DisplayMessage>();
 
         {
             let reciever = self.reciever.clone();
-            let window = self.window.clone();
-            let tower = self.tower.clone();
+            thread::spawn(move || {
+                println!("starting message reciever thread");
+                loop {
+                    println!("waiting for message");
+                    match reciever.lock().unwrap().recv() {
+                        Ok(msg) => a_s.send(msg),
+                        Err(_) => break,
+                    };
+                    println!("got message");
+                }
+                println!("exiting message reciever thread");
+            });
+        }
 
-            thread::Builder::new()
-                .name("Display Message Handler".to_string())
-                .spawn(move || {
-                    // TODO: potentially handle different message types
-                    let msg = reciever.lock().unwrap().recv().unwrap();
-
-                    let mut window_lock = window.lock().unwrap();
-                    let tower_lock = tower.lock().unwrap();
-                    GUIDisplay::generate_content(window_lock.deref_mut(), tower_lock.deref());
-                })
-                .unwrap()
-        };
-
-        self.app.run().unwrap();
+        println!("running gui main loop");
+        while self.app.wait() {
+            if let Some(msg) = a_r.recv() {
+                println!("got message");
+                self.generate_content();
+            }
+        }
     }
 }
