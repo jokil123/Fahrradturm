@@ -1,9 +1,5 @@
-use std::collections::HashMap;
-
 use firestore::*;
 use serde::{Deserialize, Serialize};
-
-use chrono::{Date, DateTime, Utc};
 
 #[tokio::main]
 async fn main() {
@@ -11,12 +7,12 @@ async fn main() {
     let project_id: String = std::env::var("PROJECT_ID").unwrap();
     let db = FirestoreDb::new(project_id).await.unwrap();
 
-    let t: Option<UserTest> = db
+    let t: Option<FirestoreTower> = db
         .fluent()
         .select()
-        .by_id_in("test")
+        .by_id_in("towers")
         .obj()
-        .one("eP9ddXSWK9gC4DfvXrzk")
+        .one("5aQQXeYkP0xfW3FJxjH0")
         .await
         .unwrap();
 
@@ -24,14 +20,11 @@ async fn main() {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-struct UserTest {
-    string: String,
-    number: i32,
-    boolean: bool,
-    map: HashMap<String, String>,
-    array: Vec<bool>,
-    null: (),
-    timestamp: DateTime<Utc>,
-    geo_point: Vec<u8>,
-    reference: String,
+struct FirestoreTower {
+    location: FirestoreLatLng,
+    name: String,
+    #[serde(rename = "retrieveQueue")]
+    retrieve_queue: Vec<String>,
+    #[serde(rename = "storeQueue")]
+    store_queue: Vec<String>,
 }
