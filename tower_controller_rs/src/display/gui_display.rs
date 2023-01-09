@@ -1,5 +1,5 @@
 use fltk::{
-    app::{self, Receiver, Sender},
+    app,
     button::Button,
     enums::{Color, FrameType},
     frame::Frame,
@@ -12,7 +12,7 @@ use crate::{storage_box, tower::Tower};
 
 use std::{
     ops::{Deref, DerefMut},
-    sync::{Arc, Mutex, RwLock},
+    sync::{mpsc::Receiver, Arc, Mutex, RwLock},
     thread,
 };
 
@@ -20,8 +20,8 @@ use std::{
 
 pub struct GUIDisplay {
     app: app::App,
-    window: Window,
-    receiver: Receiver<DisplayMessage>,
+    window: Arc<Mutex<Window>>,
+    reciever: Arc<Mutex<Receiver<DisplayMessage>>>,
     tower: Arc<Mutex<Tower>>,
 }
 
@@ -33,33 +33,30 @@ pub enum DisplayMessage {
 }
 
 impl GUIDisplay {
-    pub fn new(tower: Arc<Mutex<Tower>>) -> (Self, Sender<DisplayMessage>) {
+    pub fn new(reciever: Receiver<DisplayMessage>, tower: Arc<Mutex<Tower>>) -> Self {
         let app = app::App::default();
-        let mut window = Window::new(100, 100, 400, 300, "Tower Controller");
-
-        GUIDisplay::generate_content(&mut window, tower.lock().unwrap().deref());
-
+        let window = Window::new(100, 100, 400, 300, "Tower Controller");
         window.end();
 
-        let (sender, receiver) = app::channel::<DisplayMessage>();
-
-        (
-            GUIDisplay {
-                app,
-                window: window,
-                receiver,
-                tower: tower,
-            },
-            sender,
-        )
+        GUIDisplay {
+            app,
+            window: Arc::new(Mutex::new(window)),
+            reciever: Arc::new(Mutex::new(reciever)),
+            tower: tower,
+        }
     }
 
     pub fn generate_content(window: &mut Window, tower: &Tower) {
-        window.clear();
+        // window.clear();
+        // window.add(&Button::new(0, 0, 100, 100, "Hello World!"));
+
+        let window = Window::new(100, 100, 400, 300, "Tower Controller");
 
         let mut grid = Grid::default_fill();
 
-        grid.set_layout(tower.storage_layout.0 - 1, tower.storage_layout.0 - 1);
+        // grid.set_layout(tower.storage_layout.0 - 1, tower.storage_layout.0 - 1);
+        grid.set_layout(5, 5);
+        // grid.debug(true);
 
         tower.storage.iter().for_each(|(location, storage_box)| {
             let mut frame = Frame::default()
@@ -87,33 +84,28 @@ impl GUIDisplay {
     }
 
     pub fn run(&mut self) {
-        // {
-        //     let reciever = self.reciever.clone();
-        //     let window = self.window.clone();
-        //     let tower = self.tower.clone();
-
-        //     thread::Builder::new()
-        //         .name("Display Message Handler".to_string())
-        //         .spawn(move || {
-        //             // TODO: potentially handle different message types
-        //             let msg = reciever.lock().unwrap().recv().unwrap();
-
-        //             let mut window_lock = window.lock().unwrap();
-        //             let tower_lock = tower.lock().unwrap();
-        //             GUIDisplay::generate_content(window_lock.deref_mut(), tower_lock.deref());
-        //         })
-        //         .unwrap()
-        // };
-
-        // self.app.run().unwrap();
-
-        self.window.show();
-
-        while self.app.wait() {
-            if let Some(msg) = self.receiver.recv() {
-                let tower_lock = self.tower.lock().unwrap();
-                GUIDisplay::generate_content(&mut self.window, tower_lock.deref());
-            }
+        {
+            self.window.lock().unwrap().show();
         }
+
+        {
+            let reciever = self.reciever.clone();
+            let window = self.window.clone();
+            let tower = self.tower.clone();
+
+            thread::Builder::new()
+                .name("Display Message Handler".to_string())
+                .spawn(move || {
+                    // TODO: potentially handle different message types
+                    let msg = reciever.lock().unwrap().recv().unwrap();
+
+                    let mut window_lock = window.lock().unwrap();
+                    let tower_lock = tower.lock().unwrap();
+                    GUIDisplay::generate_content(window_lock.deref_mut(), tower_lock.deref());
+                })
+                .unwrap()
+        };
+
+        self.app.run().unwrap();
     }
 }
