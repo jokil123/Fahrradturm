@@ -76,19 +76,20 @@ impl Tower {
             )
             .filter(|(_, storage_box)| match box_type.as_ref() {
                 Some(box_type) => &storage_box.as_ref().unwrap().box_type == box_type,
-                None => false,
+                None => true,
             })
             .next()
             .map(|(location, _)| location.clone())
             .ok_or(TowerError::NoAvailableBox)
     }
 
-    pub fn find_available_storage(&self) -> Option<Arc<BoxLocation>> {
+    pub fn find_available_storage(&self) -> Result<Arc<BoxLocation>, TowerError> {
         self.storage
             .iter()
             .filter(|(_, storage_box)| storage_box.is_none())
             .next()
             .map(|(location, _)| location.clone())
+            .ok_or(TowerError::NoAvailableSlot)
     }
 }
 
@@ -102,4 +103,6 @@ pub enum TowerError {
     BoxNotFound,
     #[error("No available box")]
     NoAvailableBox,
+    #[error("No available slot")]
+    NoAvailableSlot,
 }

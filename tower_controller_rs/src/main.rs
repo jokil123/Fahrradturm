@@ -34,7 +34,7 @@ fn main() {
             .unwrap()
     };
 
-    thread::sleep(time::Duration::from_secs(3));
+    thread::sleep(time::Duration::from_secs(2));
 
     {
         let mut tower_lock = tower.lock().unwrap();
@@ -48,6 +48,17 @@ fn main() {
                 logistic_state: LogisticState::Stored(empty_space),
             }),
         );
+    }
+
+    sender.send(DisplayMessage::Update).unwrap();
+
+    thread::sleep(time::Duration::from_secs(2));
+
+    {
+        let mut tower_lock = tower.lock().unwrap();
+        let av_box = tower_lock.find_available_box(None).unwrap();
+
+        tower_lock.retrieve_box(av_box).unwrap();
     }
 
     sender.send(DisplayMessage::Update).unwrap();
