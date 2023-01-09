@@ -7,5 +7,6 @@ edition = "2021"
 
 [dependencies]
 fltk = {version = "1.3.20", features = ["fltk-bundled"]}
-fltk-grid = "0.1.4"
+# grid didn't work
+# fltk-grid = "0.1.4"
 clone_all = "0.1.1"

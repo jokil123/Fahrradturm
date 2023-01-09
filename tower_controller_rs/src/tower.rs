@@ -1,19 +1,19 @@
-use std::collections::HashMap;
+use std::{collections::HashMap, sync::Arc};
 
-use crate::storage_box::{BoxLocation, StorageBox};
+use crate::storage_box::{box_location::BoxLocation, storage_box::StorageBox};
 
 pub struct Tower {
-    pub storage: HashMap<BoxLocation, Option<StorageBox>>,
-    pub storage_layout: (i32, i32),
+    pub storage: HashMap<Arc<BoxLocation>, Option<StorageBox>>,
+    pub storage_layout: (u32, u32),
 }
 
 impl Tower {
-    pub fn new(levels: i32, boxes_per_level: i32) -> Self {
+    pub fn new(levels: u32, boxes_per_level: u32) -> Self {
         let mut storage = HashMap::new();
 
         for level in 0..(levels - 1) {
             for index in 0..(boxes_per_level - 1) {
-                storage.insert(BoxLocation { level, index }, None);
+                storage.insert(Arc::new(BoxLocation { level, index }), None);
             }
         }
 
@@ -23,19 +23,23 @@ impl Tower {
         }
     }
 
-    pub fn retrieve_box(&self, location: BoxLocation) -> Option<StorageBox> {
+    pub fn retrieve_box(&self, location: Arc<BoxLocation>) -> Option<StorageBox> {
         todo!("implement retrieve_box")
     }
 
-    pub fn store_box(&mut self, location: BoxLocation, box_to_store: StorageBox) {
+    pub fn store_box(&mut self, location: Arc<BoxLocation>, box_to_store: StorageBox) {
         todo!("implement store_box")
     }
 
-    pub fn find_available_box(&self) -> Option<BoxLocation> {
+    pub fn find_available_box(&self) -> Option<Arc<BoxLocation>> {
         todo!("implement find_available_box")
     }
 
-    pub fn find_available_storage(&self) -> Option<BoxLocation> {
-        todo!("implement find_available_storage")
+    pub fn find_available_storage(&self) -> Option<Arc<BoxLocation>> {
+        self.storage
+            .iter()
+            .filter(|(_, storage_box)| storage_box.is_none())
+            .next()
+            .map(|(location, _)| location.clone())
     }
 }

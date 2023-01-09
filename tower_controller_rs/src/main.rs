@@ -1,14 +1,20 @@
 use core::time;
 use std::{
+    borrow::BorrowMut,
     sync::{mpsc::channel, Arc, Mutex},
     thread,
 };
 
 use tower_controller_rs::{
     display::gui_display::{DisplayMessage, GUIDisplay},
-    storage_box::StorageBox,
+    storage_box::{
+        box_location::BoxLocation, box_type::BoxType, logistic_state::LogisticState,
+        rental_status::RentalStatus, storage_box::StorageBox,
+    },
     tower::Tower,
 };
+
+use clone_all::clone_all;
 
 fn main() {
     println!("running test");
@@ -17,21 +23,28 @@ fn main() {
     let (sender, reciever) = channel::<DisplayMessage>();
 
     let handle = {
-        thread::spawn(|| {
-            println!("Starting GUI thread");
-            let mut display = GUIDisplay::new(reciever, tower);
-            display.run();
-        })
+        clone_all!(tower);
+        thread::Builder::new()
+            .name("gui thread".to_string())
+            .spawn(|| {
+                println!("Starting GUI thread");
+                let mut display = GUIDisplay::new(reciever, tower);
+                display.run();
+            })
+            .unwrap()
     };
 
-    thread::sleep(time::Duration::from_secs(1));
+    thread::sleep(time::Duration::from_secs(3));
 
     {
-        let tower_lock = tower.lock().unwrap();
-        let empty_space = tower_lock.find_available_storage();
+        let mut tower_lock = tower.lock().unwrap();
+        // let empty_space = tower_lock
+        //     .find_available_storage()
+        //     .unwrap_or(Arc::new(BoxLocation { level: 0, index: 0 }));
+        let empty_space = Arc::new(BoxLocation { level: 0, index: 0 });
 
         tower_lock.storage.insert(
-            empty_space,
+            empty_space.clone(),
             Some(StorageBox {
                 box_type: BoxType::Bicylcle,
                 rental_status: RentalStatus::Available,

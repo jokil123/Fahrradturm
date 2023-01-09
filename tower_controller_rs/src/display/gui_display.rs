@@ -6,13 +6,17 @@ use fltk::{
     prelude::*,
     window::Window,
 };
-use fltk_grid::Grid;
 
-use crate::{storage_box, tower::Tower};
+use crate::{
+    storage_box::{
+        box_location::BoxLocation, logistic_state::LogisticState, storage_box::StorageBox,
+    },
+    tower::Tower,
+};
 
 use std::{
     ops::{Deref, DerefMut},
-    sync::{mpsc::Receiver, Arc, Mutex},
+    sync::{mpsc::Receiver, Arc, Mutex, MutexGuard},
     thread,
 };
 
@@ -35,7 +39,9 @@ pub enum DisplayMessage {
 impl GUIDisplay {
     pub fn new(reciever: Receiver<DisplayMessage>, tower: Arc<Mutex<Tower>>) -> Self {
         let app = app::App::default();
-        let window = Window::new(100, 100, 400, 300, "Tower Controller");
+        let mut window = Window::new(100, 100, 400, 300, "Tower Controller");
+        window.make_resizable(true);
+
         window.end();
 
         let mut display = GUIDisplay {
@@ -50,49 +56,60 @@ impl GUIDisplay {
         return display;
     }
 
+    pub fn clear_window(&mut self) {
+        print!("clearing window");
+        let mut window_lock = self.window.lock().unwrap();
+        window_lock.clear();
+    }
+
     pub fn generate_content(&mut self) {
         println!("generating content");
-        // window.clear();
+        let mut window_lock = self.window.lock().unwrap();
         let tower_lock = self.tower.lock().unwrap();
 
-        self.window
-            .lock()
-            .unwrap()
-            .add(&Button::new(0, 0, 100, 100, "Hello World!"));
+        window_lock.begin();
+
+        let mut grid = fltk::group::HGrid::new(0, 0, 400, 300, "");
+        grid.set_params(
+            tower_lock.storage_layout.0 as i32,
+            tower_lock.storage_layout.1 as i32,
+            5,
+        );
+
+        let mut boxes = tower_lock
+            .storage
+            .iter()
+            .collect::<Vec<(&Arc<BoxLocation>, &Option<StorageBox>)>>();
+
+        boxes.sort_by(|(a, _), (b, _)| a.value().cmp(&b.value()));
+
+        boxes.iter().for_each(|(location, storage_box)| {
+            let mut frame = Frame::default()
+                .with_size(15, 15)
+                .with_label(format!("Box {}", location).as_str());
+
+            frame.set_frame(FrameType::FlatBox);
+
+            frame.set_color(match storage_box {
+                None => Color::White,
+                Some(box_type) => match box_type.logistic_state {
+                    LogisticState::Stored(_) => Color::Green,
+                    LogisticState::InTransit => Color::Yellow,
+                    LogisticState::Retrieved => Color::Red,
+                },
+            });
+
+            // grid.insert(&mut frame, location.level as usize, location.index as usize);
+        });
+
+        grid.end();
+
+        // window_lock.add(&grid);
+        window_lock.end();
+
+        window_lock.set_damage(true);
 
         println!("generating content done");
-
-        // let window = Window::new(100, 100, 400, 300, "Tower Controller");
-
-        // let mut grid = Grid::default_fill();
-
-        // // grid.set_layout(tower.storage_layout.0 - 1, tower.storage_layout.0 - 1);
-        // grid.set_layout(5, 5);
-        // // grid.debug(true);
-
-        // tower.storage.iter().for_each(|(location, storage_box)| {
-        //     let mut frame = Frame::default()
-        //         .with_size(15, 15)
-        //         .with_label(format!("Box {}", location).as_str());
-
-        //     frame.set_frame(FrameType::FlatBox);
-
-        //     frame.set_color(match storage_box {
-        //         None => Color::White,
-        //         Some(box_type) => match box_type.logistic_state {
-        //             storage_box::LogisticState::Stored(_) => Color::Green,
-        //             storage_box::LogisticState::InTransit => Color::Yellow,
-        //             storage_box::LogisticState::Retrieved => Color::Red,
-        //         },
-        //     });
-
-        //     grid.insert(&mut frame, location.level as usize, location.index as usize);
-        // });
-
-        // window.end();
-
-        // TODO: make sure the grid is added to the window
-        // self.window.add(&grid);
     }
 
     pub fn run(&mut self) {
@@ -107,18 +124,21 @@ impl GUIDisplay {
 
         {
             let reciever = self.reciever.clone();
-            thread::spawn(move || {
-                println!("starting message reciever thread");
-                loop {
-                    println!("waiting for message");
-                    match reciever.lock().unwrap().recv() {
-                        Ok(msg) => a_s.send(msg),
-                        Err(_) => break,
-                    };
-                    println!("got message");
-                }
-                println!("exiting message reciever thread");
-            });
+            thread::Builder::new()
+                .name("message proxy".to_string())
+                .spawn(move || {
+                    println!("starting message reciever thread");
+                    loop {
+                        println!("waiting for message");
+                        match reciever.lock().unwrap().recv() {
+                            Ok(msg) => a_s.send(msg),
+                            Err(_) => break,
+                        };
+                        println!("got message");
+                    }
+                    println!("exiting message reciever thread");
+                })
+                .unwrap();
         }
 
         println!("running gui main loop");
