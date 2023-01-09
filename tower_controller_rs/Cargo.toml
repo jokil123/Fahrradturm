@@ -28,3 +28,10 @@ tokio = { version = "1.24.1", features = ["full"] }
 
 chrono = "0.4.23"
 
+async-trait = "0.1.61"
+
+# example
+rvstruct = "0.3.2"
+hex = "0.4.3"
+tracing = "0.1.37"
+tracing-subscriber = { version = "0.3.16", features = ["env-filter"] }
