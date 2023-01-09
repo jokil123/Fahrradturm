@@ -12,18 +12,16 @@ use tower_controller_rs::{
 fn main() {
     let mut tower = Arc::new(Mutex::new(Tower::new(5, 5)));
 
-    let (sender, reciever) = channel::<DisplayMessage>();
-
     let handle = {
-        thread::spawn(|| {
-            let mut display = GUIDisplay::new(reciever, tower);
+        thread::spawn(move || {
+            let (mut display, s) = GUIDisplay::new(tower);
             display.run();
         })
     };
 
     thread::sleep(time::Duration::from_secs(1));
 
-    sender.send(DisplayMessage::Update).unwrap();
+    // s.send(DisplayMessage::Update);
 
     handle.join().unwrap();
 }
