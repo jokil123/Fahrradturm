@@ -38,9 +38,6 @@ fn main() {
 
     {
         let mut tower_lock = tower.lock().unwrap();
-        // let empty_space = tower_lock
-        //     .find_available_storage()
-        //     .unwrap_or(Arc::new(BoxLocation { level: 0, index: 0 }));
         let empty_space = Arc::new(BoxLocation { level: 0, index: 0 });
 
         tower_lock.storage.insert(

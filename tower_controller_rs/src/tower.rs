@@ -1,6 +1,9 @@
 use std::{collections::HashMap, sync::Arc};
 
-use crate::storage_box::{box_location::BoxLocation, storage_box::StorageBox};
+use crate::storage_box::{
+    box_location::BoxLocation, box_type::BoxType, logistic_state::LogisticState,
+    rental_status::RentalStatus, storage_box::StorageBox,
+};
 
 pub struct Tower {
     pub storage: HashMap<Arc<BoxLocation>, Option<StorageBox>>,
@@ -23,16 +26,61 @@ impl Tower {
         }
     }
 
-    pub fn retrieve_box(&self, location: Arc<BoxLocation>) -> Option<StorageBox> {
-        todo!("implement retrieve_box")
+    pub fn retrieve_box(&mut self, location: Arc<BoxLocation>) -> Result<StorageBox, TowerError> {
+        if !self.storage.contains_key(&location) {
+            return Err(TowerError::InvalidLocation);
+        };
+
+        self.storage
+            .remove(&location)
+            .unwrap()
+            .ok_or(TowerError::BoxNotFound)
     }
 
-    pub fn store_box(&mut self, location: Arc<BoxLocation>, box_to_store: StorageBox) {
-        todo!("implement store_box")
+    pub fn store_box(
+        &mut self,
+        location: Arc<BoxLocation>,
+        box_to_store: StorageBox,
+    ) -> Result<(), TowerError> {
+        if !self.storage.contains_key(&location) {
+            return Err(TowerError::InvalidLocation);
+        };
+
+        if !self.storage.get(&location).unwrap().is_none() {
+            return Err(TowerError::SlotOccupied);
+        };
+
+        self.storage.insert(location, Some(box_to_store));
+
+        Ok(())
     }
 
-    pub fn find_available_box(&self) -> Option<Arc<BoxLocation>> {
-        todo!("implement find_available_box")
+    pub fn find_available_box(
+        &self,
+        box_type: Option<BoxType>,
+    ) -> Result<Arc<BoxLocation>, TowerError> {
+        self.storage
+            .iter()
+            .filter(|(_, storage_box)| storage_box.is_some())
+            .filter(
+                |(_, storage_box)| match storage_box.as_ref().unwrap().logistic_state {
+                    LogisticState::Stored(_) => true,
+                    _ => false,
+                },
+            )
+            .filter(
+                |(_, storage_box)| match storage_box.as_ref().unwrap().rental_status {
+                    RentalStatus::Available => true,
+                    _ => false,
+                },
+            )
+            .filter(|(_, storage_box)| match box_type.as_ref() {
+                Some(box_type) => &storage_box.as_ref().unwrap().box_type == box_type,
+                None => false,
+            })
+            .next()
+            .map(|(location, _)| location.clone())
+            .ok_or(TowerError::NoAvailableBox)
     }
 
     pub fn find_available_storage(&self) -> Option<Arc<BoxLocation>> {
@@ -42,4 +90,16 @@ impl Tower {
             .next()
             .map(|(location, _)| location.clone())
     }
+}
+
+#[derive(Debug, thiserror::Error)]
+pub enum TowerError {
+    #[error("Invalid location")]
+    InvalidLocation,
+    #[error("Slot occupied")]
+    SlotOccupied,
+    #[error("Box not found")]
+    BoxNotFound,
+    #[error("No available box")]
+    NoAvailableBox,
 }
