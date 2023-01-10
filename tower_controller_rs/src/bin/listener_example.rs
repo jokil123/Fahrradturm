@@ -128,7 +128,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error + Send + Sync>> {
                     }
                 }
                 _ => {
-                    println!("Received a listen response event to handle: {:?}", event);
+                    // println!("Received a listen response event to handle: {:?}", event);
                 }
             }
 

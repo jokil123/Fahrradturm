@@ -1,5 +1,6 @@
 use firestore::*;
 use serde::{Deserialize, Serialize};
+use tower_controller_rs::entities::firestore_tower::FirestoreTower;
 
 #[tokio::main]
 async fn main() {
@@ -17,14 +18,4 @@ async fn main() {
         .unwrap();
 
     println!("{:?}", t);
-}
-
-#[derive(Debug, Clone, Serialize, Deserialize)]
-struct FirestoreTower {
-    location: FirestoreLatLng,
-    name: String,
-    #[serde(rename = "retrieveQueue")]
-    retrieve_queue: Vec<String>,
-    #[serde(rename = "storeQueue")]
-    store_queue: Vec<String>,
 }
