@@ -5,7 +5,6 @@ use firestore::*;
 use rvstruct::ValueStruct;
 use serde::{Deserialize, Serialize};
 use std::io::Read;
-use tower_controller_rs::entities::firestore_tower::FirestoreTower;
 
 pub fn config_env_var(name: &str) -> Result<String, String> {
     std::env::var(name).map_err(|e| format!("{}: {}", name, e))
@@ -24,7 +23,7 @@ struct MyTestStructure {
     created_at: DateTime<Utc>,
 }
 
-const TEST_COLLECTION_NAME: &str = "test-listen";
+// const TEST_COLLECTION_NAME: &str = "test-listen";
 
 // The file where we store the cursor/token for the event when we read the last time
 const RESUME_TOKEN_FILENAME: &str = "last-read-token";
@@ -74,6 +73,11 @@ impl FirestoreResumeStateStorage for TempFileTokenStorage {
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error + Send + Sync>> {
     dotenv().ok();
+    // Logging with debug enabled
+    let subscriber = tracing_subscriber::fmt()
+        .with_env_filter("firestore=debug")
+        .finish();
+    tracing::subscriber::set_global_default(subscriber)?;
 
     let db = FirestoreDb::new(&config_env_var("PROJECT_ID")?)
         .await
@@ -81,17 +85,21 @@ async fn main() -> Result<(), Box<dyn std::error::Error + Send + Sync>> {
 
     let mut listener = db.create_listener(TempFileTokenStorage).await?;
 
-    db.fluent()
-        .select()
-        .from("tower")
-        .listen()
-        .add_target(FirestoreListenerTarget::new(1), &mut listener)?;
+    // db.fluent()
+    //     .select()
+    //     .from("towers")
+    //     .listen()
+    //     .add_target(TEST_TARGET_ID_BY_QUERY, &mut listener)?;
 
-    db.fluent()
-        .select()
-        .by_id_in("tower")
-        .batch_listen(["5aQQXeYkP0xfW3FJxjH0"])
-        .add_target(FirestoreListenerTarget::new(2), &mut listener)?;
+    // db.fluent().select().from("towers").obj().query().await;
+
+    // db.fluent()
+    //     .select()
+    //     .by_id_in("towers")
+    //     .batch_listen(["2UAva79ToR7TZWR0ohHf".to_string()])
+    //     .add_target(TEST_TARGET_ID_BY_DOC_IDS, &mut listener)?;
+
+    let a = db.fluent().select().by_id_in("towers");
 
     listener
         .start(|event| async move {
@@ -100,22 +108,25 @@ async fn main() -> Result<(), Box<dyn std::error::Error + Send + Sync>> {
                     println!("Doc changed: {:?}", doc_change);
 
                     if let Some(doc) = &doc_change.document {
-                        let obj: FirestoreTower =
-                            FirestoreDb::deserialize_doc_to::<FirestoreTower>(doc)
+                        let obj: MyTestStructure =
+                            FirestoreDb::deserialize_doc_to::<MyTestStructure>(doc)
                                 .expect("Deserialized object");
                         println!("As object: {:?}", obj);
                     }
                 }
-                FirestoreListenEvent::DocumentDelete(_) => println!("DocumentDelete"),
-                FirestoreListenEvent::DocumentRemove(_) => println!("DocumentRemove"),
-                FirestoreListenEvent::Filter(_) => println!("Filter"),
-                FirestoreListenEvent::TargetChange(_) => println!("TargetChange"),
+                _ => {
+                    // println!("Received a listen response event to handle: {:?}", event);
+                }
             }
 
             Ok(())
         })
         .await?;
-
+    // Wait any input until we shutdown
+    println!(
+        "Waiting any other changes. Try firebase console to change in {} now yourself. New doc created id: {:?}",
+        "towers","2UAva79ToR7TZWR0ohHf"
+    );
     std::io::stdin().read(&mut [1])?;
 
     listener.shutdown().await?;
