@@ -8,26 +8,14 @@ async fn main() {
     let project_id: String = std::env::var("PROJECT_ID").unwrap();
     let db = FirestoreDb::new(project_id).await.unwrap();
 
-    // let t: Option<FirestoreTower> = db
-    //     .fluent()
-    //     .select()
-    //     .by_id_in("towers")
-    //     .obj()
-    //     .one("5aQQXeYkP0xfW3FJxjH0")
-    //     .await
-    //     .unwrap();
+    // db.fluent().select().by_id_in("test").batch_listen(["O0U5DUMnOLyxZXJOJpOx"]).add_target(target, listener)
 
-    let t: Vec<FirestoreTest> = db
-        .fluent()
-        .select()
-        .from("test")
-        .obj()
-        .query()
-        .await
-        .unwrap();
+    // println!("{:#?}", t);
 
-    println!("{:?}", t);
+    // db.fluent().select().by_id_in("test").one(document_id)
 }
 
 #[derive(Debug, Serialize, Deserialize)]
-struct FirestoreTest;
+struct FirestoreTest {
+    field: (),
+}

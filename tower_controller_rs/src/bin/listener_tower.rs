@@ -4,7 +4,7 @@ use dotenv::dotenv;
 use firestore::*;
 use rvstruct::ValueStruct;
 use serde::{Deserialize, Serialize};
-use std::io::Read;
+use std::{io::Read, time::Duration};
 
 pub fn config_env_var(name: &str) -> Result<String, String> {
     std::env::var(name).map_err(|e| format!("{}: {}", name, e))
@@ -15,12 +15,14 @@ pub fn config_env_var(name: &str) -> Result<String, String> {
 struct MyTestStructure {
     #[serde(alias = "_firestore_id")]
     doc_id: Option<String>,
-    some_id: String,
-    some_string: String,
-    some_num: u64,
 
-    #[serde(with = "firestore::serialize_as_timestamp")]
-    created_at: DateTime<Utc>,
+    field: String,
+    // some_id: String,
+    // some_string: String,
+    // some_num: u64,
+
+    // #[serde(with = "firestore::serialize_as_timestamp")]
+    // created_at: DateTime<Utc>,
 }
 
 // const TEST_COLLECTION_NAME: &str = "test-listen";
@@ -99,7 +101,14 @@ async fn main() -> Result<(), Box<dyn std::error::Error + Send + Sync>> {
     //     .batch_listen(["2UAva79ToR7TZWR0ohHf".to_string()])
     //     .add_target(TEST_TARGET_ID_BY_DOC_IDS, &mut listener)?;
 
-    let a = db.fluent().select().by_id_in("towers");
+    // let a = db.fluent().select().by_id_in("towers");
+
+    db.fluent()
+        .select()
+        .by_id_in("test")
+        .batch_listen(["O0U5DUMnOLyxZXJOJpOx"])
+        .add_target(FirestoreListenerTarget::new(42_i32), &mut listener)
+        .unwrap();
 
     listener
         .start(|event| async move {
