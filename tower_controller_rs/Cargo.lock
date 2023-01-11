@@ -331,8 +331,7 @@ dependencies = [
 
 [[package]]
 name = "firestore"
-version = "0.22.1-alpha.0"
-source = "git+https://github.com/abdolence/firestore-rs?branch=master#63d0e329b10af519bc0efbd8b77b75cb522dc70c"
+version = "0.23.1-alpha.0"
 dependencies = [
  "async-trait",
  "backoff",
