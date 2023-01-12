@@ -1,5 +1,5 @@
-#[derive(Debug, PartialEq, Eq, Clone, Copy)]
+#[derive(Debug, PartialEq, Eq, Clone)]
 pub enum RentalStatus {
     Available,
-    Rented(i32),
+    Rented(String),
 }

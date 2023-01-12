@@ -1,8 +1,12 @@
 use std::{collections::HashMap, sync::Arc};
 
-use crate::storage_box::{
-    box_location::BoxLocation, box_type::BoxType, logistic_state::LogisticState,
-    rental_status::RentalStatus, storage_box::StorageBox,
+use crate::{
+    job_scheduler::{Job, Task},
+    storage_box::{
+        box_location::BoxLocation, box_type::BoxType, logistic_state::LogisticState,
+        rental_status::RentalStatus, storage_box::StorageBox,
+    },
+    tower_dc::tower_error::TowerError,
 };
 
 pub struct Tower {
@@ -91,18 +95,21 @@ impl Tower {
             .map(|(location, _)| location.clone())
             .ok_or(TowerError::NoAvailableSlot)
     }
-}
 
-#[derive(Debug, thiserror::Error)]
-pub enum TowerError {
-    #[error("Invalid location")]
-    InvalidLocation,
-    #[error("Slot occupied")]
-    SlotOccupied,
-    #[error("Box not found")]
-    BoxNotFound,
-    #[error("No available box")]
-    NoAvailableBox,
-    #[error("No available slot")]
-    NoAvailableSlot,
+    pub async fn run_job(&mut self, job: Job) -> Result<(), TowerError> {
+        match job.task {
+            Task::Store => {
+                let location = self.find_available_storage()?;
+                let mut retrieved_box = self.retrieve_box(location)?;
+                retrieved_box.rent(job.created_by)?;
+                self.store_box(self.find_available_storage()?, retrieved_box)?;
+            }
+            Task::Retrieve(location) => {
+                let mut retrieved_box = self.retrieve_box(Arc::new(location))?;
+                retrieved_box.return_box()?;
+            }
+        }
+
+        Ok(())
+    }
 }

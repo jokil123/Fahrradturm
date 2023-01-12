@@ -8,16 +8,6 @@ use std::sync::mpsc;
 
 use firestore::FirestoreListenEvent;
 
-struct Job {
-    created_by: String,
-    task: Task,
-}
-
-enum Task {
-    Store,
-    Retrieve,
-}
-
 #[tokio::main]
 async fn main() {
     // load env

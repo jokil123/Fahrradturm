@@ -29,7 +29,8 @@ async fn main() -> Result<(), Box<dyn std::error::Error + Send + Sync>> {
 
     db.fluent()
         .select()
-        .from("towers/5aQQXeYkP0xfW3FJxjH0/jobs")
+        .from("jobs")
+        .parent(db.parent_path("towers", "5aQQXeYkP0xfW3FJxjH0").unwrap())
         .listen()
         .add_target(FirestoreListenerTarget::new(1), &mut listener)
         .unwrap();
@@ -37,19 +38,19 @@ async fn main() -> Result<(), Box<dyn std::error::Error + Send + Sync>> {
     listener
         .start(|event| async move {
             match event {
-                FirestoreListenEvent::DocumentChange(ref doc_change) => {
-                    println!("Doc changed: {:?}", doc_change);
+                FirestoreListenEvent::DocumentChange(c) => {
+                    let doc = c.document.unwrap();
 
-                    if let Some(doc) = &doc_change.document {
-                        let obj: FirestoreTower =
-                            FirestoreDb::deserialize_doc_to::<FirestoreTower>(doc)
-                                .expect("Deserialized object");
-                        println!("As object: {:?}", obj);
+                    if doc.create_time == doc.update_time {
+                        println!("Doc created");
+                    } else {
+                        println!("Doc updated");
                     }
                 }
-                _ => {
-                    // println!("Received a listen response event to handle: {:?}", event);
-                }
+                FirestoreListenEvent::DocumentDelete(_) => println!("Doc deleted"),
+                FirestoreListenEvent::DocumentRemove(_) => println!("Doc removed"),
+                FirestoreListenEvent::Filter(_) => println!("Filter"),
+                FirestoreListenEvent::TargetChange(_) => println!("Target changed"),
             }
 
             Ok(())

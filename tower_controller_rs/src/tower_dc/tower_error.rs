@@ -8,4 +8,10 @@ pub enum TowerError {
     BoxNotFound,
     #[error("No available box")]
     NoAvailableBox,
+    #[error("No available slot")]
+    NoAvailableSlot,
+    #[error("Box not rented")]
+    BoxNotRented,
+    #[error("Box already rented")]
+    BoxAlreadyRented,
 }
