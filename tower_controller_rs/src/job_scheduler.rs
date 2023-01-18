@@ -36,9 +36,9 @@ impl JobScheduler {
         self.thread_handle = Some({
             let sender = self.sender.clone();
             thread::spawn(move || {
-                sender
-                    .lock()
-                    .expect("Failed to lock sender")
+                let sender_lock = sender.lock().expect("Failed to lock sender");
+
+                sender_lock
                     .send(Job {
                         created_by: "goofy ah mf".to_string(),
                         task: Task::Store(BoxType::Bicycle),

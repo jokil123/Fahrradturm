@@ -19,14 +19,18 @@ use tower_controller_rs::{
 async fn main() {
     dotenv().ok();
 
-    let mut tower = Arc::new(Mutex::new(Tower::new(5, 5)));
-    let (job_s, job_r) = mpsc::channel::<Job>();
+    let mut tower = Tower::new(5, 5);
+
+    tower.fill_dummy(0.5);
 
     let db = FirestoreDb::new(env::var("PROJECT_ID").expect("PROJECT_ID not set"))
         .await
         .expect("Failed to create FirestoreDb");
 
     let tower_id = env::var("TOWER_ID").expect("TOWER_ID not set");
+
+    let tower = Arc::new(Mutex::new(tower));
+    let (job_s, job_r) = mpsc::channel::<Job>();
 
     let mut job_scheduler = JobScheduler::new(db, tower_id, job_s);
     job_scheduler.listen();
@@ -40,20 +44,23 @@ async fn main() {
     }
 
     loop {
-        // let Ok(job)  = job_r.recv() else {
-        //     break;
-        // };
+        println!("waiting for job");
+        let Ok(job) = job_r.recv() else {
+            break;
+        };
 
-        // tower
-        //     .lock()
-        //     .expect("Failed to lock tower")
-        //     .run_job(job)
-        //     .await
-        //     .expect("Failed to run job");
+        println!("got job, running...");
+        tower
+            .lock()
+            .expect("Failed to lock tower")
+            .run_job(job)
+            .await
+            .expect("Failed to run job");
+        println!("job successfully finished");
 
-        // display_s
-        //     .send(DisplayMessage::Update)
-        //     .expect("Failed to send update to display");
+        display_s
+            .send(DisplayMessage::Update)
+            .expect("Failed to send update to display");
     }
 
     job_scheduler.stop();

@@ -1779,6 +1779,7 @@ dependencies = [
  "fltk-grid",
  "futures",
  "hex",
+ "rand",
  "rvstruct",
  "serde",
  "serde_json",

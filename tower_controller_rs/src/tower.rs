@@ -1,3 +1,4 @@
+use rand::{self, Rng};
 use std::{collections::HashMap, sync::Arc};
 
 use crate::{
@@ -35,10 +36,12 @@ impl Tower {
             return Err(TowerError::InvalidLocation);
         };
 
-        self.storage
-            .remove(&location)
+        Ok(self
+            .storage
+            .get_mut(&location)
             .unwrap()
-            .ok_or(TowerError::BoxNotFound)
+            .take()
+            .ok_or(TowerError::BoxNotFound)?)
     }
 
     pub fn store_box(
@@ -111,5 +114,30 @@ impl Tower {
         }
 
         Ok(())
+    }
+
+    pub fn fill_dummy(&mut self, storage_ratio: f32) {
+        let mut rng = rand::thread_rng();
+
+        let mut new_storage: HashMap<Arc<BoxLocation>, Option<StorageBox>> = HashMap::new();
+
+        for (location) in self.storage.keys() {
+            let box_type = if rng.gen::<f32>() > storage_ratio {
+                BoxType::Bicycle
+            } else {
+                BoxType::Storage
+            };
+
+            new_storage.insert(
+                location.clone(),
+                Some(StorageBox {
+                    box_type: box_type,
+                    rental_status: RentalStatus::Available,
+                    logistic_state: LogisticState::Stored(location.clone()),
+                }),
+            );
+        }
+
+        self.storage = new_storage;
     }
 }

@@ -9,7 +9,12 @@ use fltk::{
 
 use crate::{
     storage_box::{
-        box_location::BoxLocation, logistic_state::LogisticState, storage_box::StorageBox,
+        self,
+        box_location::BoxLocation,
+        box_type::{self, BoxType},
+        logistic_state::LogisticState,
+        rental_status,
+        storage_box::StorageBox,
     },
     tower::Tower,
 };
@@ -90,16 +95,19 @@ impl GUIDisplay {
                 .with_size(15, 15)
                 .with_label(format!("Box {}", location).as_str());
 
-            frame.set_frame(FrameType::FlatBox);
-
-            frame.set_color(match storage_box {
-                None => Color::White,
-                Some(box_type) => match box_type.logistic_state {
-                    LogisticState::Stored(_) => Color::Green,
-                    LogisticState::InTransit => Color::Yellow,
-                    LogisticState::Retrieved => Color::Red,
-                },
-            });
+            match storage_box {
+                None => frame.set_color(Color::White),
+                Some(storage_box) => {
+                    match storage_box.box_type {
+                        BoxType::Storage => frame.set_frame(FrameType::RFlatBox),
+                        BoxType::Bicycle => frame.set_frame(FrameType::FlatBox),
+                    }
+                    match storage_box.rental_status {
+                        rental_status::RentalStatus::Available => frame.set_color(Color::Green),
+                        rental_status::RentalStatus::Rented(_) => frame.set_color(Color::Blue),
+                    }
+                }
+            }
 
             grid.insert(&mut frame, location.level as usize, location.index as usize);
         });
