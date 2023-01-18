@@ -98,8 +98,8 @@ impl Tower {
 
     pub async fn run_job(&mut self, job: Job) -> Result<(), TowerError> {
         match job.task {
-            Task::Store => {
-                let location = self.find_available_storage()?;
+            Task::Store(box_type) => {
+                let location = self.find_available_box(Some(box_type))?;
                 let mut retrieved_box = self.retrieve_box(location)?;
                 retrieved_box.rent(job.created_by)?;
                 self.store_box(self.find_available_storage()?, retrieved_box)?;

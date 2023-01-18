@@ -1,5 +1,5 @@
 #[derive(Debug, PartialEq, Eq)]
 pub enum BoxType {
-    Bicylcle,
+    Bicycle,
     Storage,
 }

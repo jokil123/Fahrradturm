@@ -8,9 +8,8 @@ use async_trait::async_trait;
 use firestore::*;
 use rvstruct::ValueStruct;
 
-#[derive(Clone)]
 pub struct HashMapTokenStorage {
-    map: Arc<RwLock<HashMap<i32, Vec<u8>>>>,
+    storage: Arc<RwLock<HashMap<FirestoreListenerTarget, FirestoreListenerToken>>>,
 }
 
 #[async_trait]
@@ -20,25 +19,12 @@ impl FirestoreResumeStateStorage for HashMapTokenStorage {
         target: &FirestoreListenerTarget,
     ) -> Result<Option<FirestoreListenerTargetResumeType>, Box<dyn std::error::Error + Send + Sync>>
     {
-        let map_lock = self.map.read().;
+        let storage = self.storage.read().expect("Failed to (read)lock storage");
 
-        map_lock
-            .get(target.value())
-            .map(|str| FirestoreListenerToken::new(str.to_owned()))
-            .map(FirestoreListenerTargetResumeType::Token);
-
-        // let target_state_file_name = format!("{}.{}.tmp", RESUME_TOKEN_FILENAME, target.value());
-        // let token = std::fs::read_to_string(target_state_file_name)
-        //     .ok()
-        //     .map(|str| {
-        //         hex::decode(&str)
-        //             .map(FirestoreListenerToken::new)
-        //             .map(FirestoreListenerTargetResumeType::Token)
-        //             .map_err(|e| Box::new(e))
-        //     })
-        //     .transpose()?;
-
-        // Ok(token)
+        Ok(storage
+            .get(target)
+            .cloned()
+            .map(FirestoreListenerTargetResumeType::Token))
     }
 
     async fn update_resume_token(
@@ -46,13 +32,8 @@ impl FirestoreResumeStateStorage for HashMapTokenStorage {
         target: &FirestoreListenerTarget,
         token: FirestoreListenerToken,
     ) -> Result<(), Box<dyn std::error::Error + Send + Sync>> {
+        let mut storage = self.storage.write().expect("Failed to (write)lock storage");
+        storage.insert(target.clone(), token);
         Ok(())
-
-        // let target_state_file_name = format!("{}.{}.tmp", RESUME_TOKEN_FILENAME, target.value());
-
-        // Ok(std::fs::write(
-        //     target_state_file_name,
-        //     hex::encode(token.value()),
-        // )?)
     }
 }

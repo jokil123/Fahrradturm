@@ -36,6 +36,7 @@ pub struct GUIDisplay {
 
 pub enum DisplayMessage {
     Update,
+    Stop,
 }
 
 impl GUIDisplay {
@@ -58,13 +59,13 @@ impl GUIDisplay {
         return display;
     }
 
-    pub fn clear_window(&mut self) {
+    fn clear_window(&mut self) {
         print!("clearing window");
         let mut window_lock = self.window.lock().unwrap();
         window_lock.clear();
     }
 
-    pub fn generate_content(&mut self) {
+    fn generate_content(&mut self) {
         println!("generating content");
         let mut window_lock = self.window.lock().unwrap();
         let tower_lock = self.tower.lock().unwrap();
@@ -142,8 +143,17 @@ impl GUIDisplay {
         println!("running gui main loop");
         while self.app.wait() {
             if let Some(msg) = a_r.recv() {
-                println!("got message");
-                self.generate_content();
+                match msg {
+                    DisplayMessage::Update => {
+                        println!("got update message");
+                        self.clear_window();
+                        self.generate_content();
+                    }
+                    DisplayMessage::Stop => {
+                        println!("got stop message");
+                        break;
+                    }
+                }
             }
         }
     }

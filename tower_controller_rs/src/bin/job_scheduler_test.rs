@@ -2,7 +2,7 @@ use std::io::Read;
 
 use dotenv::dotenv;
 use firestore::{FirestoreDb, FirestoreListenerTarget};
-use tower_controller_rs::temp_file_token_storage::TempFileTokenStorage;
+use tower_controller_rs::{job_scheduler::Job, temp_file_token_storage::TempFileTokenStorage};
 
 use std::sync::mpsc;
 
@@ -17,7 +17,7 @@ async fn main() {
 
     let db = FirestoreDb::new(&std::env::var("PROJECT_ID").expect("PROJECT_ID is not set"))
         .await
-        .unwrap();
+        .expect("Failed to create FirestoreDb");
 
     let mut listener = db
         .create_listener(TempFileTokenStorage)
@@ -50,6 +50,7 @@ async fn main() {
                     // println!("Received a listen response event to handle: {:?}", event);
                 }
             }
+            Ok(())
         })
         .await
         .expect("Failed to start listener");

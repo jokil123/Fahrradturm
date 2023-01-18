@@ -43,7 +43,7 @@ fn main() {
         tower_lock.storage.insert(
             empty_space.clone(),
             Some(StorageBox {
-                box_type: BoxType::Bicylcle,
+                box_type: BoxType::Bicycle,
                 rental_status: RentalStatus::Available,
                 logistic_state: LogisticState::Stored(empty_space),
             }),
