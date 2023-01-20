@@ -2,7 +2,7 @@ use rand::{self, Rng};
 use std::{collections::HashMap, sync::Arc};
 
 use crate::{
-    job_scheduler::{Job, Task},
+    job::{Job, Task},
     storage_box::{
         box_location::BoxLocation, box_type::BoxType, logistic_state::LogisticState,
         rental_status::RentalStatus, storage_box::StorageBox,

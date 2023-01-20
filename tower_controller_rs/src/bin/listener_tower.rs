@@ -48,9 +48,10 @@ async fn main() -> Result<(), Box<dyn std::error::Error + Send + Sync>> {
                     }
                 }
                 FirestoreListenEvent::DocumentDelete(_) => println!("Doc deleted"),
-                FirestoreListenEvent::DocumentRemove(_) => println!("Doc removed"),
-                FirestoreListenEvent::Filter(_) => println!("Filter"),
-                FirestoreListenEvent::TargetChange(_) => println!("Target changed"),
+                // FirestoreListenEvent::DocumentRemove(_) => println!("Doc removed"),
+                // FirestoreListenEvent::Filter(_) => println!("Filter"),
+                // FirestoreListenEvent::TargetChange(_) => println!("Target changed"),
+                _ => {}
             }
 
             Ok(())

@@ -2,7 +2,7 @@ use std::io::Read;
 
 use dotenv::dotenv;
 use firestore::{FirestoreDb, FirestoreListenerTarget};
-use tower_controller_rs::{job_scheduler::Job, temp_file_token_storage::TempFileTokenStorage};
+use tower_controller_rs::{job::Job, temp_file_token_storage::TempFileTokenStorage};
 
 use std::sync::mpsc;
 

@@ -11,7 +11,8 @@ use clone_all::clone_all;
 use firestore::FirestoreDb;
 use tower_controller_rs::{
     display::gui_display::{DisplayMessage, GUIDisplay},
-    job_scheduler::{Job, JobScheduler},
+    job::Job,
+    job_scheduler::JobScheduler,
     tower::Tower,
 };
 
@@ -33,7 +34,7 @@ async fn main() {
     let (job_s, job_r) = mpsc::channel::<Job>();
 
     let mut job_scheduler = JobScheduler::new(db, tower_id, job_s);
-    job_scheduler.listen();
+    job_scheduler.listen_mock();
 
     let (display_s, display_r) = mpsc::channel::<DisplayMessage>();
     {

@@ -11,6 +11,7 @@ use clone_all::clone_all;
 use firestore::{FirestoreDb, FirestoreListenEvent, FirestoreListenerTarget};
 
 use crate::{
+    job::{Job, Task},
     storage_box::{box_location::BoxLocation, box_type::BoxType},
     temp_file_token_storage::TempFileTokenStorage,
 };
@@ -32,7 +33,7 @@ impl JobScheduler {
         }
     }
 
-    pub fn listen(&mut self) {
+    pub fn listen_mock(&mut self) {
         self.thread_handle = Some({
             let sender = self.sender.clone();
             thread::spawn(move || {
@@ -46,7 +47,6 @@ impl JobScheduler {
                     .expect("Failed to send job");
             })
         });
-        // todo!();
     }
 
     pub fn stop(&mut self) {
@@ -57,38 +57,46 @@ impl JobScheduler {
             .expect("Failed to join thread");
     }
 
-    //     pub async fn listen(&self) -> Receiver<Job> {
-    //         let (sender, reciever) = mpsc::channel::<Job>();
+    pub async fn listen(&self) {
+        let mut listener = self.db.create_listener(TempFileTokenStorage).await.unwrap();
 
-    //         let mut listener = self.db.create_listener(TempFileTokenStorage).await.unwrap();
+        self.db
+            .fluent()
+            .select()
+            .from("jobs")
+            .parent(
+                self.db
+                    .parent_path("towers", "5aQQXeYkP0xfW3FJxjH0")
+                    .unwrap(),
+            )
+            .listen()
+            .add_target(FirestoreListenerTarget::new(1), &mut listener)
+            .unwrap();
 
-    //         self.db
-    //             .fluent()
-    //             .select()
-    //             .by_id_in("towers")
-    //             .batch_listen([self.tower_id.to_owned()])
-    //             .add_target(FirestoreListenerTarget::new(1), &mut listener)
-    //             .unwrap();
-
-    //         listener
-    //             .start(|r| async move {
-    //                 match r {
-    //             // FirestoreListenEvent::
-    //         }
-    //             })
-    //             .await;
-
-    //         reciever
-    //     }
+        listener
+            .start(|r| async move {
+                handle_listen_event(r);
+                Ok(())
+            })
+            .await
+            .unwrap();
+    }
 }
 
-pub struct Job {
-    pub created_by: String,
-    pub task: Task,
-}
+pub fn handle_listen_event(event: FirestoreListenEvent) {
+    match event {
+        FirestoreListenEvent::DocumentChange(c) => {
+            let doc = c.document.unwrap();
 
-pub enum Task {
-    Store(BoxType),
-    /// Retrieve a Box from the tower
-    Retrieve(BoxLocation),
+            if doc.create_time == doc.update_time {
+                println!("Doc created");
+            } else {
+                println!("Doc updated");
+            }
+        }
+        FirestoreListenEvent::DocumentDelete(_) => println!("Doc deleted"),
+        FirestoreListenEvent::DocumentRemove(_) => println!("Doc removed"),
+        FirestoreListenEvent::Filter(_) => println!("Filter"),
+        FirestoreListenEvent::TargetChange(_) => println!("Target changed"),
+    }
 }
