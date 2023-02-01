@@ -26,30 +26,28 @@ async fn main() {
 
     db.fluent()
         .select()
-        .by_id_in("towers")
-        .batch_listen(["5aQQXeYkP0xfW3FJxjH0"])
+        .from("jobs")
+        .parent(db.parent_path("towers", "5aQQXeYkP0xfW3FJxjH0").unwrap())
+        .listen()
         .add_target(FirestoreListenerTarget::new(1), &mut listener)
         .unwrap();
 
     listener
-        .start(|e| async move {
-            match e {
-                firestore::FirestoreListenEvent::DocumentChange(ref doc_change) => {
-                    println!("Doc changed: {:?}", doc_change);
+        .start(|event| async move {
+            match event {
+                FirestoreListenEvent::DocumentChange(c) => {
+                    let doc = c.document.unwrap();
 
-                    if let Some(doc) = &doc_change.document {
-                        let obj: tower_controller_rs::entities::firestore_tower::FirestoreTower =
-                            FirestoreDb::deserialize_doc_to::<
-                                tower_controller_rs::entities::firestore_tower::FirestoreTower,
-                            >(doc)
-                            .expect("Deserialized object");
-                        println!("As object: {:?}", obj);
+                    if doc.create_time == doc.update_time {
+                        println!("Doc created");
+                    } else {
+                        println!("Doc updated");
                     }
                 }
-                _ => {
-                    // println!("Received a listen response event to handle: {:?}", event);
-                }
+                FirestoreListenEvent::DocumentDelete(_) => println!("Doc deleted"),
+                _ => {}
             }
+
             Ok(())
         })
         .await

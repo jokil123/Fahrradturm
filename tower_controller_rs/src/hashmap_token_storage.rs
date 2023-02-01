@@ -8,6 +8,7 @@ use async_trait::async_trait;
 use firestore::*;
 use rvstruct::ValueStruct;
 
+#[derive(Debug, Clone, Default)]
 pub struct HashMapTokenStorage {
     storage: Arc<RwLock<HashMap<FirestoreListenerTarget, FirestoreListenerToken>>>,
 }
