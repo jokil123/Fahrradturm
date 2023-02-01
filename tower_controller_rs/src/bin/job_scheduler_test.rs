@@ -4,8 +4,10 @@ use std::{
 };
 
 use dotenv::dotenv;
-use firestore::{FirestoreDb, FirestoreListenerTarget};
+use firestore::{errors::FirestoreError, FirestoreDb, FirestoreListenerTarget};
+use gcloud_sdk::google::firestore::v1::Document;
 use prost_types::Timestamp;
+use serde::{Deserialize, Serialize};
 use tower_controller_rs::{job::Job, temp_file_token_storage::TempFileTokenStorage};
 
 use std::sync::mpsc;
@@ -52,6 +54,10 @@ async fn main() {
 
                     if doc.create_time == doc.update_time {
                         println!("Doc created");
+                        match new_job(doc) {
+                            Err(e) => println!("{}", e),
+                            _ => {}
+                        };
                     } else {
                         println!("Doc updated");
                     }
@@ -75,4 +81,50 @@ async fn main() {
 
 fn timestamp_to_duration(timestamp: Timestamp) -> Duration {
     Duration::from_secs(timestamp.seconds as u64) + Duration::from_nanos(timestamp.nanos as u64)
+}
+
+fn new_job(doc: Document) -> Result<(), JobSchedulerError> {
+    let a = FirestoreDb::deserialize_doc_to::<Assignment>(&doc)
+        .map_err(JobSchedulerError::DeserializeError)?;
+
+    println!("{:#?}", a);
+
+    Ok(())
+}
+
+#[derive(thiserror::Error, Debug)]
+enum JobSchedulerError {
+    #[error("General error")]
+    Err,
+    #[error("Malformed assignment document {0}")]
+    DeserializeError(FirestoreError),
+}
+
+#[derive(Serialize, Deserialize, Debug)]
+struct Assignment {
+    tower: String,
+    user: String,
+    #[serde(rename = "assignmentType")]
+    assignment_type: AssignmentType,
+    status: AssignmentStatus,
+}
+
+#[derive(Serialize, Deserialize, Debug)]
+enum AssignmentType {
+    #[serde(rename = "store")]
+    Store,
+    #[serde(rename = "retrieve")]
+    Retrieve,
+}
+
+#[derive(Serialize, Deserialize, Debug)]
+enum AssignmentStatus {
+    #[serde(rename = "new")]
+    New,
+    #[serde(rename = "ongoing")]
+    Ongoing,
+    #[serde(rename = "done")]
+    Done,
+    #[serde(rename = "error")]
+    Error,
 }
