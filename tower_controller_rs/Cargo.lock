@@ -513,9 +513,9 @@ dependencies = [
 
 [[package]]
 name = "gcloud-sdk"
-version = "0.19.13"
+version = "0.19.15"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "c45ea82d8bc2297807c23eeeb3341a42a5203ad5c365781dc726c77fce245bf2"
+checksum = "03aac76d809710b7035a3b367b83d3fbc972f4668ebdc00ba6a52f13a0754610"
 dependencies = [
  "async-trait",
  "chrono",
@@ -1778,6 +1778,7 @@ dependencies = [
  "fltk",
  "fltk-grid",
  "futures",
+ "gcloud-sdk",
  "hex",
  "prost-types",
  "rand",
