@@ -19,10 +19,6 @@ pub fn config_env_var(name: &str) -> Result<String, String> {
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error + Send + Sync>> {
-    let start_time = SystemTime::now()
-        .duration_since(SystemTime::UNIX_EPOCH)
-        .unwrap();
-
     dotenv().ok();
 
     let db = FirestoreDb::new(&config_env_var("PROJECT_ID")?)
@@ -40,14 +36,10 @@ async fn main() -> Result<(), Box<dyn std::error::Error + Send + Sync>> {
         .unwrap();
 
     listener
-        .start(move |event| async move {
+        .start(|event| async move {
             match event {
                 FirestoreListenEvent::DocumentChange(c) => {
                     let doc = c.document.unwrap();
-
-                    if timestamp_to_duration(doc.update_time.clone().unwrap()) < start_time {
-                        return Ok(());
-                    }
 
                     if doc.create_time == doc.update_time {
                         println!("Doc created");
@@ -71,8 +63,4 @@ async fn main() -> Result<(), Box<dyn std::error::Error + Send + Sync>> {
     listener.shutdown().await?;
 
     Ok(())
-}
-
-fn timestamp_to_duration(timestamp: Timestamp) -> Duration {
-    Duration::from_secs(timestamp.seconds as u64) + Duration::from_nanos(timestamp.nanos as u64)
 }

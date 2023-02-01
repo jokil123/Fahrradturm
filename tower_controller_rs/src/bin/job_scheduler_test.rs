@@ -1,7 +1,11 @@
-use std::io::Read;
+use std::{
+    io::Read,
+    time::{Duration, SystemTime},
+};
 
 use dotenv::dotenv;
 use firestore::{FirestoreDb, FirestoreListenerTarget};
+use prost_types::Timestamp;
 use tower_controller_rs::{job::Job, temp_file_token_storage::TempFileTokenStorage};
 
 use std::sync::mpsc;
@@ -12,6 +16,10 @@ use firestore::FirestoreListenEvent;
 async fn main() {
     // load env
     dotenv().ok();
+
+    let start_time = SystemTime::now()
+        .duration_since(SystemTime::UNIX_EPOCH)
+        .unwrap();
 
     let (sender, reciever) = mpsc::channel::<Job>();
 
@@ -33,10 +41,14 @@ async fn main() {
         .unwrap();
 
     listener
-        .start(|event| async move {
+        .start(move |event| async move {
             match event {
                 FirestoreListenEvent::DocumentChange(c) => {
                     let doc = c.document.unwrap();
+
+                    if timestamp_to_duration(doc.update_time.clone().unwrap()) < start_time {
+                        return Ok(());
+                    }
 
                     if doc.create_time == doc.update_time {
                         println!("Doc created");
@@ -59,4 +71,8 @@ async fn main() {
         .shutdown()
         .await
         .expect("Failed to shutdown listener");
+}
+
+fn timestamp_to_duration(timestamp: Timestamp) -> Duration {
+    Duration::from_secs(timestamp.seconds as u64) + Duration::from_nanos(timestamp.nanos as u64)
 }
