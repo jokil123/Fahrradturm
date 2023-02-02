@@ -1,5 +1,6 @@
 use std::{
     io::Read,
+    sync::Arc,
     time::{Duration, SystemTime},
 };
 
@@ -8,7 +9,11 @@ use firestore::{errors::FirestoreError, FirestoreDb, FirestoreListenerTarget};
 use gcloud_sdk::google::firestore::v1::Document;
 use prost_types::Timestamp;
 use serde::{Deserialize, Serialize};
-use tower_controller_rs::{job::Job, temp_file_token_storage::TempFileTokenStorage};
+use tower_controller_rs::{
+    assignment::{Assignment, AssignmentStatus, AssignmentType, JobSchedulerError},
+    job::Job,
+    temp_file_token_storage::TempFileTokenStorage,
+};
 
 use std::sync::mpsc;
 
@@ -25,9 +30,11 @@ async fn main() {
 
     let (sender, reciever) = mpsc::channel::<Job>();
 
-    let db = FirestoreDb::new(&std::env::var("PROJECT_ID").expect("PROJECT_ID is not set"))
-        .await
-        .expect("Failed to create FirestoreDb");
+    let db = Arc::new(Mutex::new(
+        FirestoreDb::new(&std::env::var("PROJECT_ID").expect("PROJECT_ID is not set"))
+            .await
+            .expect("Failed to create FirestoreDb"),
+    ));
 
     let mut listener = db
         .create_listener(TempFileTokenStorage)
@@ -55,8 +62,13 @@ async fn main() {
                     if doc.create_time == doc.update_time {
                         println!("Doc created");
                         match new_job(doc) {
-                            Err(e) => println!("{}", e),
-                            _ => {}
+                            Ok(ass) => {
+                                println!("Job created");
+                                // test(db, ass).await;
+
+                                let a = test(db, ass);
+                            }
+                            Err(e) => println!("Error: {:?}", e),
                         };
                     } else {
                         println!("Doc updated");
@@ -83,48 +95,33 @@ fn timestamp_to_duration(timestamp: Timestamp) -> Duration {
     Duration::from_secs(timestamp.seconds as u64) + Duration::from_nanos(timestamp.nanos as u64)
 }
 
-fn new_job(doc: Document) -> Result<(), JobSchedulerError> {
-    let a = FirestoreDb::deserialize_doc_to::<Assignment>(&doc)
+fn new_job(doc: Document) -> Result<Assignment, JobSchedulerError> {
+    let mut ass: Assignment = FirestoreDb::deserialize_doc_to::<Assignment>(&doc)
         .map_err(JobSchedulerError::DeserializeError)?;
 
-    println!("{:#?}", a);
+    match ass.status {
+        AssignmentStatus::New => {
+            ass.status = AssignmentStatus::Ongoing;
+        }
+        _ => {
+            ass.status = AssignmentStatus::Error;
+        }
+    }
 
-    Ok(())
+    // TODO: check user and tower id
+
+    Ok(ass)
 }
 
-#[derive(thiserror::Error, Debug)]
-enum JobSchedulerError {
-    #[error("General error")]
-    Err,
-    #[error("Malformed assignment document {0}")]
-    DeserializeError(FirestoreError),
-}
-
-#[derive(Serialize, Deserialize, Debug)]
-struct Assignment {
-    tower: String,
-    user: String,
-    #[serde(rename = "assignmentType")]
-    assignment_type: AssignmentType,
-    status: AssignmentStatus,
-}
-
-#[derive(Serialize, Deserialize, Debug)]
-enum AssignmentType {
-    #[serde(rename = "store")]
-    Store,
-    #[serde(rename = "retrieve")]
-    Retrieve,
-}
-
-#[derive(Serialize, Deserialize, Debug)]
-enum AssignmentStatus {
-    #[serde(rename = "new")]
-    New,
-    #[serde(rename = "ongoing")]
-    Ongoing,
-    #[serde(rename = "done")]
-    Done,
-    #[serde(rename = "error")]
-    Error,
+async fn test(db: FirestoreDb, ass: Assignment) {
+    let updated_assignment: Assignment = db
+        .fluent()
+        .update()
+        .in_col("jobs")
+        .document_id(ass.doc_id.clone().unwrap())
+        .parent(db.parent_path("towers", "5aQQXeYkP0xfW3FJxjH0").unwrap())
+        .object(&ass)
+        .execute()
+        .await
+        .unwrap();
 }

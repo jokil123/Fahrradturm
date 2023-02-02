@@ -1,3 +1,4 @@
+pub mod assignment;
 pub mod display;
 pub mod entities;
 pub mod hashmap_token_storage;
