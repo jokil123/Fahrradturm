@@ -9,7 +9,7 @@ pub enum JobSchedulerError {
     DeserializeError(FirestoreError),
 }
 
-#[derive(Serialize, Deserialize, Debug)]
+#[derive(Serialize, Deserialize, Debug, Default)]
 pub struct Assignment {
     #[serde(alias = "_firestore_id")]
     pub doc_id: Option<String>,
@@ -20,16 +20,18 @@ pub struct Assignment {
     pub status: AssignmentStatus,
 }
 
-#[derive(Serialize, Deserialize, Debug)]
+#[derive(Serialize, Deserialize, Debug, Default)]
 pub enum AssignmentType {
+    #[default]
     #[serde(rename = "store")]
     Store,
     #[serde(rename = "retrieve")]
     Retrieve,
 }
 
-#[derive(Serialize, Deserialize, Debug)]
+#[derive(Serialize, Deserialize, Debug, Default)]
 pub enum AssignmentStatus {
+    #[default]
     #[serde(rename = "new")]
     New,
     #[serde(rename = "ongoing")]
