@@ -1,7 +1,7 @@
 use std::{
     error::Error,
     io::Read,
-    sync::Arc,
+    sync::{mpsc::SyncSender, Arc},
     time::{Duration, SystemTime},
 };
 
@@ -35,7 +35,7 @@ async fn main() {
         .duration_since(SystemTime::UNIX_EPOCH)
         .unwrap();
 
-    let (sender, reciever) = mpsc::channel::<Job>();
+    let (sender, reciever) = mpsc::sync_channel::<Job>(100);
 
     let db = Arc::new(Mutex::new(
         FirestoreDb::new(&std::env::var("PROJECT_ID").expect("PROJECT_ID is not set"))
@@ -77,10 +77,18 @@ async fn main() {
     //     .await
     //     .expect("Failed to start listener");
 
+    // listener
+    //     .start({
+    //         clone_all!(db, sender);
+    //         move |e: ResponseType| listener_callback(e, db, start_time, sender)
+    //     })
+    //     .await
+    //     .expect("Failed to start listener");
+
     listener
         .start(move |e: ResponseType| {
-            clone_all!(db);
-            listener_callback(e, db, start_time)
+            clone_all!(db, sender);
+            listener_callback(e, db, start_time, sender)
         })
         .await
         .expect("Failed to start listener");
@@ -97,6 +105,7 @@ async fn listener_callback(
     response: ResponseType,
     db: Arc<Mutex<FirestoreDb>>,
     start_time: Duration,
+    sender: mpsc::SyncSender<Job>,
 ) -> std::result::Result<(), Box<(dyn std::error::Error + Send + Sync + 'static)>> {
     match response {
         FirestoreListenEvent::DocumentChange(c) => {
@@ -119,10 +128,10 @@ async fn listener_callback(
             let new_ass;
 
             if doc.create_time == doc.update_time {
-                new_ass = handle_event(EventType::JobCreated, ass);
+                new_ass = handle_event(EventType::JobCreated, ass, sender);
                 println!("Job Created");
             } else {
-                new_ass = handle_event(EventType::JobUpdated, ass);
+                new_ass = handle_event(EventType::JobUpdated, ass, sender);
                 println!("Job Updated");
             }
 
@@ -157,7 +166,11 @@ enum EventType {
     JobUpdated,
 }
 
-fn handle_event(event: EventType, mut ass: Assignment) -> Option<Assignment> {
+fn handle_event(
+    event: EventType,
+    mut ass: Assignment,
+    sender: SyncSender<Job>,
+) -> Option<Assignment> {
     match event {
         EventType::JobCreated => match ass.assignment_status {
             AssignmentStatus::New => {
