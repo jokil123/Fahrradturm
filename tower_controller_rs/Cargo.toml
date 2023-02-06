@@ -12,8 +12,6 @@ fltk-grid = "0.1.4"
 
 # Database
 # firestore = "0.22.0"
-# firestore = { git = "https://github.com/abdolence/firestore-rs", branch = "master" }
-# firestore = { git = "https://github.com/jokil123/firestore-rs", branch = "master" }
 firestore = { path = "../../firestore-rs" }
 
 # Utilities

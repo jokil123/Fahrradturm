@@ -1,12 +1,14 @@
 use std::{
     error::Error,
     io::Read,
-    sync::{Arc, Mutex},
+    sync::Arc,
     time::{Duration, SystemTime},
 };
 
 use clone_all::clone_all;
+use futures::TryFutureExt;
 use std::future::Future;
+use tokio::sync::Mutex;
 
 use dotenv::dotenv;
 use firestore::{errors::FirestoreError, FirestoreDb, FirestoreListener, FirestoreListenerTarget};
@@ -15,6 +17,7 @@ use prost_types::Timestamp;
 use serde::{Deserialize, Serialize};
 use tower_controller_rs::{
     assignment::{Assignment, AssignmentStatus, AssignmentType, JobSchedulerError},
+    hashmap_token_storage::HashMapTokenStorage,
     job::Job,
     temp_file_token_storage::TempFileTokenStorage,
 };
@@ -43,9 +46,9 @@ async fn main() {
     let mut listener;
 
     {
-        let db_lock = db.lock().unwrap();
+        let db_lock = db.lock().await;
         listener = db_lock
-            .create_listener(TempFileTokenStorage)
+            .create_listener(HashMapTokenStorage::default())
             .await
             .expect("Failed to create listener");
 
@@ -63,8 +66,22 @@ async fn main() {
             .unwrap();
     }
 
+    // listener
+    //     .start({
+    //         clone_all!(db);
+    //         move |e: ResponseType| {
+    //             clone_all!(db);
+    //             async move { listener_callback(e, db).await }
+    //         }
+    //     })
+    //     .await
+    //     .expect("Failed to start listener");
+
     listener
-        .start(listener_callback)
+        .start(move |e: ResponseType| {
+            clone_all!(db);
+            listener_callback(e, db, start_time)
+        })
         .await
         .expect("Failed to start listener");
 
@@ -77,53 +94,10 @@ async fn main() {
 }
 
 async fn listener_callback(
-    e: ResponseType,
-) -> std::result::Result<(), Box<(dyn std::error::Error + Send + Sync + 'static)>> {
-    // let db = FirestoreDb::new(&std::env::var("PROJECT_ID").expect("PROJECT_ID is not set"))
-    //     .await
-    //     .expect("Failed to create FirestoreDb");
-
-    let ass = Assignment::default();
-
-    let updated_assignment = db
-        .fluent()
-        .update()
-        .in_col("jobs")
-        .document_id("aaaaaaaaaaaaaaaaaaaaaaaaa")
-        .parent(db.parent_path("towers", "5aQQXeYkP0xfW3FJxjH0").unwrap())
-        .object(&ass)
-        .execute::<Assignment>();
-
-    Ok(())
-}
-
-// {
-//             clone_all!(db);
-//             move |e| async move {
-//                 // handle_listener_event(e, start_time, db).await?;
-
-//                 let db = db.lock().unwrap();
-//                 let updated_assignment: Assignment = db
-//                     .fluent()
-//                     .update()
-//                     .in_col("jobs")
-//                     .document_id("aaaaaaaaaaaaaaaaaaaaaaaaa")
-//                     .parent(db.parent_path("towers", "5aQQXeYkP0xfW3FJxjH0").unwrap())
-//                     .object(&Assignment::default())
-//                     .execute()
-//                     .await
-//                     .unwrap();
-
-//                 Ok(())
-//             }
-//         }
-
-// Fn(FirestoreListenEvent) -> F + Send + Sync + 'static,
-async fn handle_listener_event(
     response: ResponseType,
-    start_time: Duration,
     db: Arc<Mutex<FirestoreDb>>,
-) -> Result<(), Box<(dyn Error + Send + Sync + 'static)>> {
+    start_time: Duration,
+) -> std::result::Result<(), Box<(dyn std::error::Error + Send + Sync + 'static)>> {
     match response {
         FirestoreListenEvent::DocumentChange(c) => {
             let doc = c.document.unwrap();
@@ -132,61 +106,75 @@ async fn handle_listener_event(
                 return Ok(());
             }
 
-            if doc.create_time == doc.update_time {
-                println!("Doc created");
-                match new_job(doc) {
-                    Ok(ass) => {
-                        println!("Job created");
-                        // test(db, ass).await;
+            let ass;
 
-                        // let a = test(db, ass);
-                    }
-                    Err(e) => println!("Error: {:?}", e),
-                };
-            } else {
-                println!("Doc updated");
+            match FirestoreDb::deserialize_doc_to::<Assignment>(&doc) {
+                Ok(a) => ass = a,
+                Err(e) => {
+                    println!("Failed to deserialize doc to Assignment: {}", e);
+                    return Ok(());
+                }
             }
+
+            let new_ass;
+
+            if doc.create_time == doc.update_time {
+                new_ass = handle_event(EventType::JobCreated, ass);
+                println!("Job Created");
+            } else {
+                new_ass = handle_event(EventType::JobUpdated, ass);
+                println!("Job Updated");
+            }
+
+            println!("{:#?}", new_ass);
+
+            let Some(new_ass) = new_ass else {
+                return Ok(());
+            };
+
+            let db = db.lock().await;
+
+            println!("Sending Changes to Firestore...");
+
+            db.fluent()
+                .update()
+                .in_col("jobs")
+                .document_id(new_ass.doc_id.clone().unwrap())
+                .parent(db.parent_path("towers", "5aQQXeYkP0xfW3FJxjH0").unwrap())
+                .object(&new_ass)
+                .execute::<Assignment>()
+                .await
+                .unwrap();
         }
-        FirestoreListenEvent::DocumentDelete(_) => println!("Doc deleted"),
         _ => {}
     }
 
     Ok(())
 }
 
-fn timestamp_to_duration(timestamp: Timestamp) -> Duration {
-    Duration::from_secs(timestamp.seconds as u64) + Duration::from_nanos(timestamp.nanos as u64)
+enum EventType {
+    JobCreated,
+    JobUpdated,
 }
 
-fn new_job(doc: Document) -> Result<Assignment, JobSchedulerError> {
-    let mut ass: Assignment = FirestoreDb::deserialize_doc_to::<Assignment>(&doc)
-        .map_err(JobSchedulerError::DeserializeError)?;
-
-    match ass.status {
-        AssignmentStatus::New => {
-            ass.status = AssignmentStatus::Ongoing;
-        }
-        _ => {
-            ass.status = AssignmentStatus::Error;
-        }
+fn handle_event(event: EventType, mut ass: Assignment) -> Option<Assignment> {
+    match event {
+        EventType::JobCreated => match ass.assignment_status {
+            AssignmentStatus::New => {
+                ass.assignment_status = AssignmentStatus::Ongoing;
+            }
+            _ => {
+                ass.assignment_status = AssignmentStatus::Error;
+            }
+        },
+        EventType::JobUpdated => None?,
     }
 
     // TODO: check user and tower id
 
-    Ok(ass)
+    Some(ass)
 }
 
-// async fn test(db: Arc<Mutex<FirestoreDb>>, ass: Assignment) {
-//     let db = db.lock().unwrap();
-
-//     let updated_assignment: Assignment = db
-//         .fluent()
-//         .update()
-//         .in_col("jobs")
-//         .document_id(ass.doc_id.clone().unwrap())
-//         .parent(db.parent_path("towers", "5aQQXeYkP0xfW3FJxjH0").unwrap())
-//         .object(&ass)
-//         .execute()
-//         .await
-//         .unwrap();
-// }
+fn timestamp_to_duration(timestamp: Timestamp) -> Duration {
+    Duration::from_secs(timestamp.seconds as u64) + Duration::from_nanos(timestamp.nanos as u64)
+}
