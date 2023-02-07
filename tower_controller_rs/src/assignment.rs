@@ -1,6 +1,8 @@
 use firestore::errors::FirestoreError;
 use serde::{Deserialize, Serialize};
 
+use crate::storage_box::box_type::BoxType;
+
 #[derive(thiserror::Error, Debug)]
 pub enum JobSchedulerError {
     #[error("General error")]
@@ -21,9 +23,10 @@ pub struct Assignment {
     pub assignment_type: AssignmentType,
     #[serde(rename = "assignmentStatus")]
     pub assignment_status: AssignmentStatus,
+    pub box_type: Option<BoxType>,
 }
 
-#[derive(Serialize, Deserialize, Debug, Default)]
+#[derive(Serialize, Deserialize, Debug, Default, Clone, Copy)]
 pub enum AssignmentType {
     #[default]
     #[serde(rename = "store")]
@@ -32,7 +35,7 @@ pub enum AssignmentType {
     Retrieve,
 }
 
-#[derive(Serialize, Deserialize, Debug, Default)]
+#[derive(Serialize, Deserialize, Debug, Default, Clone, Copy)]
 pub enum AssignmentStatus {
     #[default]
     #[serde(rename = "new")]

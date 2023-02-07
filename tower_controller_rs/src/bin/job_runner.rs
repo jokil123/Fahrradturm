@@ -30,10 +30,11 @@ async fn main() {
     let tower_id = env::var("TOWER_ID").expect("TOWER_ID not set");
 
     let tower = Arc::new(Mutex::new(tower));
-    let (job_s, job_r) = mpsc::channel::<Job>();
+    let (job_s, job_r) = mpsc::sync_channel::<Job>(1000);
 
     let mut job_scheduler = JobScheduler::new(db, tower_id, job_s);
-    job_scheduler.listen_mock();
+    // job_scheduler.listen_mock();
+    job_scheduler.listen().await;
 
     let (display_s, display_r) = mpsc::channel::<DisplayMessage>();
     {
@@ -63,7 +64,7 @@ async fn main() {
             .expect("Failed to send update to display");
     }
 
-    job_scheduler.stop();
+    job_scheduler.stop().await;
 
     display_s
         .send(DisplayMessage::Stop)

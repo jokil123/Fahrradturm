@@ -1,97 +1,200 @@
+use firestore::{FirestoreDb, FirestoreListenEvent, FirestoreListener, FirestoreListenerTarget};
+use gcloud_sdk::google::firestore::v1::listen_response::ResponseType;
+use prost_types::Timestamp;
 use std::{
-    sync::{mpsc::Sender, Arc, Mutex},
+    sync::{
+        mpsc::{self, SyncSender},
+        Arc,
+    },
     thread,
+    time::{Duration, SystemTime},
 };
-
-use firestore::{FirestoreDb, FirestoreListenEvent, FirestoreListenerTarget};
+use tokio::sync::Mutex;
 
 use crate::{
-    job::{Job, Task},
-    storage_box::box_type::BoxType,
-    temp_file_token_storage::TempFileTokenStorage,
+    assignment::{Assignment, AssignmentStatus, AssignmentType},
+    hashmap_token_storage::HashMapTokenStorage,
+    job::{self, Job, Task},
 };
 
 pub struct JobScheduler {
-    db: FirestoreDb,
+    db: Arc<Mutex<FirestoreDb>>,
     tower_id: String,
-    sender: Arc<Mutex<Sender<Job>>>,
-    thread_handle: Option<thread::JoinHandle<()>>,
+    sender: SyncSender<Job>,
+    listener: Option<FirestoreListener<FirestoreDb, HashMapTokenStorage>>,
 }
 
 impl JobScheduler {
-    pub fn new(db: FirestoreDb, tower_id: String, sender: Sender<Job>) -> Self {
+    pub fn new(db: FirestoreDb, tower_id: String, sender: SyncSender<Job>) -> Self {
         Self {
-            db,
+            db: Arc::new(Mutex::new(db)),
             tower_id,
-            sender: Arc::new(Mutex::new(sender)),
-            thread_handle: None,
+            sender: sender,
+            listener: None,
         }
     }
 
-    pub fn listen_mock(&mut self) {
-        self.thread_handle = Some({
-            let sender = self.sender.clone();
-            thread::spawn(move || {
-                let sender_lock = sender.lock().expect("Failed to lock sender");
-
-                sender_lock
-                    .send(Job {
-                        created_by: "goofy ah mf".to_string(),
-                        task: Task::Store(BoxType::Bicycle),
-                    })
-                    .expect("Failed to send job");
-            })
-        });
-    }
-
-    pub fn stop(&mut self) {
-        self.thread_handle
+    pub async fn stop(&mut self) {
+        self.listener
             .take()
-            .expect("No thread handle")
-            .join()
-            .expect("Failed to join thread");
+            .expect("No listener to stop")
+            .shutdown()
+            .await
+            .expect("Failed to shutdown listener");
     }
 
-    pub async fn listen(&self) {
-        let mut listener = self.db.create_listener(TempFileTokenStorage).await.unwrap();
-
-        self.db
-            .fluent()
-            .select()
-            .from("jobs")
-            .parent(
-                self.db
-                    .parent_path("towers", "5aQQXeYkP0xfW3FJxjH0")
-                    .unwrap(),
-            )
-            .listen()
-            .add_target(FirestoreListenerTarget::new(1), &mut listener)
+    pub async fn listen(&mut self) {
+        let start_time = SystemTime::now()
+            .duration_since(SystemTime::UNIX_EPOCH)
             .unwrap();
 
+        let mut listener;
+
+        {
+            let db_lock = self.db.lock().await;
+
+            listener = db_lock
+                .create_listener(HashMapTokenStorage::default())
+                .await
+                .expect("Failed to create listener");
+
+            db_lock
+                .fluent()
+                .select()
+                .from("jobs")
+                .parent(
+                    db_lock
+                        .parent_path("towers", "5aQQXeYkP0xfW3FJxjH0")
+                        .unwrap(),
+                )
+                .listen()
+                .add_target(FirestoreListenerTarget::new(1), &mut listener)
+                .unwrap();
+        }
+
+        // 🤮🤮🤮🤮🤮
+        // find a way to not clone the db twice
         listener
-            .start(|r| async move {
-                handle_listen_event(r);
-                Ok(())
+            .start({
+                let db = self.db.clone();
+                let sender = self.sender.clone();
+                let tower_id = self.tower_id.clone();
+                move |e: ResponseType| {
+                    listener_callback(e, db.clone(), start_time, sender.clone(), tower_id.clone())
+                }
             })
             .await
-            .unwrap();
+            .expect("Failed to start listener");
+
+        self.listener = Some(listener);
     }
 }
 
-pub fn handle_listen_event(event: FirestoreListenEvent) {
-    match event {
+async fn listener_callback(
+    response: ResponseType,
+    db: Arc<Mutex<FirestoreDb>>,
+    start_time: Duration,
+    sender: mpsc::SyncSender<Job>,
+    tower_id: String,
+) -> std::result::Result<(), Box<(dyn std::error::Error + Send + Sync + 'static)>> {
+    match response {
         FirestoreListenEvent::DocumentChange(c) => {
             let doc = c.document.unwrap();
 
-            if doc.create_time == doc.update_time {
-                println!("Doc created");
-            } else {
-                println!("Doc updated");
+            if timestamp_to_duration(doc.update_time.clone().unwrap()) < start_time {
+                return Ok(());
             }
+
+            let ass;
+
+            match FirestoreDb::deserialize_doc_to::<Assignment>(&doc) {
+                Ok(a) => ass = a,
+                Err(e) => {
+                    println!("Failed to deserialize doc to Assignment: {}", e);
+                    return Ok(());
+                }
+            }
+
+            let new_ass;
+
+            if doc.create_time == doc.update_time {
+                new_ass = handle_event(EventType::JobCreated, ass, sender);
+                println!("Job Created");
+            } else {
+                new_ass = handle_event(EventType::JobUpdated, ass, sender);
+                println!("Job Updated");
+            }
+
+            println!("{:#?}", new_ass);
+
+            let Some(new_ass) = new_ass else {
+                return Ok(());
+            };
+
+            let db = db.lock().await;
+
+            println!("Sending Changes to Firestore...");
+
+            db.fluent()
+                .update()
+                .in_col("jobs")
+                .document_id(new_ass.doc_id.clone().unwrap())
+                .parent(db.parent_path("towers", tower_id).unwrap())
+                .object(&new_ass)
+                .execute::<Assignment>()
+                .await
+                .unwrap();
         }
-        FirestoreListenEvent::DocumentDelete(_) => println!("Doc deleted"),
-        FirestoreListenEvent::DocumentRemove(_) => println!("Doc removed"),
-        FirestoreListenEvent::Filter(_) => println!("Filter"),
-        FirestoreListenEvent::TargetChange(_) => println!("Target changed"),
+        _ => {}
     }
+
+    Ok(())
+}
+
+#[derive(Debug, Clone, Copy)]
+enum EventType {
+    JobCreated,
+    JobUpdated,
+}
+
+fn handle_event(
+    event: EventType,
+    mut ass: Assignment,
+    sender: SyncSender<Job>,
+) -> Option<Assignment> {
+    match event {
+        EventType::JobCreated => match ass.assignment_status {
+            AssignmentStatus::New => {
+                let job = job_from_assignment(&ass);
+                sender.send(job?).unwrap();
+
+                ass.assignment_status = AssignmentStatus::Ongoing;
+            }
+            _ => {
+                ass.assignment_status = AssignmentStatus::Error;
+            }
+        },
+        EventType::JobUpdated => None?,
+    }
+
+    // TODO: check user and tower id
+
+    Some(ass)
+}
+
+fn timestamp_to_duration(timestamp: Timestamp) -> Duration {
+    Duration::from_secs(timestamp.seconds as u64) + Duration::from_nanos(timestamp.nanos as u64)
+}
+
+fn job_from_assignment(ass: &Assignment) -> Option<Job> {
+    let task = match ass.assignment_type {
+        AssignmentType::Store => Task::Store(ass.box_type?),
+        // TODO: change this to not require a location
+        AssignmentType::Retrieve => Task::Retrieve(todo!()),
+    };
+
+    Some(Job {
+        created_by: ass.user.clone(),
+        task,
+    })
 }

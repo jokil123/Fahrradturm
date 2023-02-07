@@ -29,7 +29,7 @@ pub struct GUIDisplay {
 
 // useful generization once led display is implemented
 // impl TowerDisplay for gui_display {}
-
+#[derive(Debug, Clone, Copy)]
 pub enum DisplayMessage {
     Update,
     Stop,

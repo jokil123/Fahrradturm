@@ -1,6 +1,6 @@
 use dotenv::dotenv;
 use firestore::FirestoreDb;
-use tower_controller_rs::assignment::Assignment;
+use tower_controller_rs::{assignment::Assignment, storage_box::box_type::BoxType};
 
 #[tokio::main]
 async fn main() {
@@ -14,6 +14,7 @@ async fn main() {
     let mut ass: Assignment = Assignment::default();
 
     ass.doc_id = Some("Amogus".to_string());
+    ass.box_type = Some(BoxType::Bicycle);
 
     let a = db
         .fluent()
