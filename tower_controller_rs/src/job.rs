@@ -1,5 +1,3 @@
-use firestore::FirestoreListenEvent;
-
 use crate::storage_box::{box_location::BoxLocation, box_type::BoxType};
 
 pub struct Job {

@@ -1,6 +1,5 @@
 use fltk::{
     app,
-    button::Button,
     enums::{Color, FrameType},
     frame::Frame,
     prelude::*,
@@ -9,23 +8,15 @@ use fltk::{
 
 use crate::{
     storage_box::{
-        self,
-        box_location::BoxLocation,
-        box_type::{self, BoxType},
-        logistic_state::LogisticState,
-        rental_status,
-        storage_box::StorageBox,
+        box_location::BoxLocation, box_type::BoxType, rental_status, storage_box::StorageBox,
     },
     tower::Tower,
 };
 
 use std::{
-    ops::{Deref, DerefMut},
-    sync::{mpsc::Receiver, Arc, Mutex, MutexGuard},
+    sync::{mpsc::Receiver, Arc, Mutex},
     thread,
 };
-
-use fltk_grid::Grid;
 
 // use super::tower_display::TowerDisplay;
 

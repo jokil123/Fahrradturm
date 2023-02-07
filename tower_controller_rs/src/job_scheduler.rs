@@ -1,18 +1,13 @@
 use std::{
-    sync::{
-        mpsc::{self, Receiver, Sender},
-        Arc, Mutex,
-    },
+    sync::{mpsc::Sender, Arc, Mutex},
     thread,
 };
-
-use clone_all::clone_all;
 
 use firestore::{FirestoreDb, FirestoreListenEvent, FirestoreListenerTarget};
 
 use crate::{
     job::{Job, Task},
-    storage_box::{box_location::BoxLocation, box_type::BoxType},
+    storage_box::box_type::BoxType,
     temp_file_token_storage::TempFileTokenStorage,
 };
 

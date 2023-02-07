@@ -1,25 +1,20 @@
 use std::{
-    error::Error,
     io::Read,
     sync::{mpsc::SyncSender, Arc},
     time::{Duration, SystemTime},
 };
 
 use clone_all::clone_all;
-use futures::TryFutureExt;
-use std::future::Future;
 use tokio::sync::Mutex;
 
 use dotenv::dotenv;
-use firestore::{errors::FirestoreError, FirestoreDb, FirestoreListener, FirestoreListenerTarget};
-use gcloud_sdk::google::firestore::v1::{listen_response::ResponseType, Document};
+use firestore::{FirestoreDb, FirestoreListenerTarget};
+use gcloud_sdk::google::firestore::v1::listen_response::ResponseType;
 use prost_types::Timestamp;
-use serde::{Deserialize, Serialize};
 use tower_controller_rs::{
-    assignment::{Assignment, AssignmentStatus, AssignmentType, JobSchedulerError},
+    assignment::{Assignment, AssignmentStatus},
     hashmap_token_storage::HashMapTokenStorage,
     job::Job,
-    temp_file_token_storage::TempFileTokenStorage,
 };
 
 use std::sync::mpsc;

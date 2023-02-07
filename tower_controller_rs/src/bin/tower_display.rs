@@ -1,6 +1,5 @@
 use core::time;
 use std::{
-    borrow::BorrowMut,
     sync::{mpsc::channel, Arc, Mutex},
     thread,
 };

@@ -2,8 +2,7 @@ use dotenv::dotenv;
 use std::{
     env,
     sync::{mpsc, Arc, Mutex},
-    thread::{self, sleep},
-    time::Duration,
+    thread::{self},
 };
 
 use clone_all::clone_all;

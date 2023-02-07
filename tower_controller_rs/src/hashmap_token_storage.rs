@@ -1,12 +1,10 @@
 use std::{
-    cell::RefCell,
     collections::HashMap,
     sync::{Arc, RwLock},
 };
 
 use async_trait::async_trait;
 use firestore::*;
-use rvstruct::ValueStruct;
 
 #[derive(Debug, Clone, Default)]
 pub struct HashMapTokenStorage {

@@ -121,7 +121,7 @@ impl Tower {
 
         let mut new_storage: HashMap<Arc<BoxLocation>, Option<StorageBox>> = HashMap::new();
 
-        for (location) in self.storage.keys() {
+        for location in self.storage.keys() {
             let box_type = if rng.gen::<f32>() > storage_ratio {
                 BoxType::Bicycle
             } else {
