@@ -3,7 +3,7 @@ use firestore::{errors::FirestoreError, FirestoreDb, FirestoreListener, Firestor
 use crate::{
     controller_error::ControllerError,
     entities::{
-        firestore_assignment::{Assignment, AssignmentError},
+        firestore_assignment::{AssignmentError, FirestoreAssignment},
         firestore_tower::FirestoreTower,
     },
     hashmap_token_storage::HashMapTokenStorage,
@@ -29,7 +29,7 @@ impl TowerDatabase {
         })
     }
 
-    pub async fn check_permissions(&self, m: &Assignment) -> Result<(), ()> {
+    pub async fn check_permissions(&self, m: &FirestoreAssignment) -> Result<(), ()> {
         todo!("check permissions in db");
     }
 

@@ -12,8 +12,7 @@ use crate::{
 pub struct JobScheduler {
     db: Arc<Mutex<TowerDatabase>>,
     tower: Arc<Mutex<Tower>>,
-    // listener: FirestoreListener<FirestoreDb, HashMapTokenStorage>,
-    listener: Option<FirestoreListener<FirestoreDb, HashMapTokenStorage>>,
+    listener: FirestoreListener<FirestoreDb, HashMapTokenStorage>,
 }
 
 impl JobScheduler {
@@ -24,55 +23,34 @@ impl JobScheduler {
         Ok(Self {
             db: db.clone(),
             tower,
-            // listener: db.lock().await.create_listener().await?,
-            listener: None,
+            listener: db.lock().await.create_listener().await?,
         })
     }
 
     pub async fn stop(&mut self) {
         self.listener
-            .take()
-            .unwrap()
             .shutdown()
             .await
             .expect("Failed to shutdown listener");
     }
 
-    // pub async fn listen(&mut self) -> Result<(), FirestoreError> {
-    //     let start_time = SystemTime::now()
-    //         .duration_since(SystemTime::UNIX_EPOCH)
-    //         .unwrap();
+    pub async fn listen(&mut self) -> Result<(), FirestoreError> {
+        let start_time = SystemTime::now()
+            .duration_since(SystemTime::UNIX_EPOCH)
+            .unwrap();
 
-    //     // let mut listener = self.db.lock().await.create_listener().await?;
+        let id = self.tower.lock().await.id.clone();
 
-    //     let db = &self.db.lock().await.db;
+        // 🤮🤮🤮🤮🤮
+        // find a way to not clone the db twice
+        self.listener
+            .start({
+                let db = self.db.clone();
+                let tower = self.tower.clone();
+                move |e: ResponseType| handle_message(e, start_time, db.clone(), tower.clone())
+            })
+            .await?;
 
-    //     let mut listener = db.create_listener(HashMapTokenStorage::default()).await?;
-
-    //     db.fluent()
-    //         .select()
-    //         .from("jobs")
-    //         .parent(
-    //             db.parent_path("towers", &self.tower.lock().await.id)
-    //                 .unwrap(),
-    //         )
-    //         .listen()
-    //         .add_target(FirestoreListenerTarget::new(1), &mut listener)?;
-
-    //     // 🤮🤮🤮🤮🤮
-    //     // find a way to not clone the db twice
-    //     listener
-    //         // .start({
-    //         //     let db = self.db.clone();
-    //         //     let tower = self.tower.clone();
-    //         //     move |e: ResponseType| handle_message(e, start_time, db.clone(), tower.clone())
-    //         // })
-    //         .start(|_| async {
-    //             println!("tick");
-    //             Ok(())
-    //         })
-    //         .await?;
-
-    //     Ok(())
-    // }
+        Ok(())
+    }
 }
