@@ -4,10 +4,10 @@ use firestore::FirestoreDb;
 use gcloud_sdk::google::firestore::v1::listen_response::ResponseType;
 
 use crate::{
-    controller_error::ControllerError,
-    database::{ConfirmType, TowerDatabase},
-    entities::firestore_assignment::{AssignmentError, FirestoreAssignment},
-    tower::{RentalStatus, Tower},
+    database::TowerDatabase,
+    entities::firestore_assignment::{AssignmentError, ConfirmType, FirestoreAssignment},
+    tower::Tower,
+    util::timestamp_to_duration,
 };
 
 use crate::entities::firestore_assignment::AssignmentType;
@@ -26,6 +26,10 @@ pub async fn handle_message(
         return Ok(());
     };
 
+    if timestamp_to_duration(doc.update_time.clone().unwrap()) < start_time {
+        return Ok(());
+    }
+
     if doc.create_time != doc.update_time {
         return Ok(());
     }
@@ -35,7 +39,7 @@ pub async fn handle_message(
     let db = db.lock().await;
 
     let Ok(assignment) = FirestoreDb::deserialize_doc_to::<FirestoreAssignment>(&doc) else {
-      db.set_error(doc.name.split("/").last().unwrap(), AssignmentError::InvalidMessage).await;
+      db.set_error(doc.name.split("/").last().unwrap(), AssignmentError::InvalidMessage).await?;
       return Ok(());
     };
 
@@ -43,14 +47,14 @@ pub async fn handle_message(
 
     let id = assignment.id.as_ref().unwrap();
 
-    let Ok(_) = db.check_permissions(&assignment).await else {
-      db.set_error(id, AssignmentError::InvalidPermissions).await;
+    let Ok(_) = db.has_subscription(&assignment).await else {
+      db.set_error(id, AssignmentError::InvalidPermissions).await?;
       return Ok(());
     };
 
     println!("6: Permissions checked");
 
-    db.set_confirm(id, ConfirmType::JobRecieved).await;
+    db.set_confirm(id, ConfirmType::JobRecieved).await?;
 
     println!("7: Confirmation sent");
 
@@ -58,51 +62,53 @@ pub async fn handle_message(
 
     match assignment.assignment_type {
         AssignmentType::Store => {
-            let slot = match tower.find_free_slot() {
+            let slot_location = match tower.find_free_slot() {
                 Ok(slot) => slot,
                 Err(e) => {
-                    db.set_error(id, AssignmentError::NoFreeSlots).await;
+                    db.set_error(id, AssignmentError::NoFreeSlots).await?;
                     return Ok(());
                 }
             };
 
             println!("8: Found free slot");
 
-            tower.store(slot).unwrap();
+            tower.store(&slot_location).unwrap();
+
+            db.set_slot(id, &slot_location).await?;
 
             println!("9: Stored");
         }
         AssignmentType::Retrieve => {
             let Some(slot_location) = assignment.slot else {
                 db.set_error(id, AssignmentError::NoSlotSpecified)
-                    .await;
+                    .await?;
                 return Ok(());
             };
 
             println!("10: Got slot location");
 
-            let Ok(slot) = tower.get_slot(slot_location) else {
-                db.set_error(id, AssignmentError::InvalidSlot)
-                    .await;
+            if !tower.slot_exists(&slot_location)? {
+                db.set_error(id, AssignmentError::InvalidSlot).await?;
                 return Ok(());
-            };
+            }
 
-            println!("11: Got slot");
+            println!("11: Slot exists");
 
-            if slot.rental_status != RentalStatus::Rented(assignment.user_id) {
-                db.set_error(id, AssignmentError::InvalidPermissions).await;
+            if !tower.slot_rented_by_user(&slot_location, &assignment.user_id)? {
+                db.set_error(id, AssignmentError::InvalidPermissions)
+                    .await?;
                 return Ok(());
             }
 
             println!("12: Checked rental status");
 
-            tower.retrieve(slot).unwrap();
+            tower.retrieve(&slot_location)?;
 
             println!("13: Retrieved");
         }
     }
 
-    db.set_confirm(id, ConfirmType::JobCompleted).await;
+    db.set_confirm(id, ConfirmType::JobCompleted).await?;
 
     println!("14: Confirmation sent");
 

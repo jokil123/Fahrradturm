@@ -15,7 +15,8 @@ async fn main() {
         assignment_type: AssignmentType::Store,
         error: None,
         slot: None,
-        user_id: "abc".to_string(),
+        user_id: "g6LKh55wQ1WdCkglO0S5".to_string(),
+        confirmation: None,
     };
 
     let a = db

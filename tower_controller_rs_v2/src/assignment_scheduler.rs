@@ -1,10 +1,10 @@
-use firestore::{errors::FirestoreError, FirestoreDb, FirestoreListener, FirestoreListenerTarget};
+use firestore::{errors::FirestoreError, FirestoreDb, FirestoreListener};
 use gcloud_sdk::google::firestore::v1::listen_response::ResponseType;
 use std::{sync::Arc, time::SystemTime};
 use tokio::sync::Mutex;
 
 use crate::{
-    database::TowerDatabase, handle_message::handle_message,
+    controller_error::ControllerError, database::TowerDatabase, handle_message::handle_message,
     hashmap_token_storage::HashMapTokenStorage, tower::Tower,
 };
 
@@ -19,7 +19,7 @@ impl JobScheduler {
     pub async fn new(
         db: Arc<Mutex<TowerDatabase>>,
         tower: Arc<Mutex<Tower>>,
-    ) -> Result<Self, FirestoreError> {
+    ) -> Result<Self, ControllerError> {
         Ok(Self {
             db: db.clone(),
             tower,
@@ -34,7 +34,7 @@ impl JobScheduler {
             .expect("Failed to shutdown listener");
     }
 
-    pub async fn listen(&mut self) -> Result<(), FirestoreError> {
+    pub async fn listen(&mut self) -> Result<(), ControllerError> {
         let start_time = SystemTime::now()
             .duration_since(SystemTime::UNIX_EPOCH)
             .unwrap();

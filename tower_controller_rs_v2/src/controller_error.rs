@@ -8,8 +8,16 @@ pub enum ControllerError {
     TowerNotFound,
     #[error("Slot not found")]
     SlotNotFound,
-    #[error("Slot empty")]
-    SlotEmpty,
     #[error("No free slots")]
     NoFreeSlots,
+    #[error("User not found")]
+    UserNotFound,
+    #[error("No box at location")]
+    NoBoxAtLocation,
+    #[error("No box retrieved")]
+    NoBoxRetrieved,
+    #[error("Box occupied")]
+    BoxOccupied,
+    #[error("Parse error")]
+    ParseError,
 }

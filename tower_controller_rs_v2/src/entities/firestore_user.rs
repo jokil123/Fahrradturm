@@ -3,11 +3,17 @@ use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
-pub struct FirestoreTower {
+pub struct FirestoreUser {
     #[serde(skip_serializing)]
     #[serde(alias = "_firestore_id")]
     pub id: String,
-    pub layout: Vec<u32>,
-    pub location: FirestoreLatLng,
     pub name: String,
+    pub subscription: Option<SubscriptionType>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub enum SubscriptionType {
+    Free,
+    Premium,
 }
