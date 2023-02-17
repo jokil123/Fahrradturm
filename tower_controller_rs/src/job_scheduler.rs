@@ -115,15 +115,7 @@ async fn listener_callback(
                 }
             }
 
-            let new_ass;
-
-            if doc.create_time == doc.update_time {
-                new_ass = handle_event(EventType::JobCreated, ass, sender);
-                println!("Job Created");
-            } else {
-                new_ass = handle_event(EventType::JobUpdated, ass, sender);
-                println!("Job Updated");
-            }
+            handle_event(EventType::JobUpdated, ass, sender);
 
             println!("{:#?}", new_ass);
 
@@ -151,17 +143,7 @@ async fn listener_callback(
     Ok(())
 }
 
-#[derive(Debug, Clone, Copy)]
-enum EventType {
-    JobCreated,
-    JobUpdated,
-}
-
-fn handle_event(
-    event: EventType,
-    mut ass: Assignment,
-    sender: SyncSender<Job>,
-) -> Option<Assignment> {
+fn handle_event(mut ass: Assignment, sender: SyncSender<Job>) -> Option<Assignment> {
     match event {
         EventType::JobCreated => match ass.assignment_status {
             AssignmentStatus::New => {

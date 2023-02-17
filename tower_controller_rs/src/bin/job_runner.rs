@@ -37,6 +37,7 @@ async fn main() {
     job_scheduler.listen().await;
 
     let (display_s, display_r) = mpsc::channel::<DisplayMessage>();
+
     {
         clone_all!(tower);
         thread::spawn(move || {

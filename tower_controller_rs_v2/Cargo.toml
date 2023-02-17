@@ -1,0 +1,17 @@
+[package]
+name = "tower_controller_rs_v2"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+firestore = { path = "../../firestore-rs" }
+gcloud-sdk = "0.19.15"
+serde_derive = "1.0.130"
+serde = "1.0.152"
+dotenv = "0.15.0"
+tokio = { version = "1.25.0", features = ["full"] }
+prost-types = "0.11.6"
+async-trait = "0.1.64"
+thiserror = "1.0.38"
