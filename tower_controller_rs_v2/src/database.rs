@@ -1,18 +1,25 @@
 use firestore::{
-    errors::FirestoreError, struct_path::paths, FirestoreDb, FirestoreListener,
-    FirestoreListenerTarget,
+    errors::FirestoreError,
+    struct_path::{path, paths},
+    FirestoreDb, FirestoreListener, FirestoreListenerTarget, FirestoreReference,
+    FirestoreTimestamp,
 };
+
+use chrono::{DateTime, Utc};
+use tokio::sync::Mutex;
 
 use crate::{
     controller_error::ControllerError,
     entities::{
-        firestore_assignment::{AssignmentError, ConfirmType, FirestoreAssignment},
         firestore_box::FirestoreBox,
+        firestore_job::{ConfirmType, FirestoreJob, JobError},
+        firestore_rental::FirestoreRental,
         firestore_tower::FirestoreTower,
         firestore_user::FirestoreUser,
     },
     hashmap_token_storage::HashMapTokenStorage,
     tower::{Slot, Tower},
+    util::{box_id_to_coords, coords_to_box_id, generate_n_dimensional_coords},
 };
 
 use std::{
@@ -22,10 +29,9 @@ use std::{
 
 #[derive(Debug)]
 pub struct TowerDatabase {
-    // db: FirestoreDb,
-    pub db: FirestoreDb,
-    tower_id: String,
-    project_id: String,
+    db: FirestoreDb,
+    pub tower_id: String,
+    pub project_id: String,
 }
 
 impl TowerDatabase {
@@ -37,7 +43,7 @@ impl TowerDatabase {
         })
     }
 
-    pub async fn has_subscription(&self, m: &FirestoreAssignment) -> Result<bool, ControllerError> {
+    pub async fn has_subscription(&self, m: &FirestoreJob) -> Result<bool, ControllerError> {
         let user = self
             .db
             .fluent()
@@ -51,19 +57,19 @@ impl TowerDatabase {
         Ok(user.subscription.is_some())
     }
 
-    pub async fn set_error(&self, a_id: &str, err: AssignmentError) -> Result<(), ControllerError> {
+    pub async fn set_error(&self, a_id: &str, err: JobError) -> Result<(), ControllerError> {
         self.db
             .fluent()
             .update()
-            .fields(paths!(FirestoreAssignment::{error}))
+            .fields(paths!(FirestoreJob::{error}))
             .in_col("jobs")
             .document_id(a_id)
             .parent(self.db.parent_path("towers", &self.tower_id).unwrap())
-            .object(&FirestoreAssignment {
+            .object(&FirestoreJob {
                 error: Some(err.clone()),
                 ..Default::default()
             })
-            .execute::<FirestoreAssignment>()
+            .execute::<FirestoreJob>()
             .await?;
 
         println!("Error set in db: {:?}", err);
@@ -75,15 +81,15 @@ impl TowerDatabase {
         self.db
             .fluent()
             .update()
-            .fields(paths!(FirestoreAssignment::{confirmation}))
+            .fields(paths!(FirestoreJob::{confirmation}))
             .in_col("jobs")
             .document_id(a_id)
             .parent(self.db.parent_path("towers", &self.tower_id).unwrap())
-            .object(&FirestoreAssignment {
+            .object(&FirestoreJob {
                 confirmation: Some(con.clone()),
                 ..Default::default()
             })
-            .execute::<FirestoreAssignment>()
+            .execute::<FirestoreJob>()
             .await?;
 
         println!("Confirmation set in db: {:?}", con);
@@ -96,15 +102,15 @@ impl TowerDatabase {
         self.db
             .fluent()
             .update()
-            .fields(paths!(FirestoreAssignment::{slot}))
+            .fields(paths!(FirestoreJob::{box_id}))
             .in_col("jobs")
             .document_id(a_id)
             .parent(self.db.parent_path("towers", &self.tower_id).unwrap())
-            .object(&FirestoreAssignment {
-                slot: Some(slot.clone()),
+            .object(&FirestoreJob {
+                box_id: Some(coords_to_box_id(slot)),
                 ..Default::default()
             })
-            .execute::<FirestoreAssignment>()
+            .execute::<FirestoreJob>()
             .await?;
 
         println!("Slot set in db: {:?}", slot);
@@ -131,7 +137,9 @@ impl TowerDatabase {
         Ok(listener)
     }
 
-    pub async fn fetch_tower(&self) -> Result<Tower, ControllerError> {
+    pub async fn get_tower(
+        &self,
+    ) -> Result<(String, Vec<u32>, HashMap<Vec<u32>, Option<Slot>>), ControllerError> {
         let f_tower = self
             .db
             .fluent()
@@ -149,12 +157,7 @@ impl TowerDatabase {
             .map(|s| (s, Some(Slot::default())))
             .collect();
 
-        Ok(Tower {
-            id: self.tower_id.clone(),
-            retrieved_slot: None,
-            slots: slots,
-            layout: f_tower.layout,
-        })
+        Ok((self.tower_id.to_owned(), f_tower.layout, slots))
     }
 
     pub async fn create_boxes(
@@ -242,42 +245,145 @@ impl TowerDatabase {
 
         Ok(())
     }
-}
 
-fn box_id_to_coords(id: &str) -> Result<Vec<u32>, ControllerError> {
-    id.split(',')
-        .map(|s| s.parse::<u32>().map_err(|_| ControllerError::ParseError))
-        .collect()
-}
+    pub async fn new_rental(
+        &self,
+        user_id: &str,
+        box_location: &Vec<u32>,
+    ) -> Result<String, ControllerError> {
+        let box_id = coords_to_box_id(box_location);
 
-fn coords_to_box_id(coords: &Vec<u32>) -> String {
-    coords
-        .iter()
-        .map(|n| n.to_string())
-        .collect::<Vec<String>>()
-        .join(",")
-}
+        let storage_box = self
+            .db
+            .fluent()
+            .select()
+            .by_id_in("boxes")
+            .parent(self.db.parent_path("towers", &self.tower_id).unwrap())
+            .obj::<FirestoreBox>()
+            .one(&box_id)
+            .await?
+            .ok_or(ControllerError::NoBoxAtLocation)?;
 
-pub fn generate_n_dimensional_coords(dim: &Vec<u32>) -> Vec<Vec<u32>> {
-    match dim.len() {
-        0 => vec![vec![]],
-        1 => {
-            let mut coords = Vec::new();
-            for i in 0..dim[0] {
-                coords.push(vec![i]);
-            }
-            coords
+        if storage_box.rented_by.is_some() {
+            return Err(ControllerError::BoxOccupied);
         }
-        _ => {
-            let mut coords = Vec::new();
-            for i in 0..dim[0] {
-                let mut sub_coords = generate_n_dimensional_coords(&dim[1..].to_vec());
-                for mut c in sub_coords {
-                    c.insert(0, i);
-                    coords.push(c);
-                }
-            }
-            coords
+
+        let a = self
+            .db
+            .fluent()
+            .update()
+            // paths! macro is not working here because of the renamed field
+            .fields(["rentedBy"])
+            .in_col("boxes")
+            .document_id(&box_id)
+            .parent(self.db.parent_path("towers", &self.tower_id).unwrap())
+            .object(&FirestoreBox {
+                rented_by: Some(user_id.to_string()),
+                ..Default::default()
+            })
+            .execute::<FirestoreBox>()
+            .await?;
+
+        println!("Box updated: {:?}", a);
+
+        let rental = FirestoreRental {
+            // box_ref: FirestoreReference(format!("/towers/{}/boxes/{}", &self.tower_id, &box_id)),
+            box_id: self.tower_id.clone(),
+            tower_id: box_id.clone(),
+            start: FirestoreTimestamp(Utc::now()),
+            ..Default::default()
+        };
+
+        let rental = self
+            .db
+            .fluent()
+            .insert()
+            .into("rentals")
+            .generate_document_id()
+            .parent(self.db.parent_path("users", user_id).unwrap())
+            .object(&rental)
+            .execute::<FirestoreRental>()
+            .await?;
+
+        println!("Rental created: {:?}", rental);
+
+        Ok(rental.id.unwrap())
+    }
+
+    pub async fn finish_rental(
+        &self,
+        user_id: &str,
+        box_location: &Vec<u32>,
+    ) -> Result<(), ControllerError> {
+        let box_id = coords_to_box_id(box_location);
+
+        let storage_box = self
+            .db
+            .fluent()
+            .select()
+            .by_id_in("boxes")
+            .parent(self.db.parent_path("towers", &self.tower_id).unwrap())
+            .obj::<FirestoreBox>()
+            .one(&box_id)
+            .await?
+            .ok_or(ControllerError::NoBoxAtLocation)?;
+
+        if storage_box.rented_by.ok_or(ControllerError::BoxNotRented)? != user_id {
+            return Err(ControllerError::BoxNotRentedByUser);
         }
+
+        let rentals = self
+            .db
+            .fluent()
+            .select()
+            .from("rentals")
+            .parent(self.db.parent_path("users", user_id).unwrap())
+            .filter(|q| {
+                q.for_all([
+                    q.field(path!(FirestoreRental::tower_id)).eq(&self.tower_id),
+                    q.field(path!(FirestoreRental::box_id)).eq(&box_id),
+                    q.field(path!(FirestoreRental::end)).is_null(),
+                ])
+            })
+            .obj::<FirestoreRental>()
+            .query()
+            .await?;
+
+        if rentals.len() != 1 {
+            return Err(ControllerError::InvalidRental);
+        }
+
+        let rental = rentals.first().unwrap();
+
+        self.db
+            .fluent()
+            .update()
+            .fields(paths!(FirestoreBox::{rented_by}))
+            .in_col("boxes")
+            .document_id(&box_id)
+            .parent(self.db.parent_path("towers", &self.tower_id).unwrap())
+            .object(&FirestoreBox {
+                rented_by: None,
+                ..Default::default()
+            })
+            .execute::<FirestoreBox>()
+            .await?;
+
+        let rental = self
+            .db
+            .fluent()
+            .update()
+            .fields(paths!(FirestoreRental::{end}))
+            .in_col("rentals")
+            .document_id(rental.id.as_ref().unwrap())
+            .parent(self.db.parent_path("users", user_id).unwrap())
+            .object(&FirestoreRental {
+                end: Some(FirestoreTimestamp(Utc::now())),
+                ..Default::default()
+            })
+            .execute::<FirestoreRental>()
+            .await?;
+
+        Ok(())
     }
 }

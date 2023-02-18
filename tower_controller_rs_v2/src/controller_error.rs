@@ -20,4 +20,10 @@ pub enum ControllerError {
     BoxOccupied,
     #[error("Parse error")]
     ParseError,
+    #[error("Box not rented")]
+    BoxNotRented,
+    #[error("Box not rented by user")]
+    BoxNotRentedByUser,
+    #[error("Invalid rental")]
+    InvalidRental,
 }

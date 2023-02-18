@@ -1,6 +1,9 @@
 use dotenv::dotenv;
 use firestore::FirestoreDb;
-use tower_controller_rs_v2::entities::firestore_assignment::{AssignmentType, FirestoreAssignment};
+use tower_controller_rs_v2::entities::{
+    firestore_box::BoxType,
+    firestore_job::{FirestoreJob, JobType},
+};
 
 #[tokio::main]
 async fn main() {
@@ -10,13 +13,14 @@ async fn main() {
         .await
         .expect("Failed to create FirestoreDb");
 
-    let ass = FirestoreAssignment {
+    let ass = FirestoreJob {
         id: None,
-        assignment_type: AssignmentType::Store,
+        assignment_type: JobType::Store,
         error: None,
-        slot: None,
+        box_id: None,
         user_id: "g6LKh55wQ1WdCkglO0S5".to_string(),
         confirmation: None,
+        box_type: Some(BoxType::Bike),
     };
 
     let a = db
@@ -26,7 +30,7 @@ async fn main() {
         .generate_document_id()
         .parent(db.parent_path("towers", "5aQQXeYkP0xfW3FJxjH0").unwrap())
         .object(&ass)
-        .execute::<FirestoreAssignment>()
+        .execute::<FirestoreJob>()
         .await
         .unwrap();
 
@@ -35,7 +39,7 @@ async fn main() {
         .select()
         .by_id_in("jobs")
         .parent(db.parent_path("towers", "5aQQXeYkP0xfW3FJxjH0").unwrap())
-        .obj::<FirestoreAssignment>()
+        .obj::<FirestoreJob>()
         .one(a.id.unwrap())
         .await
         .unwrap();

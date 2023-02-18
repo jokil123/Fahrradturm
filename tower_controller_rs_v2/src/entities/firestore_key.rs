@@ -1,12 +1,14 @@
 use firestore::FirestoreTimestamp;
 use serde::{Deserialize, Serialize};
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+pub type FirestoreKeyId = String;
+
+#[derive(Debug, Clone, Serialize, Deserialize, Default)]
 #[serde(rename_all = "camelCase")]
 pub struct FirestoreKey {
     #[serde(skip_serializing)]
     #[serde(alias = "_firestore_id")]
-    pub id: String,
+    pub id: Option<String>,
     pub start: FirestoreTimestamp,
     pub end: Option<FirestoreTimestamp>,
     pub retrieve_count: Option<u32>,

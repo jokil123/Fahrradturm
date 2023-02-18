@@ -9,21 +9,21 @@ use crate::{
 };
 
 #[derive(Debug)]
-pub struct JobScheduler {
-    db: Arc<Mutex<TowerDatabase>>,
+pub struct AssignmentScheduler {
+    db: Arc<TowerDatabase>,
     tower: Arc<Mutex<Tower>>,
     listener: FirestoreListener<FirestoreDb, HashMapTokenStorage>,
 }
 
-impl JobScheduler {
+impl AssignmentScheduler {
     pub async fn new(
-        db: Arc<Mutex<TowerDatabase>>,
+        db: Arc<TowerDatabase>,
         tower: Arc<Mutex<Tower>>,
     ) -> Result<Self, ControllerError> {
         Ok(Self {
             db: db.clone(),
             tower,
-            listener: db.lock().await.create_listener().await?,
+            listener: db.create_listener().await?,
         })
     }
 

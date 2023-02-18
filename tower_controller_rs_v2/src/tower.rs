@@ -1,6 +1,10 @@
 use std::{collections::HashMap, default, sync::Arc};
 
-use crate::controller_error::ControllerError;
+use tokio::sync::Mutex;
+
+use crate::{
+    controller_error::ControllerError, database::TowerDatabase, entities::firestore_box::BoxType,
+};
 
 #[derive(Debug)]
 pub struct Tower {
@@ -8,9 +12,24 @@ pub struct Tower {
     pub slots: HashMap<Vec<u32>, Option<Slot>>,
     pub retrieved_slot: Option<Slot>,
     pub layout: Vec<u32>,
+    pub db: Arc<TowerDatabase>,
 }
 
+pub type SlotLocation = Vec<u32>;
+
 impl Tower {
+    pub async fn new(db: Arc<TowerDatabase>) -> Result<Self, ControllerError> {
+        let (id, layout, slots) = db.get_tower().await?;
+
+        Ok(Self {
+            id,
+            slots,
+            retrieved_slot: None,
+            layout,
+            db,
+        })
+    }
+
     pub fn find_free_slot(&self) -> Result<Vec<u32>, ControllerError> {
         let a = self
             .slots
@@ -23,14 +42,40 @@ impl Tower {
         Ok(a.clone())
     }
 
-    pub fn store(&mut self, slot: &Vec<u32>) -> Result<Vec<u32>, ControllerError> {
+    // TODO: update database
+    pub async fn store_object(
+        &mut self,
+        slot: &Vec<u32>,
+        user: &str,
+    ) -> Result<Vec<u32>, ControllerError> {
         self.move_to_retrieved(slot)?;
+        println!("Moved to retrieved");
+
+        self.rent_box(user)?;
+        println!("Rented box");
+        self.db.new_rental(user, slot).await?;
+        println!("Updated database");
 
         Ok(self.move_into_storage()?)
     }
 
-    pub fn retrieve(&mut self, slot: &Vec<u32>) -> Result<(), ControllerError> {
-        todo!();
+    // TODO: update database
+    pub async fn retrieve_object(
+        &mut self,
+        slot: &Vec<u32>,
+        user: &str,
+    ) -> Result<Vec<u32>, ControllerError> {
+        self.move_to_retrieved(slot)?;
+        println!("Moved to retrieved");
+
+        self.unrent_box()?;
+        println!("Unrented box");
+        // This should belong to the rent/unrent function
+        // also this might cause a desync between the database and the tower if the above succeeds but this fails
+        self.db.finish_rental(user, slot).await?;
+        println!("Updated database");
+
+        Ok(self.move_into_storage()?)
     }
 
     fn move_to_retrieved(&mut self, slot: &Vec<u32>) -> Result<(), ControllerError> {
@@ -88,6 +133,7 @@ impl Tower {
         Ok(slot.rental_status == RentalStatus::Rented(user_id.to_string()))
     }
 
+    // TODO: update database
     pub fn rent_box(&mut self, user_id: &str) -> Result<(), ControllerError> {
         let mut slot = self
             .retrieved_slot
@@ -105,6 +151,7 @@ impl Tower {
         Ok(())
     }
 
+    // TODO: update database
     pub fn unrent_box(&mut self) -> Result<(), ControllerError> {
         let mut slot = self
             .retrieved_slot
@@ -127,6 +174,7 @@ impl Tower {
 #[derive(Debug, Default)]
 pub struct Slot {
     pub rental_status: RentalStatus,
+    pub box_type: BoxType,
 }
 
 #[derive(Debug, PartialEq, Default)]

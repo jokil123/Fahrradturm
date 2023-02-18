@@ -2,7 +2,9 @@ use std::sync::Arc;
 
 use firestore::FirestoreDb;
 use tokio::sync::Mutex;
-use tower_controller_rs_v2::{assignment_scheduler::JobScheduler, database::TowerDatabase};
+use tower_controller_rs_v2::{
+    assignment_scheduler::AssignmentScheduler, database::TowerDatabase, tower::Tower,
+};
 
 use dotenv::dotenv;
 
@@ -12,19 +14,21 @@ async fn main() {
 
     println!("Starting tower controller...");
 
-    let db = Arc::new(Mutex::new(
+    let db = Arc::new(
         TowerDatabase::new("fahrradturm", "5aQQXeYkP0xfW3FJxjH0")
             .await
             .unwrap(),
-    ));
+    );
 
     println!("Connected to database");
 
-    let tower = Arc::new(Mutex::new(db.lock().await.fetch_tower().await.unwrap()));
+    let tower = Arc::new(Mutex::new(Tower::new(db.clone()).await.unwrap()));
 
     println!("Fetched tower");
 
-    let mut scheduler = JobScheduler::new(db.clone(), tower.clone()).await.unwrap();
+    let mut scheduler = AssignmentScheduler::new(db.clone(), tower.clone())
+        .await
+        .unwrap();
 
     println!("Created scheduler");
 
