@@ -8,7 +8,7 @@ pub type FirestoreRentalId = String;
 pub struct FirestoreRental {
     #[serde(skip_serializing)]
     #[serde(alias = "_firestore_id")]
-    pub id: Option<String>,
+    pub id: Option<FirestoreRentalId>,
     pub tower_id: String,
     pub box_id: String,
     pub start: FirestoreTimestamp,

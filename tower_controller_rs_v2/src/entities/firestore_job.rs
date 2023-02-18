@@ -1,6 +1,9 @@
 use serde_derive::{Deserialize, Serialize};
 
-use super::firestore_box::BoxType;
+use super::{
+    firestore_box::{BoxType, FirestoreBoxId},
+    firestore_user::FirestoreUserId,
+};
 
 pub type FirestoreJobId = String;
 
@@ -9,11 +12,11 @@ pub type FirestoreJobId = String;
 pub struct FirestoreJob {
     #[serde(skip_serializing)]
     #[serde(alias = "_firestore_id")]
-    pub id: Option<String>,
+    pub id: Option<FirestoreJobId>,
     pub assignment_type: JobType,
     pub error: Option<JobError>,
-    pub box_id: Option<String>,
-    pub user_id: String,
+    pub box_id: Option<FirestoreBoxId>,
+    pub user_id: FirestoreUserId,
     pub confirmation: Option<ConfirmType>,
     pub box_type: Option<BoxType>,
 }

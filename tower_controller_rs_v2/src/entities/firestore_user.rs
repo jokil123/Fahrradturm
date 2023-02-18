@@ -8,7 +8,7 @@ pub type FirestoreUserId = String;
 pub struct FirestoreUser {
     #[serde(skip_serializing)]
     #[serde(alias = "_firestore_id")]
-    pub id: Option<String>,
+    pub id: Option<FirestoreUserId>,
     pub name: String,
     pub email: String,
     pub subscription: Option<SubscriptionType>,

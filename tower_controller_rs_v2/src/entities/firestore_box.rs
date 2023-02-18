@@ -1,5 +1,7 @@
 use serde::{Deserialize, Serialize};
 
+use super::firestore_user::FirestoreUserId;
+
 pub type FirestoreBoxId = String;
 
 #[derive(Debug, Clone, Serialize, Deserialize, Default)]
@@ -7,8 +9,8 @@ pub type FirestoreBoxId = String;
 pub struct FirestoreBox {
     #[serde(skip_serializing)]
     #[serde(alias = "_firestore_id")]
-    pub id: Option<String>,
-    pub rented_by: Option<String>,
+    pub id: Option<FirestoreBoxId>,
+    pub rented_by: Option<FirestoreUserId>,
     pub box_type: BoxType,
 }
 
@@ -19,3 +21,5 @@ pub enum BoxType {
     Bike,
     Item,
 }
+
+// impl From<Vec<u32>> for FirestoreBoxId {}

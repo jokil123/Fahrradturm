@@ -8,7 +8,7 @@ pub type FirestoreTowerId = String;
 pub struct FirestoreTower {
     #[serde(skip_serializing)]
     #[serde(alias = "_firestore_id")]
-    pub id: Option<String>,
+    pub id: Option<FirestoreTowerId>,
     pub layout: Vec<u32>,
     pub location: FirestoreLatLng,
     pub name: String,
