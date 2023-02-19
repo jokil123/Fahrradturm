@@ -139,7 +139,7 @@ impl TowerDatabase {
 
     pub async fn get_tower(
         &self,
-    ) -> Result<(String, Vec<u32>, HashMap<Vec<u32>, Option<Slot>>), ControllerError> {
+    ) -> Result<(String, Vec<u32>, HashMap<Vec<u32>, Slot>), ControllerError> {
         let f_tower = self
             .db
             .fluent()
@@ -152,7 +152,7 @@ impl TowerDatabase {
 
         let firestore_slots = self.create_boxes(&f_tower.layout).await?;
 
-        let mut slots: HashMap<Vec<u32>, Option<Slot>> = HashMap::new();
+        let mut slots: HashMap<Vec<u32>, Slot> = HashMap::new();
 
         for slot_location in firestore_slots {
             let coords = box_id_to_coords(slot_location.id.as_ref().unwrap())?;
@@ -167,7 +167,7 @@ impl TowerDatabase {
                 rental_status: rental_status,
             };
 
-            slots.insert(coords, Some(slot));
+            slots.insert(coords, slot);
         }
 
         Ok((self.tower_id.to_owned(), f_tower.layout, slots))

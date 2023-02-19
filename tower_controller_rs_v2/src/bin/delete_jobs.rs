@@ -13,7 +13,7 @@ async fn main() {
         .fluent()
         .select()
         .from("jobs")
-        .parent(db.parent_path("towers", "5aQQXeYkP0xfW3FJxjH0").unwrap())
+        .parent(db.parent_path("towers", "qtGDogFK3o9LVtCrMsbW").unwrap())
         .query()
         .await
         .unwrap();
@@ -26,7 +26,7 @@ async fn main() {
             .delete()
             .from("jobs")
             .document_id(doc.name.split('/').last().unwrap())
-            .parent(db.parent_path("towers", "5aQQXeYkP0xfW3FJxjH0").unwrap())
+            .parent(db.parent_path("towers", "qtGDogFK3o9LVtCrMsbW").unwrap())
             .execute()
             .await
             .unwrap();

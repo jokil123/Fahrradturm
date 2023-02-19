@@ -108,11 +108,10 @@ pub async fn handle_message(
 
             println!("11: Slot exists");
 
-            // TODO: fix tower desync and reenable this
-            // if !tower.slot_rented_by_user(&slot_location, &assignment.user_id)? {
-            //     db.set_error(id, JobError::InvalidPermissions).await?;
-            //     return Ok(());
-            // }
+            if !tower.slot_rented_by_user(&slot_location, &assignment.user_id)? {
+                db.set_error(id, JobError::InvalidPermissions).await?;
+                return Ok(());
+            }
 
             println!("12: Checked rental status");
 
@@ -126,7 +125,7 @@ pub async fn handle_message(
 
     db.set_confirm(id, ConfirmType::JobCompleted).await?;
 
-    println!("14: Confirmation sent");
+    println!("14: Confirmation sent, Job completed");
 
     Ok(())
 }

@@ -18,7 +18,7 @@ async fn main() {
         assignment_type: JobType::Store,
         error: None,
         box_id: None,
-        user_id: "g6LKh55wQ1WdCkglO0S5".to_string(),
+        user_id: "UtClt1RTkOR03plKjUZpkVIWr4E2".to_string(),
         confirmation: None,
         box_type: Some(BoxType::Bike),
     };
@@ -28,7 +28,7 @@ async fn main() {
         .insert()
         .into("jobs")
         .generate_document_id()
-        .parent(db.parent_path("towers", "5aQQXeYkP0xfW3FJxjH0").unwrap())
+        .parent(db.parent_path("towers", "qtGDogFK3o9LVtCrMsbW").unwrap())
         .object(&ass)
         .execute::<FirestoreJob>()
         .await
@@ -38,7 +38,7 @@ async fn main() {
         .fluent()
         .select()
         .by_id_in("jobs")
-        .parent(db.parent_path("towers", "5aQQXeYkP0xfW3FJxjH0").unwrap())
+        .parent(db.parent_path("towers", "qtGDogFK3o9LVtCrMsbW").unwrap())
         .obj::<FirestoreJob>()
         .one(a.id.unwrap())
         .await
