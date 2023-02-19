@@ -15,7 +15,7 @@ async fn main() {
     println!("Starting tower controller...");
 
     let db = Arc::new(
-        TowerDatabase::new("fahrradturm", "5aQQXeYkP0xfW3FJxjH0")
+        TowerDatabase::new("fahrradturm", "qtGDogFK3o9LVtCrMsbW")
             .await
             .unwrap(),
     );
@@ -25,6 +25,7 @@ async fn main() {
     let tower = Arc::new(Mutex::new(Tower::new(db.clone()).await.unwrap()));
 
     println!("Fetched tower");
+    println!("Tower:\n{:#?}", tower.lock().await);
 
     let mut scheduler = AssignmentScheduler::new(db.clone(), tower.clone())
         .await

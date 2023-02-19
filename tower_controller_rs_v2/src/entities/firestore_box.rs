@@ -1,3 +1,4 @@
+use rand_derive::Rand;
 use serde::{Deserialize, Serialize};
 
 use super::firestore_user::FirestoreUserId;
@@ -11,10 +12,11 @@ pub struct FirestoreBox {
     #[serde(alias = "_firestore_id")]
     pub id: Option<FirestoreBoxId>,
     pub rented_by: Option<FirestoreUserId>,
+    #[serde(rename = "type")]
     pub box_type: BoxType,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize, Default)]
+#[derive(Debug, Clone, Serialize, Deserialize, Default, Rand)]
 #[serde(rename_all = "camelCase")]
 pub enum BoxType {
     #[default]

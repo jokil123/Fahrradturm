@@ -19,6 +19,8 @@ pub async fn handle_message(
     db: Arc<TowerDatabase>,
     tower: Arc<Mutex<Tower>>,
 ) -> std::result::Result<(), Box<(dyn std::error::Error + Send + Sync + 'static)>> {
+    // TODO: wrap in another function and return the result
+
     let ResponseType::DocumentChange(c) = response else {
         return Ok(());
     };
@@ -82,11 +84,15 @@ pub async fn handle_message(
             println!("9: Slot set");
         }
         JobType::Retrieve => {
+            println!("{:#?}", assignment);
+
             let Some(box_id) = assignment.box_id else {
                 db.set_error(id, JobError::NoSlotSpecified)
                     .await?;
                 return Ok(());
             };
+
+            println!("10: Got box id");
 
             let Ok(slot_location) = box_id_to_coords(&box_id) else {
                 db.set_error(id, JobError::InvalidSlot).await?;
@@ -102,10 +108,11 @@ pub async fn handle_message(
 
             println!("11: Slot exists");
 
-            if !tower.slot_rented_by_user(&slot_location, &assignment.user_id)? {
-                db.set_error(id, JobError::InvalidPermissions).await?;
-                return Ok(());
-            }
+            // TODO: fix tower desync and reenable this
+            // if !tower.slot_rented_by_user(&slot_location, &assignment.user_id)? {
+            //     db.set_error(id, JobError::InvalidPermissions).await?;
+            //     return Ok(());
+            // }
 
             println!("12: Checked rental status");
 

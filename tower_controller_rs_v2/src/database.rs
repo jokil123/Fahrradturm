@@ -18,7 +18,7 @@ use crate::{
         firestore_user::FirestoreUser,
     },
     hashmap_token_storage::HashMapTokenStorage,
-    tower::{Slot, Tower},
+    tower::{RentalStatus, Slot, Tower},
     util::{box_id_to_coords, coords_to_box_id, generate_n_dimensional_coords},
 };
 
@@ -150,12 +150,25 @@ impl TowerDatabase {
             .await?
             .ok_or(ControllerError::TowerNotFound)?;
 
-        let slot_locations = self.create_boxes(&f_tower.layout).await?;
+        let firestore_slots = self.create_boxes(&f_tower.layout).await?;
 
-        let slots: HashMap<Vec<u32>, Option<Slot>> = slot_locations
-            .into_iter()
-            .map(|s| (s, Some(Slot::default())))
-            .collect();
+        let mut slots: HashMap<Vec<u32>, Option<Slot>> = HashMap::new();
+
+        for slot_location in firestore_slots {
+            let coords = box_id_to_coords(slot_location.id.as_ref().unwrap())?;
+
+            let rental_status = match slot_location.rented_by {
+                None => RentalStatus::Free,
+                Some(u) => RentalStatus::Rented(u),
+            };
+
+            let slot = Slot {
+                box_type: slot_location.box_type,
+                rental_status: rental_status,
+            };
+
+            slots.insert(coords, Some(slot));
+        }
 
         Ok((self.tower_id.to_owned(), f_tower.layout, slots))
     }
@@ -163,7 +176,7 @@ impl TowerDatabase {
     pub async fn create_boxes(
         &self,
         dimensions: &Vec<u32>,
-    ) -> Result<Vec<Vec<u32>>, ControllerError> {
+    ) -> Result<Vec<FirestoreBox>, ControllerError> {
         let existing_docs = self
             .db
             .fluent()
@@ -190,6 +203,20 @@ impl TowerDatabase {
                 Err(_) => {
                     println!("Invalid box id: {}", &doc.id.as_ref().unwrap());
                     // TODO: Delete invalid box
+                    self.db
+                        .fluent()
+                        .delete()
+                        .from("boxes")
+                        .parent(
+                            self.db
+                                .parent_path("towers", self.tower_id.as_str())
+                                .unwrap(),
+                        )
+                        .document_id(&doc.id.as_ref().unwrap())
+                        .execute()
+                        .await?;
+
+                    println!("Deleted invalid box");
                 }
             }
         }
@@ -205,12 +232,29 @@ impl TowerDatabase {
                         .parent_path("towers", self.tower_id.as_str())
                         .unwrap(),
                 )
-                .object(&FirestoreBox::default())
+                .object(&FirestoreBox {
+                    box_type: rand::random(),
+                    ..Default::default()
+                })
                 .execute()
                 .await?;
         }
 
-        Ok(generate_n_dimensional_coords(&dimensions))
+        let boxes = self
+            .db
+            .fluent()
+            .select()
+            .from("boxes")
+            .parent(
+                self.db
+                    .parent_path("towers", self.tower_id.as_str())
+                    .unwrap(),
+            )
+            .obj::<FirestoreBox>()
+            .query()
+            .await?;
+
+        Ok(boxes)
     }
 
     // TODO: improve this (batch delete)
@@ -288,8 +332,8 @@ impl TowerDatabase {
 
         let rental = FirestoreRental {
             // box_ref: FirestoreReference(format!("/towers/{}/boxes/{}", &self.tower_id, &box_id)),
-            box_id: self.tower_id.clone(),
-            tower_id: box_id.clone(),
+            box_id: box_id.clone(),
+            tower_id: self.tower_id.clone(),
             start: FirestoreTimestamp(Utc::now()),
             ..Default::default()
         };
@@ -328,9 +372,31 @@ impl TowerDatabase {
             .await?
             .ok_or(ControllerError::NoBoxAtLocation)?;
 
+        println!("Got box");
+
         if storage_box.rented_by.ok_or(ControllerError::BoxNotRented)? != user_id {
+            println!("Box not rented by user");
             return Err(ControllerError::BoxNotRentedByUser);
         }
+
+        // TODO: This function seems broken, I will use a workaround
+        // let rentals = self
+        //     .db
+        //     .fluent()
+        //     .select()
+        //     .from("rentals")
+        //     .parent(self.db.parent_path("users", user_id).unwrap())
+        //     .filter(|q| {
+        //         q.for_all([
+        //             // TODO: this is due to a bug in the library
+        //             q.field("towerId").eq(&self.tower_id),
+        //             q.field("boxId").eq(&box_id),
+        //             q.field(path!(FirestoreRental::end)).is_null(),
+        //         ])
+        //     })
+        //     .obj::<FirestoreRental>()
+        //     .query()
+        //     .await?;
 
         let rentals = self
             .db
@@ -338,18 +404,18 @@ impl TowerDatabase {
             .select()
             .from("rentals")
             .parent(self.db.parent_path("users", user_id).unwrap())
-            .filter(|q| {
-                q.for_all([
-                    q.field(path!(FirestoreRental::tower_id)).eq(&self.tower_id),
-                    q.field(path!(FirestoreRental::box_id)).eq(&box_id),
-                    q.field(path!(FirestoreRental::end)).is_null(),
-                ])
-            })
             .obj::<FirestoreRental>()
             .query()
-            .await?;
+            .await?
+            .into_iter()
+            .filter(|r| r.tower_id == self.tower_id && r.box_id == box_id && r.end.is_none())
+            .collect::<Vec<FirestoreRental>>();
+
+        println!("Got rentals");
 
         if rentals.len() != 1 {
+            println!("Invalid rental (multiple or none)");
+            println!("{:#?}", rentals);
             return Err(ControllerError::InvalidRental);
         }
 
@@ -369,6 +435,8 @@ impl TowerDatabase {
             .execute::<FirestoreBox>()
             .await?;
 
+        println!("Box updated");
+
         let rental = self
             .db
             .fluent()
@@ -383,6 +451,8 @@ impl TowerDatabase {
             })
             .execute::<FirestoreRental>()
             .await?;
+
+        println!("Rental updated");
 
         Ok(())
     }

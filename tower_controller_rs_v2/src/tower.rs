@@ -9,7 +9,9 @@ use crate::{
 #[derive(Debug)]
 pub struct Tower {
     pub id: String,
+    // rename to sth like "boxes" and remove the Option
     pub slots: HashMap<Vec<u32>, Option<Slot>>,
+    // TODO: remove this
     pub retrieved_slot: Option<Slot>,
     pub layout: Vec<u32>,
     pub db: Arc<TowerDatabase>,
@@ -51,7 +53,8 @@ impl Tower {
         self.move_to_retrieved(slot)?;
         println!("Moved to retrieved");
 
-        self.rent_box(user)?;
+        // TODO: database desync issue again
+        // self.rent_box(user)?;
         println!("Rented box");
         self.db.new_rental(user, slot).await?;
         println!("Updated database");
@@ -65,10 +68,12 @@ impl Tower {
         slot: &Vec<u32>,
         user: &str,
     ) -> Result<Vec<u32>, ControllerError> {
+        // TODO: just remove this, makes it much more complicated
         self.move_to_retrieved(slot)?;
         println!("Moved to retrieved");
 
-        self.unrent_box()?;
+        // TODO: database desync issue again
+        // self.unrent_box()?;
         println!("Unrented box");
         // This should belong to the rent/unrent function
         // also this might cause a desync between the database and the tower if the above succeeds but this fails
@@ -123,6 +128,8 @@ impl Tower {
         slot: &Vec<u32>,
         user_id: &str,
     ) -> Result<bool, ControllerError> {
+        // TODO: this function bugs out because of the initial desync of database and tower
+
         let slot = self
             .slots
             .get(slot)
