@@ -15,7 +15,7 @@ impl TowerDisplay {
         for slot in tower.slots.values() {
             match slot.rental_status {
                 RentalStatus::Free => led_string += &Color(0, 0, 255).to_string(),
-                RentalStatus::Rented(_) => led_string += &Color(0, 255, 0).to_string(),
+                RentalStatus::Rented(_) => led_string += &Color(255, 0, 0).to_string(),
             }
         }
 

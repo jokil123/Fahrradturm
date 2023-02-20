@@ -96,6 +96,7 @@ async fn main() {
     assert!(store_job.box_id.is_some());
 
     println!("Job successfully completed");
+    std::io::stdin().read_line(&mut String::new()).unwrap();
     println!("Starting retrieval job");
 
     let retrieve_job = FirestoreJob {
