@@ -1,4 +1,3 @@
-use firestore::FirestoreLatLng;
 use serde::{Deserialize, Serialize};
 
 pub type FirestoreUserId = String;

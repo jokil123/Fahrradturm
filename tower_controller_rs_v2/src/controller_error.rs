@@ -1,6 +1,5 @@
 use firestore::errors::FirestoreError;
 use serde::{Deserialize, Serialize};
-use std::{error::Error, fmt::Display};
 
 #[derive(thiserror::Error, Debug, Clone, Serialize, Deserialize, PartialEq)]
 #[serde(rename_all = "camelCase")]

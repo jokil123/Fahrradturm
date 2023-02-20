@@ -1,11 +1,8 @@
-use clone_all::clone_all;
 use dotenv::dotenv;
 use firestore::FirestoreDb;
-use gcloud_sdk::google::firestore::v1::Document;
 use rand::seq::SliceRandom;
 use tower_controller_rs_v2::entities::{
     firestore_job::{FirestoreJob, JobType},
-    firestore_tower::FirestoreTower,
     firestore_user::FirestoreUser,
 };
 
@@ -16,7 +13,7 @@ use tower_controller_rs_v2::entities::firestore_job::ConfirmType;
 async fn main() {
     dotenv().ok();
 
-    let mut rng = &mut rand::thread_rng();
+    let rng = &mut rand::thread_rng();
 
     let db = FirestoreDb::new("fahrradturm")
         .await

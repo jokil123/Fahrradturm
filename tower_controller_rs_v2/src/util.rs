@@ -35,7 +35,7 @@ pub fn generate_n_dimensional_coords(dim: &Vec<u32>) -> Vec<Vec<u32>> {
         _ => {
             let mut coords = Vec::new();
             for i in 0..dim[0] {
-                let mut sub_coords = generate_n_dimensional_coords(&dim[1..].to_vec());
+                let sub_coords = generate_n_dimensional_coords(&dim[1..].to_vec());
                 for mut c in sub_coords {
                     c.insert(0, i);
                     coords.push(c);

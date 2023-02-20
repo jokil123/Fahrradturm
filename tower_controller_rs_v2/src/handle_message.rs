@@ -7,7 +7,7 @@ use tokio::sync::Mutex;
 use crate::{
     controller_error::ControllerError,
     database::TowerDatabase,
-    entities::firestore_job::{ConfirmType, FirestoreJob, JobError},
+    entities::firestore_job::{ConfirmType, FirestoreJob},
     tower::Tower,
     util::{box_id_to_coords, timestamp_to_duration},
 };
@@ -77,16 +77,11 @@ async fn run_job(
 
     match assignment.assignment_type {
         JobType::Store => {
-            let slot_location = match tower.find_free_slot(
+            let slot_location = tower.find_free_slot(
                 assignment
                     .box_type
                     .ok_or(ControllerError::NoBoxTypeSpecified)?,
-            ) {
-                Ok(slot) => slot,
-                Err(e) => {
-                    return Err(ControllerError::NoFreeSlots);
-                }
-            };
+            )?;
 
             println!("8: Found free slot");
 

@@ -1,6 +1,4 @@
-use std::{collections::HashMap, default, fmt::Display, sync::Arc};
-
-use tokio::sync::Mutex;
+use std::{collections::HashMap, sync::Arc};
 
 use crate::{
     controller_error::ControllerError, database::TowerDatabase, entities::firestore_box::BoxType,
@@ -70,7 +68,7 @@ impl Tower {
     }
 
     // TODO: fix this
-    pub fn slot_exists(&self, slot: &Vec<u32>) -> Result<(bool), ControllerError> {
+    pub fn slot_exists(&self, slot: &Vec<u32>) -> Result<bool, ControllerError> {
         self.slots.get(slot).ok_or(ControllerError::SlotNotFound)?;
 
         Ok(true)

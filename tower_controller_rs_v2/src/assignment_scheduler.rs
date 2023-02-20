@@ -1,4 +1,4 @@
-use firestore::{errors::FirestoreError, FirestoreDb, FirestoreListener};
+use firestore::{FirestoreDb, FirestoreListener};
 use gcloud_sdk::google::firestore::v1::listen_response::ResponseType;
 use std::{sync::Arc, time::SystemTime};
 use tokio::sync::Mutex;
@@ -39,7 +39,7 @@ impl AssignmentScheduler {
             .duration_since(SystemTime::UNIX_EPOCH)
             .unwrap();
 
-        let id = self.tower.lock().await.id.clone();
+        // let id = self.tower.lock().await.id.clone();
 
         // 🤮🤮🤮🤮🤮
         // find a way to not clone the db twice

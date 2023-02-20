@@ -1,4 +1,4 @@
-use firestore::{FirestoreReference, FirestoreTimestamp};
+use firestore::FirestoreTimestamp;
 use serde::{Deserialize, Serialize};
 
 pub type FirestoreRentalId = String;

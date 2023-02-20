@@ -1,6 +1,5 @@
 use std::sync::Arc;
 
-use firestore::FirestoreDb;
 use tokio::sync::Mutex;
 use tower_controller_rs_v2::{
     assignment_scheduler::AssignmentScheduler, database::TowerDatabase, tower::Tower,
@@ -41,7 +40,7 @@ async fn main() {
         tokio::time::sleep(tokio::time::Duration::from_secs(1)).await;
     }
 
-    scheduler.stop().await;
+    // scheduler.stop().await;
 
-    println!("Stopped listening");
+    // println!("Stopped listening");
 }

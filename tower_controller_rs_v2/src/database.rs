@@ -1,31 +1,24 @@
 use firestore::{
-    errors::FirestoreError,
-    struct_path::{path, paths},
-    FirestoreDb, FirestoreListener, FirestoreListenerTarget, FirestoreReference,
-    FirestoreTimestamp,
+    struct_path::paths, FirestoreDb, FirestoreListener, FirestoreListenerTarget, FirestoreTimestamp,
 };
 
-use chrono::{DateTime, Utc};
-use tokio::sync::Mutex;
+use chrono::Utc;
 
 use crate::{
     controller_error::ControllerError,
     entities::{
         firestore_box::FirestoreBox,
-        firestore_job::{ConfirmType, FirestoreJob, JobError},
+        firestore_job::{ConfirmType, FirestoreJob},
         firestore_rental::FirestoreRental,
         firestore_tower::FirestoreTower,
         firestore_user::FirestoreUser,
     },
     hashmap_token_storage::HashMapTokenStorage,
-    tower::{RentalStatus, Slot, Tower},
+    tower::{RentalStatus, Slot},
     util::{box_id_to_coords, coords_to_box_id, generate_n_dimensional_coords},
 };
 
-use std::{
-    collections::{HashMap, HashSet},
-    sync::Arc,
-};
+use std::collections::{HashMap, HashSet};
 
 #[derive(Debug)]
 pub struct TowerDatabase {
@@ -455,7 +448,7 @@ impl TowerDatabase {
             .execute::<FirestoreRental>()
             .await?;
 
-        println!("Rental updated");
+        println!("Rental updated: {:?}", rental);
 
         Ok(())
     }
