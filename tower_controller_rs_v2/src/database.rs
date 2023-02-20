@@ -204,7 +204,6 @@ impl TowerDatabase {
                 }
                 Err(_) => {
                     println!("Invalid box id: {}", &doc.id.as_ref().unwrap());
-                    // TODO: Delete invalid box
                     self.db
                         .fluent()
                         .delete()

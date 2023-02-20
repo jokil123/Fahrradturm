@@ -28,12 +28,11 @@ impl Tower {
         })
     }
 
-    // TODO: account for slot type
-    pub fn find_free_slot(&self) -> Result<Vec<u32>, ControllerError> {
+    pub fn find_free_slot(&self, slot_type: BoxType) -> Result<Vec<u32>, ControllerError> {
         let a = self
             .slots
             .iter()
-            .filter(|(k, v)| v.rental_status == RentalStatus::Free)
+            .filter(|(k, v)| v.rental_status == RentalStatus::Free && v.box_type == slot_type)
             .next()
             .ok_or(ControllerError::NoFreeSlots)?
             .0;
@@ -41,39 +40,31 @@ impl Tower {
         Ok(a.clone())
     }
 
-    // TODO: update database
+    // this might not be needed
     pub async fn store_object(
         &mut self,
         slot: &Vec<u32>,
         user: &str,
     ) -> Result<(), ControllerError> {
-        self.rent_box(user, slot)?;
-        println!("Rented box");
-
-        self.db.new_rental(user, slot).await?;
-        println!("Updated database");
-
+        // button pressing logic could go here
+        self.rent_box(user, slot).await?;
         Ok(())
     }
 
-    // TODO: update database
+    // this might not be needed
     pub async fn retrieve_object(
         &mut self,
         slot: &Vec<u32>,
         user: &str,
     ) -> Result<(), ControllerError> {
-        self.unrent_box(slot)?;
-        println!("Unrented box");
-
-        self.db.finish_rental(user, slot).await?;
-        println!("Updated database");
-
+        // button pressing logic could go here
+        self.unrent_box(user, slot).await?;
         Ok(())
     }
 
     // TODO: fix this
-    pub fn slot_exists(&self, slot: &Vec<u32>) -> Result<bool, ControllerError> {
-        let a = self.slots.get(slot).ok_or(ControllerError::SlotNotFound)?;
+    pub fn slot_exists(&self, slot: &Vec<u32>) -> Result<(bool), ControllerError> {
+        self.slots.get(slot).ok_or(ControllerError::SlotNotFound)?;
 
         Ok(true)
     }
@@ -83,8 +74,6 @@ impl Tower {
         slot_location: &Vec<u32>,
         user_id: &str,
     ) -> Result<bool, ControllerError> {
-        // TODO: this function bugs out because of the initial desync of database and tower
-
         let slot = self
             .slots
             .get(slot_location)
@@ -97,8 +86,7 @@ impl Tower {
         Ok(slot.rental_status == RentalStatus::Rented(user_id.to_string()))
     }
 
-    // TODO: update database
-    pub fn rent_box(
+    pub async fn rent_box(
         &mut self,
         user_id: &str,
         slot_location: &Vec<u32>,
@@ -112,13 +100,18 @@ impl Tower {
             return Err(ControllerError::BoxOccupied);
         }
 
+        self.db.new_rental(user_id, slot_location).await?;
+
         slot.rental_status = RentalStatus::Rented(user_id.to_string());
 
         Ok(())
     }
 
-    // TODO: update database
-    pub fn unrent_box(&mut self, slot_location: &Vec<u32>) -> Result<(), ControllerError> {
+    pub async fn unrent_box(
+        &mut self,
+        user_id: &str,
+        slot_location: &Vec<u32>,
+    ) -> Result<(), ControllerError> {
         let slot = self
             .slots
             .get_mut(slot_location)
@@ -130,6 +123,8 @@ impl Tower {
                 slot.rental_status = RentalStatus::Free;
             }
         }
+
+        self.db.finish_rental(user_id, slot_location).await?;
 
         Ok(())
     }

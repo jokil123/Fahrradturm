@@ -16,7 +16,7 @@ pub struct FirestoreBox {
     pub box_type: BoxType,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize, Default, Rand)]
+#[derive(Debug, Clone, Serialize, Deserialize, Default, Rand, PartialEq)]
 #[serde(rename_all = "camelCase")]
 pub enum BoxType {
     #[default]

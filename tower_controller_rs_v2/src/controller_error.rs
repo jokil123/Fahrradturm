@@ -37,6 +37,8 @@ pub enum ControllerError {
     NoSlotSpecified,
     #[error("Invalid slot")]
     InvalidSlot,
+    #[error("No box type specified")]
+    NoBoxTypeSpecified,
 }
 
 impl From<FirestoreError> for ControllerError {

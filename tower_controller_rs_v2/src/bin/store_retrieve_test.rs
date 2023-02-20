@@ -63,7 +63,7 @@ async fn main() {
     let store_job = FirestoreJob {
         assignment_type: JobType::Store,
         user_id: user_id.clone(),
-        box_type: rand::random(),
+        box_type: Some(rand::random()),
         ..Default::default()
     };
 
