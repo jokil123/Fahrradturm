@@ -1,10 +1,6 @@
 use dotenv::dotenv;
 use firestore::FirestoreDb;
-use rand::seq::SliceRandom;
-use tower_controller_rs_v2::entities::{
-    firestore_job::{FirestoreJob, JobType},
-    firestore_user::FirestoreUser,
-};
+use tower_controller_rs_v2::entities::firestore_job::{FirestoreJob, JobType};
 
 use tower_controller_rs_v2::entities::firestore_job::ConfirmType;
 
@@ -13,27 +9,29 @@ use tower_controller_rs_v2::entities::firestore_job::ConfirmType;
 async fn main() {
     dotenv().ok();
 
-    let rng = &mut rand::thread_rng();
+    // let rng = &mut rand::thread_rng();
 
     let db = FirestoreDb::new("fahrradturm")
         .await
         .expect("Failed to create FirestoreDb");
 
-    let user_id = db
-        .fluent()
-        .select()
-        .from("users")
-        .obj::<FirestoreUser>()
-        .query()
-        .await
-        .unwrap()
-        .choose_multiple(rng, 1)
-        .collect::<Vec<&FirestoreUser>>()
-        .first()
-        .unwrap()
-        .id
-        .clone()
-        .unwrap();
+    // let user_id = db
+    //     .fluent()
+    //     .select()
+    //     .from("users")
+    //     .obj::<FirestoreUser>()
+    //     .query()
+    //     .await
+    //     .unwrap()
+    //     .choose_multiple(rng, 1)
+    //     .collect::<Vec<&FirestoreUser>>()
+    //     .first()
+    //     .unwrap()
+    //     .id
+    //     .clone()
+    //     .unwrap();
+
+    let user_id = "g6LKh55wQ1WdCkglO0S5".to_string();
 
     println!("User ID: {}", user_id);
 
@@ -53,7 +51,7 @@ async fn main() {
     //     .clone()
     //     .unwrap();
 
-    let tower_id = "qtGDogFK3o9LVtCrMsbW";
+    let tower_id = "qtGDogFK3o9LVtCrMsbW".to_string();
 
     println!("Tower ID: {}", tower_id);
 

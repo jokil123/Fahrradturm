@@ -132,6 +132,7 @@ impl TowerDatabase {
         Ok(listener)
     }
 
+    // TODO: have better verification (check if users actually have rental)
     pub async fn get_tower(
         &self,
     ) -> Result<(String, Vec<u32>, HashMap<Vec<u32>, Slot>), ControllerError> {
