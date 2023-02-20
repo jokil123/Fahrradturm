@@ -40,6 +40,6 @@ struct Color(u8, u8, u8);
 
 impl ToString for Color {
     fn to_string(&self) -> String {
-        format!("{:08b}{:08b}{:08b}", self.0, self.1, self.2)
+        format!("{:02x}{:02x}{:02x}", self.0, self.1, self.2)
     }
 }
