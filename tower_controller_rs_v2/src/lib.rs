@@ -5,4 +5,5 @@ pub mod entities;
 pub mod handle_message;
 pub mod hashmap_token_storage;
 pub mod tower;
+pub mod tower_display;
 pub mod util;

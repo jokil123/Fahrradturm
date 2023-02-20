@@ -1,9 +1,10 @@
-use std::{collections::HashMap, default, sync::Arc};
+use std::{collections::HashMap, default, fmt::Display, sync::Arc};
 
 use tokio::sync::Mutex;
 
 use crate::{
     controller_error::ControllerError, database::TowerDatabase, entities::firestore_box::BoxType,
+    tower_display::TowerDisplay,
 };
 
 #[derive(Debug)]
@@ -20,19 +21,23 @@ impl Tower {
     pub async fn new(db: Arc<TowerDatabase>) -> Result<Self, ControllerError> {
         let (id, layout, slots) = db.get_tower().await?;
 
-        Ok(Self {
+        let tower = Self {
             id,
             slots,
             layout,
             db,
-        })
+        };
+
+        TowerDisplay::go(&tower);
+
+        Ok(tower)
     }
 
     pub fn find_free_slot(&self, slot_type: BoxType) -> Result<Vec<u32>, ControllerError> {
         let a = self
             .slots
             .iter()
-            .filter(|(k, v)| v.rental_status == RentalStatus::Free && v.box_type == slot_type)
+            .filter(|(_, v)| v.rental_status == RentalStatus::Free && v.box_type == slot_type)
             .next()
             .ok_or(ControllerError::NoFreeSlots)?
             .0;
@@ -48,6 +53,7 @@ impl Tower {
     ) -> Result<(), ControllerError> {
         // button pressing logic could go here
         self.rent_box(user, slot).await?;
+        TowerDisplay::go(&self);
         Ok(())
     }
 
@@ -59,6 +65,7 @@ impl Tower {
     ) -> Result<(), ControllerError> {
         // button pressing logic could go here
         self.unrent_box(user, slot).await?;
+        TowerDisplay::go(&self);
         Ok(())
     }
 
