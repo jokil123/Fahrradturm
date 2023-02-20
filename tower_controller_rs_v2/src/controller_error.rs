@@ -1,9 +1,12 @@
 use firestore::errors::FirestoreError;
+use serde::{Deserialize, Serialize};
+use std::{error::Error, fmt::Display};
 
-#[derive(thiserror::Error, Debug)]
+#[derive(thiserror::Error, Debug, Clone, Serialize, Deserialize, PartialEq)]
+#[serde(rename_all = "camelCase")]
 pub enum ControllerError {
     #[error("Firestore Error: {0}")]
-    FirestoreError(#[from] FirestoreError),
+    FirestoreError(String),
     #[error("Tower not found")]
     TowerNotFound,
     #[error("Slot not found")]
@@ -26,4 +29,52 @@ pub enum ControllerError {
     BoxNotRentedByUser,
     #[error("Invalid rental")]
     InvalidRental,
+    #[error("Invalid message")]
+    InvalidMessage,
+    #[error("Invalid permissions")]
+    InvalidPermissions,
+    #[error("No slot specified")]
+    NoSlotSpecified,
+    #[error("Invalid slot")]
+    InvalidSlot,
 }
+
+impl From<FirestoreError> for ControllerError {
+    fn from(err: FirestoreError) -> Self {
+        Self::FirestoreError(err.to_string())
+    }
+}
+
+// This could work but not currently worth the effort
+
+// #[derive(Debug, Display)]
+// pub struct SerializableFirestoreError(FirestoreError);
+
+// impl From<FirestoreError> for SerializableFirestoreError {
+//     fn from(err: FirestoreError) -> Self {
+//         Self(err)
+//     }
+// }
+
+// impl Serialize for SerializableFirestoreError {
+//     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+//     where
+//         S: serde::Serializer,
+//     {
+//         serializer.serialize_str(&self.0.to_string())
+//     }
+// }
+
+// impl Error for SerializableFirestoreError {
+//     fn source(&self) -> Option<&(dyn Error + 'static)> {
+//         None
+//     }
+
+//     fn description(&self) -> &str {
+//         "description() is deprecated; use Display"
+//     }
+
+//     fn cause(&self) -> Option<&dyn Error> {
+//         self.source()
+//     }
+// }

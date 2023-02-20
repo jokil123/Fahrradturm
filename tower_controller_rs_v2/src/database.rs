@@ -57,7 +57,7 @@ impl TowerDatabase {
         Ok(user.subscription.is_some())
     }
 
-    pub async fn set_error(&self, a_id: &str, err: JobError) -> Result<(), ControllerError> {
+    pub async fn set_error(&self, a_id: &str, err: ControllerError) -> Result<(), ControllerError> {
         self.db
             .fluent()
             .update()
@@ -102,7 +102,9 @@ impl TowerDatabase {
         self.db
             .fluent()
             .update()
-            .fields(paths!(FirestoreJob::{box_id}))
+            // TODO: this is a hack, due to a library bug
+            // .fields(paths!(FirestoreJob::{box_id}))
+            .fields(["boxId"])
             .in_col("jobs")
             .document_id(a_id)
             .parent(self.db.parent_path("towers", &self.tower_id).unwrap())
@@ -424,7 +426,9 @@ impl TowerDatabase {
         self.db
             .fluent()
             .update()
-            .fields(paths!(FirestoreBox::{rented_by}))
+            // paths! macro is not working here because of the renamed field
+            .fields(["rentedBy"])
+            // .fields(paths!(FirestoreBox::{rented_by}))
             .in_col("boxes")
             .document_id(&box_id)
             .parent(self.db.parent_path("towers", &self.tower_id).unwrap())

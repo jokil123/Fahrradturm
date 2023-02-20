@@ -1,14 +1,15 @@
 use std::{sync::Arc, time::Duration};
 
 use firestore::FirestoreDb;
-use gcloud_sdk::google::firestore::v1::listen_response::ResponseType;
+use gcloud_sdk::google::firestore::v1::{listen_response::ResponseType, Document};
 use tokio::sync::Mutex;
 
 use crate::{
+    controller_error::ControllerError,
     database::TowerDatabase,
     entities::firestore_job::{ConfirmType, FirestoreJob, JobError},
     tower::Tower,
-    util::{box_id_to_coords, coords_to_box_id, timestamp_to_duration},
+    util::{box_id_to_coords, timestamp_to_duration},
 };
 
 use crate::entities::firestore_job::JobType;
@@ -19,8 +20,6 @@ pub async fn handle_message(
     db: Arc<TowerDatabase>,
     tower: Arc<Mutex<Tower>>,
 ) -> std::result::Result<(), Box<(dyn std::error::Error + Send + Sync + 'static)>> {
-    // TODO: wrap in another function and return the result
-
     let ResponseType::DocumentChange(c) = response else {
         return Ok(());
     };
@@ -37,11 +36,27 @@ pub async fn handle_message(
         return Ok(());
     }
 
-    println!("4: Got new document");
+    match run_job(doc.clone(), db.clone(), tower).await {
+        Ok(con) => {
+            db.set_confirm(doc.name.split("/").last().unwrap(), con)
+                .await?
+        }
+        Err(err) => {
+            db.set_error(doc.name.split("/").last().unwrap(), err)
+                .await?
+        }
+    }
 
+    Ok(())
+}
+
+async fn run_job(
+    doc: Document,
+    db: Arc<TowerDatabase>,
+    tower: Arc<Mutex<Tower>>,
+) -> Result<ConfirmType, ControllerError> {
     let Ok(assignment) = FirestoreDb::deserialize_doc_to::<FirestoreJob>(&doc) else {
-      db.set_error(doc.name.split("/").last().unwrap(), JobError::InvalidMessage).await?;
-      return Ok(());
+      return Err(ControllerError::InvalidMessage);
     };
 
     println!("5: Assignment deserialized");
@@ -49,8 +64,7 @@ pub async fn handle_message(
     let id = assignment.id.as_ref().unwrap();
 
     let Ok(_) = db.has_subscription(&assignment).await else {
-      db.set_error(id, JobError::InvalidPermissions).await?;
-      return Ok(());
+      return Err(ControllerError::InvalidPermissions);
     };
 
     println!("6: Permissions checked");
@@ -66,8 +80,7 @@ pub async fn handle_message(
             let slot_location = match tower.find_free_slot() {
                 Ok(slot) => slot,
                 Err(e) => {
-                    db.set_error(id, JobError::NoFreeSlots).await?;
-                    return Ok(());
+                    return Err(ControllerError::NoFreeSlots);
                 }
             };
 
@@ -87,30 +100,25 @@ pub async fn handle_message(
             println!("{:#?}", assignment);
 
             let Some(box_id) = assignment.box_id else {
-                db.set_error(id, JobError::NoSlotSpecified)
-                    .await?;
-                return Ok(());
+                return Err(ControllerError::NoSlotSpecified);
             };
 
             println!("10: Got box id");
 
             let Ok(slot_location) = box_id_to_coords(&box_id) else {
-                db.set_error(id, JobError::InvalidSlot).await?;
-                return Ok(());
+                return Err(ControllerError::InvalidSlot);
             };
 
             println!("10: Got slot location");
 
             if !tower.slot_exists(&slot_location)? {
-                db.set_error(id, JobError::InvalidSlot).await?;
-                return Ok(());
+                return Err(ControllerError::InvalidSlot);
             }
 
             println!("11: Slot exists");
 
             if !tower.slot_rented_by_user(&slot_location, &assignment.user_id)? {
-                db.set_error(id, JobError::InvalidPermissions).await?;
-                return Ok(());
+                return Err(ControllerError::InvalidPermissions);
             }
 
             println!("12: Checked rental status");
@@ -123,9 +131,5 @@ pub async fn handle_message(
         }
     }
 
-    db.set_confirm(id, ConfirmType::JobCompleted).await?;
-
-    println!("14: Confirmation sent, Job completed");
-
-    Ok(())
+    Ok(ConfirmType::JobCompleted)
 }

@@ -1,5 +1,7 @@
 use serde_derive::{Deserialize, Serialize};
 
+use crate::controller_error::ControllerError;
+
 use super::{
     firestore_box::{BoxType, FirestoreBoxId},
     firestore_user::FirestoreUserId,
@@ -14,7 +16,7 @@ pub struct FirestoreJob {
     #[serde(alias = "_firestore_id")]
     pub id: Option<FirestoreJobId>,
     pub assignment_type: JobType,
-    pub error: Option<JobError>,
+    pub error: Option<ControllerError>,
     pub box_id: Option<FirestoreBoxId>,
     pub user_id: FirestoreUserId,
     pub confirmation: Option<ConfirmType>,
@@ -39,7 +41,7 @@ pub enum JobError {
     InvalidSlot,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
 #[serde(rename_all = "camelCase")]
 pub enum ConfirmType {
     JobRecieved,
