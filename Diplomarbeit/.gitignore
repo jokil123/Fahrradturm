@@ -1,7 +1,7 @@
-Diplomarbeit.aux
-Diplomarbeit.fdb_latexmk
-Diplomarbeit.fls
-Diplomarbeit.log
-Diplomarbeit.pdf
-Diplomarbeit.synctex.gz
-Diplomarbeit.toc
+*.aux
+*.fdb_latexmk
+*.fls
+*.log
+*.pdf
+*.synctex.gz
+*.toc
