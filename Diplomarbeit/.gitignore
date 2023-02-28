@@ -5,3 +5,10 @@
 *.pdf
 *.synctex.gz
 *.toc
+*.lof
+*.lot
+*.bbl
+*.bcf
+*.blg
+*.run.xml
+*.out

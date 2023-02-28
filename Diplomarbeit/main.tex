@@ -5,12 +5,22 @@
 
 \usepackage{subfiles}
 
+\usepackage[printonlyused,withpage]{acronym}
+
+\usepackage[backend=biber,style=alphabetic,]{biblatex}
+\bibliography{literatur}
+
+\usepackage{hyperref}
+
 \title{Konzeption eines intelligenten, automatischen Fahrradparksystems}
 \author{Paul Hartmann, Joshua Lung, Lukas Madlener}
 \date{2022/23}
 
 \begin{document}
 \maketitle
+\break
+
+\subfile{latex_hilfestellung.tex}
 \break
 
 \subfile{sections/eidesstaatliche_erklärung.tex}
