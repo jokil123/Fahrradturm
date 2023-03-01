@@ -1,11 +1,12 @@
-\section{\LaTeX - Hilfestellung}
+\section{\LaTeX - Hilfestellung} % \section stats a new numbered section
 lorem ipsum dolor sit amet
 
+% figures are used for displaying images with a caption
 \begin{figure}[h]
-  \centering
-  \includegraphics[width=0.75\textwidth]{images/test}
-  \caption{Fahrradboxen werden von einem \ac{RBG} bedient.}
-  \label{fig:fahrrad_box}
+  \centering % The image is centered
+  \includegraphics[width=0.75\textwidth]{images/test} % The image is imported from the file "images/test.png"
+  \caption{Fahrradboxen werden von einem \ac{RBG} bedient.} % The caption of the image (\ac is used to link to an acronym)
+  \label{fig:fahrrad_box} % The label of the image (used for referencing)
 \end{figure}
 
 As you can see in figure \ref{fig:fahrrad_box}, the function grows near the origin. This example is on page \pageref{fig:fahrrad_box}.
@@ -25,12 +26,14 @@ As you can see in figure \ref{fig:fahrrad_box}, the function grows near the orig
   \end{center}
 \end{table}
 
+% The following lines are used to create a list
 \begin{itemize}
   \item crazy item
   \item amogus
   \item more bullets
 \end{itemize}
 
+% The following lines are used to create a numbered list
 \begin{enumerate}
   \item crazy item
   \item amogus

@@ -1,31 +1,35 @@
 \documentclass[a4paper]{article}
 
-\usepackage{graphicx}
-\graphicspath{{/}}
+% Importing packages
 
-\usepackage{subfiles}
+\usepackage{graphicx} % Graphicx package is used to import images
+\graphicspath{{/}} % The graphics path is the path where the images are stored
 
-\usepackage[printonlyused,withpage]{acronym}
 
-\usepackage{biblatex}
-\addbibresource{literatur.bib}
+\usepackage{subfiles} % The subfiles package is used to import other tex files
 
-\usepackage{hyperref}
+\usepackage[printonlyused,withpage]{acronym} % The acronym package is used to create an acronym list
 
-\usepackage[ngerman]{babel}
+\usepackage{biblatex} % The biblatex package is used to import the bibliography
+\addbibresource{literatur.bib} % The bibliography is imported from the file "literatur.bib"
 
-\usepackage[official]{eurosym}
+\usepackage{hyperref} % The hyperref package is used to create hyperlinks
 
-\usepackage{longtable}
+\usepackage[ngerman]{babel} % The babel package is used to change the language of the document
 
-\title{Konzeption eines intelligenten, automatischen Fahrradparksystems}
-\author{Paul Hartmann, Joshua Lung, Lukas Madlener}
-\date{2022/23}
+\usepackage[official]{eurosym} % The eurosym package is used to import the euro symbol
 
-\begin{document}
-\maketitle
+\usepackage{longtable} % The longtable package is used to create long tables that span multiple pages
+
+\title{Konzeption eines intelligenten, automatischen Fahrradparksystems} % The title of the document
+\author{Paul Hartmann, Joshua Lung, Lukas Madlener} % The authors of the document
+\date{2022/23} % The date of the document
+
+\begin{document} % The document starts here
+\maketitle % The title is created
 \break
 
+% The following lines import the different sections of the document
 \subfile{latex_hilfestellung.tex}
 \break
 
