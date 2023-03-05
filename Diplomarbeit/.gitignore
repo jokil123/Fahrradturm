@@ -13,3 +13,8 @@
 *.blg
 *.run.xml
 *.out
+*.glo
+*.glsdefs
+*.ist
+_minted-main
+*.pyg
