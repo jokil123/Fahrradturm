@@ -18,3 +18,5 @@
 *.ist
 _minted-main
 *.pyg
+*.gls
+*.glg
