@@ -1,0 +1,24 @@
+\paragraph{V3 - Rust}
+Die V3 Variante wurde in Rust implementiert. Rust ist eine moderne Programmiersprache, die sich durch eine gute Performance und eine gute Developer Experience auszeichnet. Rust unterscheidet sich stark von Python, da es eine Systemsprache ist.
+
+Gegenüberstellung Rust und Python:
+\begin{table}[ht]
+  \begin{tabular}{l|l|l}
+                                      & \textbf{Rust} & \textbf{Python}          \\
+    \hline
+    \textbf{Typisierung}              & Statisch      & Dynamisch                \\
+    \textbf{Garbage Collection}       & Manuell       & Automatisch              \\
+    \makecell[l]{\textbf{Performance }                                           \\(100mio Stellen Pi Benchmark\cite{programming_language_speeds})}
+                                      & 69.31s        & 5851.53s (84x langsamer) \\
+    \textbf{Kompiliert/Interpretiert} & Kompiliert    & Interpretiert            \\
+    \textbf{Multi-Thread}             & Ja            & Nein                     \\
+  \end{tabular}
+  \caption{Gegenüberstellung Rust und Python}
+  \label{tab:rust_vs_python}
+\end{table}
+
+Rust wurde für V3 gewählt da das zuständige Projektmitglied mehr Erfahrung mit Rust hatte als mit Python. Obwohl Rust komplizierter ist als Python, wurde die Entwicklungsgeschwindigkeit durch die bessere Developer Experience deutlich erhöht.
+
+V3 hatte auch eine \ac{GUI}, die den aktuellen Zustand des Turms darstellt. Diese wurde in \texttt{fltk\_rs} implementiert.
+
+Architekturtechnisch ist V3 sehr ähnlich zu V2. Dennoch stellte sich heraus, dass die Architektur immer noch zu kompliziert war und die Entwicklungsgeschwindigkeit stark beeinträchtigte.
