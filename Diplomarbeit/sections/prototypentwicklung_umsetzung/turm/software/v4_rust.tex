@@ -42,14 +42,43 @@ Das Projekt wurde mit \texttt{cargo new} erstellt, deshalb ist die Projektstrukt
 
 \texttt{TowerDatabase} kümmert sich um die Kommunikation mit der Datenbank. Es ist ein \Gls{wrapper} für die Datenbankverbindung der \texttt{firestore\_rs} Softwarebilbiothek. Es soll die interaktion mit der Datenbank vereinfachen und die möglichkeit von Fehlern minimieren.
 
-Felder
 \begin{minted}{rust}
 struct TowerDatabase {
     db: FirestoreDb,
     tower_id: String,
     project_id: String,
+
+    // This might be a bit overkill
+    async fn new(project_id: &str, tower_id: &str) -> Result<Self, ControllerError>;
+
+    async fn has_subscription(&self, m: &FirestoreJob) -> Result<bool, ControllerError>;
+
+    async fn set_error(&self, a_id: &str, err: ControllerError) -> Result<(), ControllerError>;
+
+    async fn set_confirm(&self, a_id: &str, con: ConfirmType) -> Result<(), ControllerError>;
+
+    async fn set_slot(&self, a_id: &str, slot: &Vec<u32>) -> Result<(), ControllerError>;
+
+    async fn create_listener(&self) -> Result<FirestoreListener<FirestoreDb, HashMapTokenStorage>, ControllerError>;
+
+    async fn get_tower(&self) -> Result<(String, Vec<u32>, HashMap<Vec<u32>, Slot>), ControllerError>;
+
+    async fn create_boxes(&self, dimensions: &Vec<u32>) -> Result<Vec<FirestoreBox>, ControllerError>;
+
+    async fn delete_all_boxes(&self) -> Result<(), ControllerError>;
+
+    async fn new_rental(&self, user_id: &str, box_location: &Vec<u32>) -> Result<String, ControllerError>;
+
+    async fn finish_rental(&self, user_id: &str, box_location: &Vec<u32>) -> Result<(), ControllerError>;
 }
 \end{minted}
+
+Felder:
+\begin{itemize}
+  \item \textbf{\texttt{db}}: Datenbankverbindung.
+  \item \textbf{\texttt{tower\_id}}: ID des Turms.
+  \item \textbf{\texttt{project\_id}}: ID des Projekts.
+\end{itemize}
 
 Methoden:
 \begin{itemize}
@@ -67,6 +96,55 @@ Methoden:
 
 
 \subparagraph{Tower}
+
+\texttt{Tower} ist die Datenstruktur des Turms. Sie enthält alle Informationen über den Turm und die Boxen. Sie wird von der \texttt{AssignmentScheduler} Klasse verwendet, um die Boxen zu verwalten. Tower enthält zusätzlich Methoden um die Datenstruktur zu verwalten.
+
+
+\begin{minted}{rust}
+struct Tower {
+    id: String,
+    slots: HashMap<Vec<u32>, Slot>,
+    layout: Vec<u32>,
+    db: Arc<TowerDatabase>,
+
+    async fn new(db: Arc<TowerDatabase>) -> Result<Self, ControllerError>;
+
+    fn find_free_slot(&self, slot_type: BoxType) -> Result<Vec<u32>, ControllerError>;
+
+    async fn store_object(&mut self, slot: &Vec<u32>, user: &str) -> Result<(), ControllerError>;
+
+    async fn retrieve_object(&mut self, slot: &Vec<u32>, user: &str) -> Result<(), ControllerError>;
+
+    fn slot_exists(&self, slot: &Vec<u32>) -> Result<bool, ControllerError>;
+
+    fn slot_rented_by_user(&self, slot_location: &Vec<u32>, user_id: &str) -> Result<bool, ControllerError>;
+
+    async fn rent_box(&mut self, user_id: &str, slot_location: &Vec<u32>) -> Result<(), ControllerError>;
+
+    async fn unrent_box(&mut self, user_id: &str, slot_location: &Vec<u32>) -> Result<(), ControllerError>;
+}
+\end{minted}
+
+Felder:
+\begin{itemize}
+  \item \textbf{\texttt{id}}: ID des Turms.
+  \item \textbf{\texttt{slots}}: Alle Slots des Turms. Der Schlüssel ist ein Vektor an \texttt{u32} Werten, welche die Position der Boxen im Turm beschreiben.
+  \item \textbf{\texttt{layout}}: Layout des Turms.
+  \item \textbf{\texttt{db}}: Datenbankverbindung (\texttt{Arc<T>} als \Gls{wrapper} um Referenzen in mehreren \Glspl{thread} zu erlauben).
+\end{itemize}
+
+Methoden:
+\begin{itemize}
+  \item \textbf{\texttt{new}}: Erstellt eine neue Instanz von \texttt{Tower}.
+  \item \textbf{\texttt{find\_free\_slot}}: Sucht einen freien Slot für ein Assignment.
+  \item \textbf{\texttt{store\_object}}: Speichert ein Objekt (Fahrrad) in einer Box.
+  \item \textbf{\texttt{retrieve\_object}}: Entfernt ein Objekt (Fahrrad) aus einer Box.
+  \item \textbf{\texttt{slot\_exitst}}: Prüft ob ein Slot existiert.
+  \item \textbf{\texttt{slot\_rented\_by\_user}}: Prüft ob ein Slot von einem bestimmten Nutzer gemietet ist.
+  \item \textbf{\texttt{rent\_box}}: Mietet eine Box für einen bestimmten Zeitraum.
+        \item\textbf{\texttt{unrent\_box}}: Beendet die Miete einer Box.
+\end{itemize}
+
 
 \subparagraph{AssignmentScheduler}
 \begin{minted}{rust}
