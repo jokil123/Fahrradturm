@@ -3,6 +3,10 @@
 Als Datenbank wurde Firestore verwendet, ein Untermodul von Firebase, welches nutzern bis zu einem gewissen Umfang kostenlos zur Verfügung steht. Firestore ist eine NoSQL-Datenbank, welche auf Dokumenten basiert. Ähnlich wie bei MongoDB werden Daten als kleine Dokumente gespeichert, welche wiederum in Kollektionen gespeichert werden. Firestore erlaubt nesting, damit komplexere Datenstrukturen abgebildet werden können ohne, dass einzelnen Dokumente zu groß werden.
 
 
+\subsubsection{Serialisierung / Deserialisierung}
+
+Um die Daten der Datenbank auf der Seite des Tower Controllers zu verarbeiten, müssen diese zunächst in ein strukturiertes Format umgewandelt werden. Dies geschieht durch die Verwendung von \texttt{serde} und \texttt{serde\_json}. \texttt{serde} ist eine Bibliothek, welche es ermöglicht, beliebige Datenstrukturen zu serialisieren und deserialisieren. Es ist sehr einfach Datenstrukturen mittels \texttt{serde} serialiserbar zu machen.
+
 
 \subsubsection{Datenbankschema}
 Das Datenbankschema ist trotz der Verwendung einer Dokumenten-Datenbank änhlich zu relationalen Datenbanken. Aus diesem Grund kann das Schema der Datenbank auch als ER-Diagramm dargestellt werden.

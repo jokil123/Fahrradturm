@@ -147,13 +147,38 @@ Methoden:
 
 
 \subparagraph{AssignmentScheduler}
+
+Der AssignmentScheduler hört auf Datenbankevents und verarbeitet diese.
+
 \begin{minted}{rust}
 pub struct AssignmentScheduler {
     db: Arc<TowerDatabase>,
     tower: Arc<Mutex<Tower>>,
     listener: FirestoreListener<FirestoreDb, HashMapTokenStorage>,
+
+    async fn new(db: Arc<TowerDatabase>, tower: Arc<Mutex<Tower>>) -> <Self, ControllerError>;
+    async fn listen(&mut self) -> Result<(), ControllerError>;
+    async fn stop(&mut self);
 }
 \end{minted}
 
+Felder:
+\begin{itemize}
+  \item \textbf{\texttt{db}}: Datenbankverbindung.
+  \item \textbf{\texttt{tower}}: Turm (Der \texttt{Mutex<T>} erlaubt das paralelle Ändern von Daten ohne \glspl{racecondition} zu erzeugen).
+  \item \textbf{\texttt{listener}}: Listener für die \texttt{jobs} Collection.
+\end{itemize}
+
+Methoden:
+\begin{itemize}
+  \item \textbf{\texttt{new}}: Erstellt eine neue Instanz von \texttt{AssignmentScheduler}.
+  \item \textbf{\texttt{listen}}: Startet den Listener.
+  \item \textbf{\texttt{stop}}: Stoppt den Listener.
+\end{itemize}
+
 
 \subparagraph{TowerDisplay}
+
+Der TowerDisplay ist für die Anzeige mittels der LEDs zuständig. Er wird von der \texttt{Tower} Klasse verwendet, um den momentanen Zustand des Turms anzuzeigen.
+
+Als erstes wird der Zustand des Turms zu einem langen hexadezimal String ungewandelt. Dieser String wird dann an ein Python Script übergeben, welches die LEDs ansteuert. Das Python Script wird verwendet da es einfacher ist, die LEDs mit Python anzusteuern als mit Rust.
