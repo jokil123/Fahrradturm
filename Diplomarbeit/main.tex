@@ -1,0 +1,112 @@
+\documentclass[a4paper]{article}
+
+% Importing packages
+
+\usepackage{graphicx} % Graphicx package is used to import images
+\graphicspath{{/}} % The graphics path is the path where the images are stored
+
+\usepackage{subfiles} % The subfiles package is used to import other tex files
+
+\usepackage[printonlyused,withpage]{acronym} % The acronym package is used to create an acronym list
+
+\usepackage{biblatex} % The biblatex package is used to import the bibliography
+\addbibresource{literatur.bib} % The bibliography is imported from the file "literatur.bib"
+
+\usepackage{hyperref} % The hyperref package is used to create hyperlinks
+
+\usepackage[ngerman]{babel} % The babel package is used to change the language of the document
+
+\usepackage{csquotes}
+
+\usepackage[official]{eurosym} % The eurosym package is used to import the euro symbol
+
+\usepackage{longtable} % The longtable package is used to create long tables that span multiple pages
+\usepackage{multirow} % The multirow package is used to create multirow cells in tables
+\usepackage{makecell} % The makecell package is used to create multirow cells in tables
+
+\usepackage{minted}
+
+\input{sections/glossar_definitionen.tex}
+
+\usepackage{dirtree}
+
+\begin{document} % The document starts here
+% The following lines import the different sections of the document
+\subfile{sections/deckblatt.tex}
+\break
+
+\subfile{latex_hilfestellung.tex}
+\break
+
+\subfile{sections/eidesstaatliche_erklärung.tex}
+\break
+
+\subfile{sections/versionshistorie.tex}
+\break
+
+\subfile{sections/vorwort.tex}
+\break
+
+\subfile{sections/inhaltsverzeichnis.tex}
+\break
+
+\subfile{sections/danksagung.tex}
+\break
+
+\subfile{sections/impressum/main.tex}
+\break
+
+\subfile{sections/ltw.tex}
+\break
+
+\subfile{sections/einleitung/main.tex}
+\break
+
+\subfile{sections/produktmanagement/main.tex}
+\break
+
+\subfile{sections/marktanalyse/main.tex}
+\break
+
+\subfile{sections/produktkonzeption/main.tex}
+\break
+
+\subfile{sections/prototypentwicklung_konzept/main.tex}
+\break
+
+\subfile{sections/prototypentwicklung_umsetzung/main.tex}
+\break
+
+\subfile{sections/marktskalierung/main.tex}
+\break
+
+\subfile{sections/verwendete_technologie/main.tex}
+\break
+
+\subfile{sections/zusammenfassung.tex}
+\break
+
+\subfile{sections/literatur_quellenverzeichnis.tex}
+\break
+
+\subfile{sections/abildungsverzeichnis.tex}
+\break
+
+\subfile{sections/tabellenverzeichnis.tex}
+\break
+
+\subfile{sections/abkürzungsverzeichnis.tex}
+\break
+
+\subfile{sections/glossar.tex}
+\break
+
+\subfile{sections/autorenverzeichnis.tex}
+\break
+
+\subfile{sections/begleitprotokoll.tex}
+\break
+
+\subfile{sections/anhang.tex}
+
+\end{document}
