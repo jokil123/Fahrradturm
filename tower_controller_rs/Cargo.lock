@@ -331,11 +331,7 @@ dependencies = [
 
 [[package]]
 name = "firestore"
-<<<<<<< HEAD
-version = "0.23.1-alpha.0"
-=======
 version = "0.28.1-alpha.0"
->>>>>>> 271e9597b78dd3e95257c380bfbe6a5f243d57fa
 dependencies = [
  "async-trait",
  "backoff",
