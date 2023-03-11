@@ -38,7 +38,20 @@ Das Projekt wurde mit \texttt{cargo new} erstellt, deshalb ist die Projektstrukt
   \label{fig:tower_controller_v4_init}
 \end{figure}
 
-\subparagraph{{TowerDatabase}}
+\subparagraph{Event Handling Pipeline}
+
+Wenn der Turm Controller ein Event empfängt wird dieses in der Event Handling Pipeline verarbeitet. Die Event Handling Pipeline besteht aus validierungs- und ausführungsstufen. Die validierungsstufen prüfen ob das Event gültig ist und ob es überhaupt verarbeitet werden muss. Die ausführungsstufen führen die eigentliche Verarbeitung des Events aus. Die funktionsweise der Event Handling Pipeline ist in Abbildung \ref{fig:tower_controller_v4_event_handling} dargestellt.
+
+\begin{figure}[!ht]
+  \centering
+  \includegraphics[width=0.8\textwidth]{images/tower_controller_v4_event_handling.png}
+  \caption{Event Handling Pipeline}
+  \label{fig:tower_controller_v4_event_handling}
+\end{figure}
+
+In Abbildung \ref{fig:tower_controller_v4_event_handling} werden nicht möglichen Fehler dargesetellt sondern nur welche, für die der Benutzer der API verantwortlich ist. Fehler welche dank eines internen Fehlers auftreten werden nicht dargestellt (Fehler bei Datenbankverbindung, Programmlogikfehler, etc...).
+
+\subparagraph{TowerDatabase}
 
 \texttt{TowerDatabase} kümmert sich um die Kommunikation mit der Datenbank. Es ist ein \Gls{wrapper} für die Datenbankverbindung der \texttt{firestore\_rs} Softwarebilbiothek. Es soll die interaktion mit der Datenbank vereinfachen und die möglichkeit von Fehlern minimieren.
 
@@ -47,29 +60,6 @@ struct TowerDatabase {
     db: FirestoreDb,
     tower_id: String,
     project_id: String,
-
-    // This might be a bit overkill
-    async fn new(project_id: &str, tower_id: &str) -> Result<Self, ControllerError>;
-
-    async fn has_subscription(&self, m: &FirestoreJob) -> Result<bool, ControllerError>;
-
-    async fn set_error(&self, a_id: &str, err: ControllerError) -> Result<(), ControllerError>;
-
-    async fn set_confirm(&self, a_id: &str, con: ConfirmType) -> Result<(), ControllerError>;
-
-    async fn set_slot(&self, a_id: &str, slot: &Vec<u32>) -> Result<(), ControllerError>;
-
-    async fn create_listener(&self) -> Result<FirestoreListener<FirestoreDb, HashMapTokenStorage>, ControllerError>;
-
-    async fn get_tower(&self) -> Result<(String, Vec<u32>, HashMap<Vec<u32>, Slot>), ControllerError>;
-
-    async fn create_boxes(&self, dimensions: &Vec<u32>) -> Result<Vec<FirestoreBox>, ControllerError>;
-
-    async fn delete_all_boxes(&self) -> Result<(), ControllerError>;
-
-    async fn new_rental(&self, user_id: &str, box_location: &Vec<u32>) -> Result<String, ControllerError>;
-
-    async fn finish_rental(&self, user_id: &str, box_location: &Vec<u32>) -> Result<(), ControllerError>;
 }
 \end{minted}
 
@@ -106,22 +96,6 @@ struct Tower {
     slots: HashMap<Vec<u32>, Slot>,
     layout: Vec<u32>,
     db: Arc<TowerDatabase>,
-
-    async fn new(db: Arc<TowerDatabase>) -> Result<Self, ControllerError>;
-
-    fn find_free_slot(&self, slot_type: BoxType) -> Result<Vec<u32>, ControllerError>;
-
-    async fn store_object(&mut self, slot: &Vec<u32>, user: &str) -> Result<(), ControllerError>;
-
-    async fn retrieve_object(&mut self, slot: &Vec<u32>, user: &str) -> Result<(), ControllerError>;
-
-    fn slot_exists(&self, slot: &Vec<u32>) -> Result<bool, ControllerError>;
-
-    fn slot_rented_by_user(&self, slot_location: &Vec<u32>, user_id: &str) -> Result<bool, ControllerError>;
-
-    async fn rent_box(&mut self, user_id: &str, slot_location: &Vec<u32>) -> Result<(), ControllerError>;
-
-    async fn unrent_box(&mut self, user_id: &str, slot_location: &Vec<u32>) -> Result<(), ControllerError>;
 }
 \end{minted}
 
@@ -155,10 +129,6 @@ pub struct AssignmentScheduler {
     db: Arc<TowerDatabase>,
     tower: Arc<Mutex<Tower>>,
     listener: FirestoreListener<FirestoreDb, HashMapTokenStorage>,
-
-    async fn new(db: Arc<TowerDatabase>, tower: Arc<Mutex<Tower>>) -> <Self, ControllerError>;
-    async fn listen(&mut self) -> Result<(), ControllerError>;
-    async fn stop(&mut self);
 }
 \end{minted}
 

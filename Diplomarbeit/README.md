@@ -41,3 +41,8 @@
 4. Python Installieren
 5. Python Installationspfad zur `Path` Systemvariable hinzufügen (insofen dieser nicht bei der installation hinzugefügt wurde)
 6. Pygments Bibliothek Installieren (`pip install pygments --force-reinstall`)
+
+# Häufige Fehlerquellen
+
+1. Komma Fehler in der `literatur.bib` Datei:
+   Fehlendes Komma führt dazu, dass der gesammte Build scheitert
