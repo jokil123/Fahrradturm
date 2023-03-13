@@ -1,0 +1,15 @@
+\subsection{Datenbank}
+
+"Cloud Firestore is optimized for storing large collections of small documents."\cite{cloud_firestore_datenmodell}
+
+Die Grundidee ist die es, die Daten schon so weit vorbereitet zu speichern, dass sie mit so wenig Aufwand wie möglich abgerufen und ausgegeben werden können. Um hingegen möglichst effizient zu sein, sollten die Collections möglichst groß sein, die Dokumente hingegen möglichst klein.
+
+\subsubsection{Arten von Datenverknüpfung}
+
+Um Daten zu verknüpfen gibt es für das Projektteam zwei Varianten:
+
+\paragraph{Tiefe Ebene}
+Die Verknüpfung wird als Spalte mit dem eindeutigen Namen des zu Verknüpfenden, als Booleanwert true gespeichert.  Dadurch kann die Datenbank einfach auf andere Datenbanken verschoben werden, es wird aber auch bei der Abfrage mehr Processing benötigt.
+
+\paragraph{Höhere Ebene}
+In Firestore gibt es die Möglichkeit Referenzen zu erstellen. Dies stellt dies die beste Art dar, da diese speziell auf Firestore optimiert wurde und das Fehlerpotential durch eine automatische Überprüfung der Referenz minimiert werden kann. Die Verknüpfung erfolgt dabei auf den Dokumentennamen.
