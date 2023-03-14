@@ -11,27 +11,36 @@
   \item Stromverbrauch
 \end{itemize}
 
-\begin{longtable}{|c|c|c|c|c|c|c|c|}
+\begin{tiny}
+  avx
+\end{tiny}
+
+\tiny
+\begin{longtable}{|p{0.15\textwidth}|r|r|r|r|r|r|r|}
   % \makecell{Variante                                                                                                                                                                                                                                                                                                                                            \\Punkte}                                               &
-  Variante                       & \ve{Investitionssumme [€]}          & \ve{Platzverbrauch [m²]}                  & \ve{Kapazität [Stk.]}             & \ve{Investitionssumme pro Fahrrad [€/Stk.]} & \ve{Platzverbrauch pro Fahrrad [m²/Stk.]} & \ve{Fahrraddurchsatz [Stk./Stunde]} & \ve{Durchschnittliche Einlagerungszeit [s]} \\ \hline
+  Variante                                           & \ve{Investitionssumme [€]}                & \ve{Platzverbrauch [m²]}                  & \ve{Kapazität [Stk.]}               & \ve{Investitionssumme pro Fahrrad [€/Stk.]} & \ve{Platzverbrauch pro Fahrrad [m²/Stk.]} & \ve{Fahrraddurchsatz [Lagervorgänge/Stunde]} & \ve{Durchschnittliche Einlagerungszeit [s]} \\ \hline
 
-  Bestehende Systeme                                                                                                                                                                                                                                                                                                                 \\
+  Bestehende Systeme                                                                                                                                                                                                                                                                                                                                                      \\
   %DONE
-  Paternoster 20 Räder (Vlocker) & 100.000                             & 5,57\cite{vlocker_fläche,parkplatz_größe} & 20\cite{vlocker_kapazität}        & 5.000\cite{vlocker_preis}                   & 0,28                                      & 70\cite{vlocker_durchsatz}          & 12                                          \\
-  Rondell                        & 825.000\cite{rondell_preis}         & 50\cite{rondell_fläche}                   & 186\cite{rondell_kapazität}       & 6.700                                       & 0.41                                      & 260\cite{rondell_durchsatz}         & 14                                          \\
-  Rondell Unterirdisch           & 1.000.000\cite{rondell_unter_preis} & 50\cite{rondell_unter_fläche}             & 186\cite{rondell_unter_kapazität} & 6.700                                       & 0.41                                      & 260\cite{rondell_unter_durchsatz}   & 14                                          \\
-  Fahrradbox                     & 1.000.000\cite{box_preis}           & 50\cite{box_fläche}                       & 186\cite{box_kapazität}           & 6.700                                       & 0.41                                      & 260\cite{box_durchsatz}             & 14                                          \\
+  Paternoster 20 Räder (Vlocker)                     & 100.000                                   & 5,57\cite{vlocker_fläche,parkplatz_größe} & 20\cite{vlocker_kapazität}          & 5.000\cite{vlocker_preis}                   & 0.28                                      & ?                                            & ?                                           \\
+  %DONE
+  Rondell (Wöhr Bikesafe)                            & 825.000\cite{richtpreisangebot}           & 50,00\cite{wöhr_fläche}                   & 122\cite{richtpreisangebot}         & 6.800                                       & 0.41                                      & 225                                          & 16\cite{wöhr_time}                          \\
   % DONE
-  Fahrradständer                 & 53\cite{ständer_preis}              & -                                         & -                                 & -                                           & 2.1\cite{leitfaden_vorarlberg}            & -                                   & -                                           \\
+  Rondell Unterirdisch (Eco Cycle)                   & 1.400.000\cite{ecocycle_cost}             & 8,56\cite{ecocycle_giken}                 & 204\cite{ecocycle_giken}            & 6.900                                       & 0.04                                      & 280                                          & 13\cite{ecocycle_specifications}            \\
   % DONE
-  Unterirdischer Fahrradständer  & 60.000.000\cite{ständer_unter}      & -                                         & 11.000\cite{ständer_unter}        & 5.454,55                                    & -                                         & -                                   & -                                           \\
+  Fahrradbox                                         & 32.500\cite{box_angebot_orion}            & 24,10\cite{box_angebot_orion}             & 30\cite{box_angebot_orion}          & 1.100                                       & 0.80                                      & -                                            & -                                           \\
+  % DONE
+  Fahrradständer                                     & -                                         & -                                         & -                                   & 53\cite{ständer_preis}                      & 2.1\cite{leitfaden_vorarlberg}            & -                                            & -                                           \\
+  % DONE
+  Unterirdischer Fahrradständer (Amsterdam Centraal) & 60.000.000\cite{ständer_unter}            & -                                         & 11.000\cite{ständer_unter}          & 5.500                                       & -                                         & -                                            & -                                           \\
 
-  Neue Systeme                                                                                                                                                                                                                                                                                                                       \\
-  Rondell Auslagerung von Außen  & 1.000.000\cite{rondell_außen_preis} & 50\cite{rondell_außen_fläche}             & 186\cite{rondell_außen_kapazität} & 6.700                                       & 0.41                                      & 260\cite{rondell_außen_durchsatz}   & 14                                          \\
-  Hochregallager                 & 1.000.000\cite{hoch_preis}          & 50\cite{hoch_fläche}                      & 186\cite{hoch_kapazität}          & 6.700                                       & 0.41                                      & 260\cite{hoch_durchsatz}            & 14                                          \\
+  Neue Systeme                                                                                                                                                                                                                                                                                                                                                            \\
+  Rondell Auslagerung von Außen                      & 1.461.000\cite{ltw_kosten_konstruktionen} & 21,52\cite{ltw_kosten_konstruktionen}     & 104\cite{ltw_kosten_konstruktionen} & 14.000                                      & 0.21                                      & 70\cite{ltw_spielzeiten_20m_rondell}         & 51                                          \\
+
+  Hochregallager                                     & 1.005.000\cite{ltw_kosten_konstruktionen} & 115,96\cite{ltw_kosten_konstruktionen}    & 212\cite{ltw_kosten_konstruktionen} & 4.700                                       & 0.55                                      & 70\cite{ltw_spielzeiten_15m}                 & 51                                          \\
 
   % This is a hack but idc
-  \multicolumn{2}{c}{}                                                                                                                                                                                                                                                                                                               \\
+  \multicolumn{2}{c}{}                                                                                                                                                                                                                                                                                                                                                    \\
 
   \caption{Quantitative Kriterien}
   \label{tab:quantitative_kriterien}
