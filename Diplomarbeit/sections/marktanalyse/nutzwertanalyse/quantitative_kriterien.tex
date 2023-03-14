@@ -11,28 +11,27 @@
   \item Stromverbrauch
 \end{itemize}
 
-\begin{longtable}{|c|c|c|c|c|c|c|c|c|}
-  \makecell{Variante                                                                                                                                                                                                                     \\Punkte}                                               &
-  \rotatebox{90}{Investitionssumme [€]}                  &
-  \rotatebox{90}{Platzverbrauch [m²]}                    &
-  \rotatebox{90}{Kapazität [Stk.]}                       &
-  \rotatebox{90}{Investitionssumme pro Fahrrad [€/Stk.]} &
-  \rotatebox{90}{Platzverbrauch pro Fahrrad [m²/Stk.]}   &
-  \rotatebox{90}{Fahrraddurchsatz [Stk./Stunde]}         &
-  \rotatebox{90}{Durchschnittliche Einlagerungszeit [s]} &
-  \rotatebox{90}{Stromverbrauch [kWh/Jahr]}                                                                                                                                                                                              \\
-  \hline
+\begin{longtable}{|c|c|c|c|c|c|c|c|}
+  % \makecell{Variante                                                                                                                                                                                                                                                                                                                                            \\Punkte}                                               &
+  Variante                       & \ve{Investitionssumme [€]}          & \ve{Platzverbrauch [m²]}                  & \ve{Kapazität [Stk.]}             & \ve{Investitionssumme pro Fahrrad [€/Stk.]} & \ve{Platzverbrauch pro Fahrrad [m²/Stk.]} & \ve{Fahrraddurchsatz [Stk./Stunde]} & \ve{Durchschnittliche Einlagerungszeit [s]} \\ \hline
 
-  Paternoster 20 Räder (Vlocker)                         & 320.000\cite{vlocker_preis} & 4.5\cite{vlocker_fläche} & 20\cite{vlocker_kapazität}  & 16.000 & 0.225 & 70\cite{vlocker_durchsatz}  & 12 & 1.000\cite{vlocker_stromverbrauch} \\
-                                                         & ?                           & 4                        & 2                           & ?      & 3     & ?                           & ?  & ?                                  \\
+  Bestehende Systeme                                                                                                                                                                                                                                                                                                                 \\
+  %DONE
+  Paternoster 20 Räder (Vlocker) & 100.000                             & 5,57\cite{vlocker_fläche,parkplatz_größe} & 20\cite{vlocker_kapazität}        & 5.000\cite{vlocker_preis}                   & 0,28                                      & 70\cite{vlocker_durchsatz}          & 12                                          \\
+  Rondell                        & 825.000\cite{rondell_preis}         & 50\cite{rondell_fläche}                   & 186\cite{rondell_kapazität}       & 6.700                                       & 0.41                                      & 260\cite{rondell_durchsatz}         & 14                                          \\
+  Rondell Unterirdisch           & 1.000.000\cite{rondell_unter_preis} & 50\cite{rondell_unter_fläche}             & 186\cite{rondell_unter_kapazität} & 6.700                                       & 0.41                                      & 260\cite{rondell_unter_durchsatz}   & 14                                          \\
+  Fahrradbox                     & 1.000.000\cite{box_preis}           & 50\cite{box_fläche}                       & 186\cite{box_kapazität}           & 6.700                                       & 0.41                                      & 260\cite{box_durchsatz}             & 14                                          \\
+  % DONE
+  Fahrradständer                 & 53\cite{ständer_preis}              & -                                         & -                                 & -                                           & 2.1\cite{leitfaden_vorarlberg}            & -                                   & -                                           \\
+  % DONE
+  Unterirdischer Fahrradständer  & 60.000.000\cite{ständer_unter}      & -                                         & 11.000\cite{ständer_unter}        & 5.454,55                                    & -                                         & -                                   & -                                           \\
 
-  Rondell                                                & 825.000\cite{rondell_preis} & 50\cite{rondell_fläche}  & 186\cite{rondell_kapazität} & 6.700  & 0.41  & 260\cite{rondell_durchsatz} & 14 & ?\cite{rondell_stromverbrauch}     \\
-                                                         & ?                           & ?                        & ?                           & ?      & ?     & ?                           & ?  & ?                                  \\
-
-
+  Neue Systeme                                                                                                                                                                                                                                                                                                                       \\
+  Rondell Auslagerung von Außen  & 1.000.000\cite{rondell_außen_preis} & 50\cite{rondell_außen_fläche}             & 186\cite{rondell_außen_kapazität} & 6.700                                       & 0.41                                      & 260\cite{rondell_außen_durchsatz}   & 14                                          \\
+  Hochregallager                 & 1.000.000\cite{hoch_preis}          & 50\cite{hoch_fläche}                      & 186\cite{hoch_kapazität}          & 6.700                                       & 0.41                                      & 260\cite{hoch_durchsatz}            & 14                                          \\
 
   % This is a hack but idc
-  \multicolumn{2}{c}{}                                                                                                                                                                                                                   \\
+  \multicolumn{2}{c}{}                                                                                                                                                                                                                                                                                                               \\
 
   \caption{Quantitative Kriterien}
   \label{tab:quantitative_kriterien}
