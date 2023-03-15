@@ -44,7 +44,35 @@ Falls man das Fahrrad noch nicht abgeholt hat, wird außerdem ein Button zum Aus
 Die Abbildung \ref{fig:screenboxinfo} zeigt links die Ansicht bei einer bereits vergangenen Buchung und rechts die Ansicht bei einer aktiven Buchung.\\
 
 
-\paragraph{Assignment}
+\paragraph{Assignment}Der Screen Assignment wird zum Aus- und Einlagern von Gegenständen verwendet.\\
+Mit der Funktion UseEffect, die am Rendern des Screens ausführt, wird die Funktion storeBike durchgeführt. Die Funktion überprüft zuerst mit dem Standort der anwendenden Person, ob er sich tatsächlich in der Nähe des Fahrradturms befindet. Das Projektteam hat sich für eine maximale Entfernung von 250m entschieden, damit es bei Testzwecken zu keinen Problemen kommt. \\
+Falls sich der anwendenden Person innerhalb des definierten Umkreises befindet, wird die Anfrage in Firestore erstellt. Diese befindet sich im Pfad tower/towerid/jobs. Dabei wird ein Listener erstellt, der bei einer Änderung der Anfrage durch den Tower-Controller, die Anfrage erneut aus der Datenbank abruft.\\
+Anschließend wird auf die Antwort vom Tower-Controller gewartet. Dabei gibt es verschiedene Szenarien:\\
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.25\textwidth]{images/app-screenshots/waitinga.png}
+    \includegraphics[width=0.25\textwidth]{images/app-screenshots/waitingb.png}
+    \caption{Schicken der Anfrage zum Aus-/Einlagern}
+    \label{fig:screenwaiting}
+\end{figure}
+Abbildung \ref{fig:screenwaiting}: Beim Schicken der Anfrage kommt die Nachricht „Waiting for an available space“ beim Einlagern und beim Auslagern die Nachricht „Waiting for bike to store out“.\\
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.25\textwidth]{images/app-screenshots/recieved.png}
+    \includegraphics[width=0.25\textwidth]{images/app-screenshots/error.png}
+    \caption{JobRecieved}
+    \label{fig:screenwaiting}
+\end{figure}
+Abbildung \ref{fig:screenwaiting} links: Wenn der Tower-Controller die Anfrage bekommen hat, wird die Meldung „Job recieved“ angezeigt.\\
+Abbildung \ref{fig:screenwaiting} rechts: Falls der Tower-Controller eine Fehlermeldung sendet, wird diese mit roter Schrift angezeigt.\\
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.25\textwidth]{images/app-screenshots/succes.png}
+    \caption{JobSuccessful}
+    \label{fig:success}
+\end{figure}
+Abbildung \ref{fig:success}: Falls der Job erfolgreich abgeschlossen wurde, wird entweder die Box mit dem Fahrrad oder den Paketboxen angezeigt.\\
 
 \paragraph{Services}Beim Screen Services werden verschiedene Dienstleistungen angezeigt. Dafür wird die Komponente OtherLink verwendet, mit der man zu einer Unterseite gelangt.\\
 \begin{figure}[H]
@@ -140,3 +168,42 @@ Anschließend werden alle Marker auf der Karte angezeigt. Die Funktion MarkerIma
 
 Die Abbildung links zeigt die Karte, wenn die Türme noch nicht aus der Datenbank geladen sind.
 Auf der Abbildung rechts sieht man eine Karte mit vier Beispiel-Türmen. Der Turm links oben ist grau, da dort kein Platz frei ist. \\
+
+\paragraph{TowerInfo}Beim Screen „Towerinfo“ werden Daten zum Fahrradturm angezeigt. Sie werden über das Objekt Route übergeben.\\
+Es werden folgende Daten angezeigt:
+\begin{itemize}
+    \item Name des Turmes
+    \item Karte mit Standort vom Turm
+    \item Anzahl verfügbarer Boxen und aller Boxen
+\end{itemize}
+
+Falls man nicht angemeldet ist:
+\begin{itemize}
+    \item Button mit Aufforderung zum Anmelden
+\end{itemize}
+
+Falls man angemeldet ist:\\
+\begin{itemize}
+    \item Möglichkeit zum Lagern von Fahrrad oder Gegenstand
+    \item Gegenstände, die im Turm gelagert sind (Komponente Box)
+\end{itemize}
+
+Mit einem Klick auf das Aktualisieren-Symbol auf der rechten oberen Ecke, werden die aktuellen Daten des Turmes von der Datenbank abgerufen. \\
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.25\textwidth]{images/app-screenshots/screentowerinfoa.png}
+    \includegraphics[width=0.25\textwidth]{images/app-screenshots/screentowerinfob.png}
+    \caption{Screen TowerInfo}
+    \label{fig:screentowerinfograu}
+\end{figure}
+Abbildung \ref{fig:screentowerinfograu} links: Falls die anwendende Person noch nicht angemeldet ist, erscheint ein grauer Button mit Aufforderung zum Anmelden. Beim Klicken auf den Button wird man zu den Einstellungen navigiert.\\
+Abbildung \ref{fig:screentowerinfograu} rechts: Falls die anwendende Person angemeldet ist, aber kein freie Fahrradbox verfügbar ist, wird der Button mit einer grauen Farbe angezeigt. Beim Klicken auf den Button erscheint die Meldung „no available space“.\\
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.25\textwidth]{images/app-screenshots/screentowerinfoc.png}
+    \includegraphics[width=0.25\textwidth]{images/app-screenshots/screentowerinfod.png}
+    \caption{Screen TowerInfo}
+    \label{fig:screentowerinfo}
+\end{figure}
+Abbildung \ref{fig:screentowerinfo} links: Falls die anwendende Person angemeldet ist und es einen freien Platz gibt, erscheint der Button in grüner Farbe. Mit dem SwitchSelector kann man die Art der Box auswählen. Beim Klicken auf den Button wird man zum Screen „Assignment“ navigiert.\\
+Abbildung \ref{fig:screentowerinfo} rechts: Falls die anwendende Person angemeldet ist und eine Box beim Turm gelagert hat, erscheint diese als Komponente Box in der Mitte des Bildschirms. Mit einem Klick auf die Box, kommt man zum Screen „BoxInfo“.
