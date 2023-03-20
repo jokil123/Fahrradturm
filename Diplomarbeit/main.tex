@@ -9,9 +9,14 @@
 
 \usepackage[printonlyused,withpage]{acronym} % The acronym package is used to create an acronym list
 
-\usepackage{biblatex} % The biblatex package is used to import the bibliography
+\usepackage[
+  backend=biber,
+  style=authoryear,
+]{biblatex} % The biblatex package is used to import the bibliography
 \addbibresource{literatur.bib} % The bibliography is imported from the file "literatur.bib"
 \addbibresource{literatur_nutzwertanalyse.bib}
+
+\newcommand{\citev}[1]{(vgl. \cite{#1})}
 
 \usepackage{hyperref} % The hyperref package is used to create hyperlinks
 
