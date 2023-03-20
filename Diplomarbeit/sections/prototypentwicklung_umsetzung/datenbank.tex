@@ -21,29 +21,38 @@ Das Datenbankschema ist trotz der Verwendung einer Dokumenten-Datenbank änhlich
 \paragraph{Tower}
 Tower repräsentieren die einzelnen Standorte der Fahrradtürme. Sie enthalten die Koordinaten des Standortes, den namen des Standortes und die Kapazität des Standortes.
 
-\begin{minted}{typescript}
+\begin{listing}[H]
+    \begin{minted}{typescript}
 Tower {
     layout: [number],
     location: LatLng,
     name: String,
 }
-\end{minted}
+    \end{minted}
+    \caption{Schema für Tower Dokumente}
+    \label{lst:datenbankschema_tower}
+\end{listing}
 
 \paragraph{Box}
 Eine Box repräsentiert einen einzelnen Lagerplatz bzw. Stellplatz im Fahrradturm. Sie enthalten die Art des Lagerplatzes und die ID des Nutzers, der den Platz aktuell nutzt (sofern der Stellplatz belegt ist).
 
-\begin{minted}{typescript}
+\begin{listing}[H]
+    \begin{minted}{typescript}
 Box {
     boxType: "bike" | "item",
     rentedBy?: String,
 }
-\end{minted}
+    \end{minted}
+    \caption{Schema für Box Dokumente}
+    \label{lst:datenbankschema_box}
+\end{listing}
 
 
 \paragraph{Job}
 Jobs sind für die Kommunikation zwischen Turm und App verantwortlich. Sie enthalten Informationen über den Typ des Jobs, den Nutzer, der den Job anfrägt, die Box, die betroffen ist und den Status des Jobs. Je nach Typ des Jobs und Job-Fortschritt sind manche Felder nötigt oder leer.
 
-\begin{minted}{typescript}
+\begin{listing}[H]
+    \begin{minted}{typescript}
 Job {
     assignmentType: "store" | "retrieve",
     error?: "noFreeSlots" | "invalidMessage" | "invalidPermissions" | ...,
@@ -53,24 +62,31 @@ Job {
     boxType?: "bike" | "item",
 }
 \end{minted}
-
+    \caption{Schema für Job Dokumente}
+    \label{lst:datenbankstruktur_job}
+\end{listing}
 
 \paragraph{User}
 User enthalten die Informationen über einen einzelnen Nutzer. Sie enthalten den Namen, die E-Mail-Adresse und den Status des Nutzers (ob er ein kostenpflichtiges Abo hat oder nicht).
 
-\begin{minted}{typescript}
+\begin{listing}[H]
+    \begin{minted}{typescript}
 User {
     name: String,
     email: String,
     subscription: "free" | "premium"
 }
 \end{minted}
+    \caption{Schema für User Dokumente}
+    \label{lst:datenbankstruktur_user}
+\end{listing}
 
 
 \paragraph{Rental}
 Ein Rental repräsentiert einen einzelnen Verleihvorgang. Sie enthalten die ID des Turms, bei dem die Box gemietet wurde, die ID der Box, den Startzeitpunkt der Miete und den Endzeitpunkt der Miete (sofern die Miete bereits beendet ist).
 
-\begin{minted}{typescript}
+\begin{listing}[H]
+    \begin{minted}{typescript}
 Rental {
     towerId: String,
     boxId: String,
@@ -78,12 +94,16 @@ Rental {
     end?: Timestamp,
 }
 \end{minted}
+    \caption{Schema für Rental Dokumente}
+    \label{lst:datenbankstruktur_rental}
+\end{listing}
 
 
 \paragraph{Key}
 Keys sind dafür da um Dritten Zugriff auf vermietete Boxen eines Nutzers zu gewähren. Je nach verwendungszweck kann ein ablaufdatum für den Key gesetzt werden. Zudem kann auch ein Limit für die Anzahl der Verwendungen gesetzt werden (separat für ein- und auslagerung). Keys werden zum Beispiel dazu verwendet um Paketlieferanten Zugriff auf die Boxen zu gewähren, damit diese ein Paket abliefern können.
 
-\begin{minted}{typescript}
+\begin{listing}[H]
+    \begin{minted}{typescript}
 Key {
     start: Timestamp,
     end?: Timestamp,
@@ -92,3 +112,6 @@ Key {
     token: String,
 }
 \end{minted}
+    \caption{Schema für Key Dokumente}
+    \label{lst:datenbankstruktur_key}
+\end{listing}

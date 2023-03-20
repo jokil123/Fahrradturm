@@ -55,13 +55,17 @@ In Abbildung \ref{fig:tower_controller_v4_event_handling} werden nicht mögliche
 
 \texttt{TowerDatabase} kümmert sich um die Kommunikation mit der Datenbank. Es ist ein \Gls{wrapper} für die Datenbankverbindung der \texttt{firestore\_rs} Softwarebilbiothek. Es soll die interaktion mit der Datenbank vereinfachen und die möglichkeit von Fehlern minimieren.
 
-\begin{minted}{rust}
+\begin{listing}[H]
+  \begin{minted}{rust}
 struct TowerDatabase {
     db: FirestoreDb,
     tower_id: String,
     project_id: String,
 }
-\end{minted}
+  \end{minted}
+  \caption{TowerDatabase Struktur}
+  \label{lst:tower_database_struktur}
+\end{listing}
 
 Felder:
 \begin{itemize}
@@ -89,8 +93,8 @@ Methoden:
 
 \texttt{Tower} ist die Datenstruktur des Turms. Sie enthält alle Informationen über den Turm und die Boxen. Sie wird von der \texttt{AssignmentScheduler} Klasse verwendet, um die Boxen zu verwalten. Tower enthält zusätzlich Methoden um die Datenstruktur zu verwalten.
 
-
-\begin{minted}{rust}
+\begin{listing}[H]
+  \begin{minted}{rust}
 struct Tower {
     id: String,
     slots: HashMap<Vec<u32>, Slot>,
@@ -98,6 +102,9 @@ struct Tower {
     db: Arc<TowerDatabase>,
 }
 \end{minted}
+  \caption{Tower Struktur}
+  \label{lst:tower_struktur}
+\end{listing}
 
 Felder:
 \begin{itemize}
@@ -124,13 +131,17 @@ Methoden:
 
 Der AssignmentScheduler hört auf Datenbankevents und verarbeitet diese.
 
-\begin{minted}{rust}
+\begin{listing}[H]
+  \begin{minted}{rust}
 pub struct AssignmentScheduler {
     db: Arc<TowerDatabase>,
     tower: Arc<Mutex<Tower>>,
     listener: FirestoreListener<FirestoreDb, HashMapTokenStorage>,
 }
 \end{minted}
+  \caption{AssignmentScheduler Struktur}
+  \label{lst:assignment_scheduler_struktur}
+\end{listing}
 
 Felder:
 \begin{itemize}

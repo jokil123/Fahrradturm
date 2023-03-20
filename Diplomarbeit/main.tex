@@ -24,14 +24,16 @@
 \usepackage{longtable} % The longtable package is used to create long tables that span multiple pages
 \usepackage{multirow} % The multirow package is used to create multirow cells in tables
 \usepackage{makecell} % The makecell package is used to create multirow cells in tables
+\usepackage{booktabs}
 
 \usepackage{minted}
+\usepackage{listings}
+
+\addto\captionsngerman{\renewcommand{\listingscaption}{Code-Aufflistung}}
 
 \input{sections/glossar_definitionen.tex}
 
 \usepackage{dirtree}
-
-\usepackage{booktabs}
 
 \usepackage{caption}
 \usepackage{subcaption}
@@ -106,6 +108,9 @@
 \clearpage
 
 \subfile{sections/abildungsverzeichnis.tex}
+\clearpage
+
+\subfile{sections/codeverzeichnis.tex}
 \clearpage
 
 \subfile{sections/tabellenverzeichnis.tex}

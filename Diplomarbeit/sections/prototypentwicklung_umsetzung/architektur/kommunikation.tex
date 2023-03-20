@@ -40,13 +40,17 @@ Es gibt einige Felder welche bei jedem Job vorhanden sind bzw. immer die gleiche
 
 Einlager Jobs müssen folgende Felder enthalten:
 
-\begin{minted}{typescript}
+\begin{listing}[H]
+  \begin{minted}{typescript}
 Job {
     assignmentType: "store",
     userId: String,
     boxType: "bike" | "item",
 }
 \end{minted}
+  \caption{Einlager Anfrage Assignment Struktur}
+  \label{lst:einlager_assignment_struktur}
+\end{listing}
 
 \begin{itemize}
   \item \texttt{assignmentType} gibt an, dass es sich um einen Einlagerjob handelt.
@@ -55,7 +59,8 @@ Job {
 
 Falls der Fahrradturm den Job erfolgreich empfangen hat, wird das Feld \texttt{confirmation} auf \texttt{jobRecieved} gesetzt. Nun wird der Job auf der Seite des Fahrradturms ausgeführt. Sobald der Job abgeschlossen ist, wird das Feld \texttt{confirmation} auf \texttt{jobCompleted} gesetzt. Das Feld \texttt{boxId} wird ebenfalls gesetzt, welches die ID der Box ist, in der das Item/Fahrrad abgelegt wurde. Ein abgeschlossener Einlagerjob sieht wie folgt aus:
 
-\begin{minted}{typescript}
+\begin{listing}[H]
+  \begin{minted}{typescript}
 Job {
     assignmentType: "store",
     userId: String,
@@ -64,18 +69,25 @@ Job {
     boxId: String,
 }
 \end{minted}
+  \caption{Einlagerbestätigung Assignment Struktur}
+  \label{lst:einlagerbestaetigung_assignment_struktur}
+\end{listing}
 
 \paragraph{Auslagern}
 
 Auslager Jobs müssen folgende Felder enthalten:
 
-\begin{minted}{typescript}
+\begin{listing}[H]
+  \begin{minted}{typescript}
 Job {
     assignmentType: "retrieve",
     userId: String,
     boxId: String,
 }
 \end{minted}
+  \caption{Auslager Anfrage Assignment Struktur}
+  \label{lst:auslager_assignment_struktur}
+\end{listing}
 
 \begin{itemize}
   \item \texttt{assignmentType} gibt an, dass es sich um einen Auslagerjob handelt.
@@ -84,7 +96,8 @@ Job {
 
 Ein abgeschlossener Auslagerjob sieht wie folgt aus:
 
-\begin{minted}{typescript}
+\begin{listing}[H]
+  \begin{minted}{typescript}
 Job {
     assignmentType: "retrieve",
     userId: String,
@@ -92,3 +105,6 @@ Job {
     confirmation: "jobCompleted",
   }
 \end{minted}
+  \caption{Auslagerbestätigung Assignment Struktur}
+  \label{lst:auslagerbestaetigung_assignment_struktur}
+\end{listing}

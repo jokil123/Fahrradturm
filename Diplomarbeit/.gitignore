@@ -20,5 +20,6 @@ _minted-main
 *.pyg
 *.gls
 *.glg
+*.lol
 
 Exported Items.bib
