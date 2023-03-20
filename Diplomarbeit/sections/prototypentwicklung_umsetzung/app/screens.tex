@@ -22,7 +22,7 @@ Auf dem Screen BoxInfo werden folgende Daten angezeigt:\\
     \item Beginn der Buchung und falls die Buchung in der Vergangenheit liegt, zusätzlich die Zeit der Abholung
     \item Komponente BoxImage für Bild der Fahrradbox
 \end{itemize}
-Diese Infos werden über die Navigation übergeben.\\ 
+Diese Infos werden über die Navigation übergeben.\\
 \begin{minted}{js}
     navigation.navigate("boxinfo", { box: this.props.boxinfo })
 \end{minted}
@@ -61,10 +61,10 @@ Abbildung \ref{fig:screenwaiting}: Beim Schicken der Anfrage kommt die Nachricht
     \includegraphics[width=0.25\textwidth]{images/app-screenshots/recieved.png}
     \includegraphics[width=0.25\textwidth]{images/app-screenshots/error.png}
     \caption{JobRecieved}
-    \label{fig:screenwaiting}
+    \label{fig:screenrecieved}
 \end{figure}
-Abbildung \ref{fig:screenwaiting} links: Wenn der Tower-Controller die Anfrage bekommen hat, wird die Meldung „Job recieved“ angezeigt.\\
-Abbildung \ref{fig:screenwaiting} rechts: Falls der Tower-Controller eine Fehlermeldung sendet, wird diese mit roter Schrift angezeigt.\\
+Abbildung \ref{fig:screenrecieved} links: Wenn der Tower-Controller die Anfrage bekommen hat, wird die Meldung „Job recieved“ angezeigt.\\
+Abbildung \ref{fig:screenrecieved} rechts: Falls der Tower-Controller eine Fehlermeldung sendet, wird diese mit roter Schrift angezeigt.\\
 
 \begin{figure}[H]
     \centering
@@ -116,7 +116,7 @@ Mit einem Klick auf den Button „Sign in“ wird die Funktion SignIn ausgeführ
 \end{minted}
 
 Dabei wird die Methode signInWithEmailAndPasswort des Authentizierungs-Service auth von Firebase verwendet. Es werden die eingegebene E-Mail und Passwort übergeben. Bei einer erfolgreichen Anmeldung bekommt die anwendende Person die Meldung „signed in“ und wird zum Screen „Settings“ zurückgeleitet.\\
-Beim Klicken auf den Button „Register“ wir man zur Seite SignIn geführt.\\
+Beim Klicken auf den Button „Register“ wird man zur Seite SignIn geführt.\\
 
 
 \paragraph{SignIn}Der Screen SignIn dient zum Erstellen eines Accounts. In den Textfeldern kann man den eigenen Namen, die E-Mail und ein Passwort eingeben.\\
@@ -148,7 +148,7 @@ Wenn man auf den button „create Account“ klickt, wird die Funktion createAcc
 
 Die Methode createUserWithEmailAndPasswort, die zum Erstellen eines Users verwendet wird, ist vergleichbar mit signInWithEmailAndPasswort. Sie erstellt beim Authentifizierungs-Service auth einen neuen User und meldet diesen an. Falls die Erstellung des Accounts erfolgreich ist, werden folgende Schritte ausgeführt:
 \begin{itemize}
-    \item Die Funktion addUser wird ausgeführt. Damit wird für den User in Firestore ein Dokument mit dem Namen und der userid erstellt. 
+    \item Die Funktion addUser wird ausgeführt. Damit wird für den User in Firestore ein Dokument mit dem Namen und der userid erstellt.
     \item Ausgabe der Meldung "User signed in and logged in".
     \item Die anwendende Person wird zurück zu Settings navigiert.
 \end{itemize}
