@@ -1,9 +1,13 @@
 \subsubsection{Komponenten}
-Komponenten erlauben es in der Benutzeroberfläche wiederverwendbare Teile zu verwenden. Komponenten akzeptieren Eingaben, die „props“ genannt werden, und geben React-Elemente zurück.\cite{komponenten} \\
-In der App werden folgende Komponenten verwendet: \\
+Komponenten erlauben es in der Benutzeroberfläche wiederverwendbare Teile zu verwenden. Komponenten akzeptieren Eingaben, die „props“ genannt werden, und geben React-Elemente zurück.\cite{komponenten}
 
-\paragraph{Box}\mbox{}\\
+
+In der App werden folgende Komponenten verwendet:
+
+\paragraph{Box}
+
 Hiermit können die aktuell gelagerten Gegenstände oder vergangene Buchungen angezeigt werden. Angezeigt wird der Name des Einlagerungsortes, ein Icon (entweder ein Fahrrad oder Boxen) und das Datum der Einlagerung. Falls die Buchung zu Ende ist, wird außerdem das Enddatum angezeigt.\\
+
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.4\textwidth]{images/app-screenshots/boxwithbike.png}
@@ -16,6 +20,7 @@ Hiermit können die aktuell gelagerten Gegenstände oder vergangene Buchungen an
     \caption{Komponente Box mit Gegenstand}
     \label{fig:boxwithitem}
 \end{figure}
+
 Die Komponente wird auf den Seiten „Aktivität“ und „Fahrradturm“ verwendet. Dafür wird der folgende Code benutzt:\\
 
 \begin{minted}{js}
@@ -29,6 +34,7 @@ Verwendete Props:
 \end{itemize}
 
 \paragraph{SettingLink}Mit der Komponente SettingLink erstellt man einen Link, mit dem man zu einer Unterseite mit Einstellungen kommt. Die Komponente wird auf der Seite „Einstellungen“ verwendet.\\
+
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.4\textwidth]{images/app-screenshots/settinglink.png}
