@@ -31,7 +31,7 @@ Das Projekt wurde mit \texttt{cargo new} erstellt, deshalb ist die Projektstrukt
   \item Das Programm wartet nun auf Änderungen in der Datenbank.
 \end{enumerate}
 
-\begin{figure}[ht]
+\begin{figure}[H]
   \centering
   \includegraphics[width=1\textwidth]{images/tower_controller_v4_init.png}
   \caption{Intialisierung des Turm Controllers}
@@ -42,7 +42,7 @@ Das Projekt wurde mit \texttt{cargo new} erstellt, deshalb ist die Projektstrukt
 
 Wenn der Turm Controller ein Event empfängt wird dieses in der Event Handling Pipeline verarbeitet. Die Event Handling Pipeline besteht aus validierungs- und ausführungsstufen. Die validierungsstufen prüfen ob das Event gültig ist und ob es überhaupt verarbeitet werden muss. Die ausführungsstufen führen die eigentliche Verarbeitung des Events aus. Die funktionsweise der Event Handling Pipeline ist in Abbildung \ref{fig:tower_controller_v4_event_handling} dargestellt.
 
-\begin{figure}[!ht]
+\begin{figure}[H]
   \centering
   \includegraphics[width=0.8\textwidth]{images/tower_controller_v4_event_handling.png}
   \caption{Event Handling Pipeline}
