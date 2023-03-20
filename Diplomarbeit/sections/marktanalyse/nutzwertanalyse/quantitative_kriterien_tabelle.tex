@@ -1,45 +1,54 @@
 \newcommand{\naun}[1]{\textbf{\rotatebox{90}{\makecell[l]{#1}}}}
 
+\renewcommand{\footnotesize}{\tiny}
+
+% \newcommand{\fc}[1]{\footnote{\footnote{\cite{#1}}}}}}
+
+% I literally can't anymore, I'm sorry.
+% It worked before but we have to cite like this so I have to use footnotes
+% any my footnotes wouldn't stay on the same page as the table
+% and now theyre gone?!
+% I give up, please kill me...
+
 \pagestyle{empty}
 \newgeometry{top=5mm, bottom=10mm}
 
 \begin{landscape}
-  \setstretch{1}
-  \begin{longtable}{p{0.25\textwidth}rrrrrrr}
-    \toprule
-    \large\textbf{\makecell[r]{Quantitative Kriterien                                                                                                                                                                                                                                                                                     \\ Variante}}                           &
-    \naun{Investitionssumme                                                                                                                                                                                                                                                                                                               \\(€)}             &
-    \naun{Platzverbrauch                                                                                                                                                                                                                                                                                                                  \\(m²)}               &
-    \naun{Kapazität                                                                                                                                                                                                                                                                                                                       \\(Stk.)}            &
-    \naun{Investitionssumme                                                                                                                                                                                                                                                                                                               \\pro Fahrrad\\(€/Stk.)} &
-    \naun{Platzverbrauch                                                                                                                                                                                                                                                                                                                  \\pro Fahrrad\\(m²/Stk.)} &
-    \naun{Fahrraddurchsatz                                                                                                                                                                                                                                                                                                                \\(Stk./h)} &
-    \naun{Durchschnittliche                                                                                                                                                                                                                                                                                                               \\Einlagerungszeit\\(s)} \\
+  % \setstretch{1}
+  \begin{table}
+    \centering
+    \begin{tabular}{p{0.25\textwidth}rrrrrrr}
+      \toprule
+      \large\textbf{\makecell[r]{Quantitative Kriterien                                                                                                                                                                                                                                                                                                                                                           \\ Variante}}                           &
+      \naun{Investitionssumme                                                                                                                                                                                                                                                                                                                                                                                     \\(€)}             &
+      \naun{Platzverbrauch                                                                                                                                                                                                                                                                                                                                                                                        \\(m²)}               &
+      \naun{Kapazität                                                                                                                                                                                                                                                                                                                                                                                             \\(Stk.)}            &
+      \naun{Investitionssumme                                                                                                                                                                                                                                                                                                                                                                                     \\pro Fahrrad\\(€/Stk.)} &
+      \naun{Platzverbrauch                                                                                                                                                                                                                                                                                                                                                                                        \\pro Fahrrad\\(m²/Stk.)} &
+      \naun{Fahrraddurchsatz                                                                                                                                                                                                                                                                                                                                                                                      \\(Stk./h)} &
+      \naun{Durchschnittliche                                                                                                                                                                                                                                                                                                                                                                                     \\Einlagerungszeit\\(s)} \\
 
-    \midrule
+      \midrule                                                                                                                                                                                                                                                                                                                                                                                                    \\
 
-    \textbf{Bestehende Systeme}                                                                                                                                                                                                                                                                                                           \\
-    Paternoster 20 Räder (Vlocker)                     & 100.000                                     & \citev{vlocker_fläche,parkplatz_größe} 5,57 & \citev{vlocker_kapazität} 20          & \citev{vlocker_preis} 5.000 & 0.28                             & ?                                      & ?                                  \\
-    Rondell (Wöhr Bikesafe)                            & \citev{richtpreisangebot} 825.000           & \citev{wöhr_fläche} 50,00                   & \citev{richtpreisangebot} 122         & 6.800                       & 0.41                             & 225                                    & \citev{wöhr_time} 16               \\
-    Rondell Unterirdisch (Eco Cycle)                   & \citev{ecocycle_cost} 1.400.000             & \citev{ecocycle_giken} 8,56                 & \citev{ecocycle_giken} 204            & 6.900                       & 0.04                             & 280                                    & \citev{ecocycle_specifications} 13 \\
-    Fahrradbox                                         & \citev{box_angebot_orion} 32.500            & \citev{box_angebot_orion} 24,10             & \citev{box_angebot_orion} 30          & 1.100                       & 0.80                             & -                                      & -                                  \\
-    Fahrradständer                                     & -                                           & -                                           & -                                     & \citev{ständer_preis} 53    & \citev{leitfaden_vorarlberg} 2.1 & -                                      & -                                  \\
-    Unterirdischer Fahrradständer (Amsterdam Centraal) & \citev{ständer_unter} 60.000.000            & -                                           & \citev{ständer_unter} 11.000          & 5.500                       & -                                & -                                      & -                                  \\
+      \textbf{Bestehende Systeme}                                                                                                                                                                                                                                                                                                                                                                                 \\
+      Paternoster 20 Räder (Vlocker)                     & 100.000                                               & \footnote{\cite{vlocker_fläche,parkplatz_größe}} 5,57 & \footnote{\cite{vlocker_kapazität}} 20          & \footnote{\cite{vlocker_preis}} 5.000 & 0.28                                       & ?                                                & ?                                            \\
+      Rondell (Wöhr Bikesafe)                            & \footnote{\cite{richtpreisangebot}} 825.000           & \footnote{\cite{wöhr_fläche}} 50,00                   & \footnote{\cite{richtpreisangebot}} 122         & 6.800                                 & 0.41                                       & 225                                              & \footnote{\cite{wöhr_time}} 16               \\
+      Rondell Unterirdisch (Eco Cycle)                   & \footnote{\cite{ecocycle_cost}} 1.400.000             & \footnote{\cite{ecocycle_giken}} 8,56                 & \footnote{\cite{ecocycle_giken}} 204            & 6.900                                 & 0.04                                       & 280                                              & \footnote{\cite{ecocycle_specifications}} 13 \\
+      Fahrradbox                                         & \footnote{\cite{box_angebot_orion}} 32.500            & \footnote{\cite{box_angebot_orion}} 24,10             & \footnote{\cite{box_angebot_orion}} 30          & 1.100                                 & 0.80                                       & -                                                & -                                            \\
+      Fahrradständer                                     & -                                                     & -                                                     & -                                               & \footnote{\cite{ständer_preis}} 53    & \footnote{\cite{leitfaden_vorarlberg}} 2.1 & -                                                & -                                            \\
+      Unterirdischer Fahrradständer (Amsterdam Centraal) & \footnote{\cite{ständer_unter}} 60.000.000            & -                                                     & \footnote{\cite{ständer_unter}} 11.000          & 5.500                                 & -                                          & -                                                & -                                            \\
 
-    \midrule
+      \midrule
 
-    \textbf{Neue Systeme}                                                                                                                                                                                                                                                                                                                 \\
-    Rondell Auslagerung von Außen                      & \citev{ltw_kosten_konstruktionen} 1.461.000 & \citev{ltw_kosten_konstruktionen} 21,52     & \citev{ltw_kosten_konstruktionen} 104 & 14.000                      & 0.21                             & \citev{ltw_spielzeiten_20m_rondell} 70 & 51                                 \\
-    Hochregallager                                     & \citev{ltw_kosten_konstruktionen} 1.005.000 & \citev{ltw_kosten_konstruktionen} 115,96    & \citev{ltw_kosten_konstruktionen} 212 & 4.700                       & 0.55                             & \citev{ltw_spielzeiten_15m} 70         & 51                                 \\
+      \textbf{Neue Systeme}                                                                                                                                                                                                                                                                                                                                                                                       \\
+      Rondell Auslagerung von Außen                      & \footnote{\cite{ltw_kosten_konstruktionen}} 1.461.000 & \footnote{\cite{ltw_kosten_konstruktionen}} 21,52     & \footnote{\cite{ltw_kosten_konstruktionen}} 104 & 14.000                                & 0.21                                       & \footnote{\cite{ltw_spielzeiten_20m_rondell}} 70 & 51                                           \\
+      Hochregallager                                     & \footnote{\cite{ltw_kosten_konstruktionen}} 1.005.000 & \footnote{\cite{ltw_kosten_konstruktionen}} 115,96    & \footnote{\cite{ltw_kosten_konstruktionen}} 212 & 4.700                                 & 0.55                                       & \footnote{\cite{ltw_spielzeiten_15m}} 70         & 51                                           \\
 
-    \bottomrule
-
-    % This is a hack but idc
-    \multicolumn{2}{c}{}                                                                                                                                                                                                                                                                                                                  \\
-
+      \bottomrule
+    \end{tabular}
     \caption{Quantitative Kriterien}
     \label{tab:quantitative_kriterien}
-  \end{longtable}
+  \end{table}
 \end{landscape}
 
 \pagestyle{plain}
