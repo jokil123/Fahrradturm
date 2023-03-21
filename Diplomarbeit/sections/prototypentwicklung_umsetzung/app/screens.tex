@@ -23,15 +23,24 @@ Auf dem Screen BoxInfo werden folgende Daten angezeigt:\\
     \item Komponente BoxImage für Bild der Fahrradbox
 \end{itemize}
 Diese Infos werden über die Navigation übergeben.\\
+\begin{listing}[H]
 \begin{minted}{js}
     navigation.navigate("boxinfo", { box: this.props.boxinfo })
 \end{minted}
-Der Code zeigt, wie man von der Komponente Box zum aktuellen Screen navigiert wird. Dort wird das Array boxinfo übergeben.\\
+\caption{Methode zum Navigieren}
+  \label{lst:navigation}
+\end{listing}
+
+Bei \ref*{lst:navigation} wird gezeigt, wie man von der Komponente Box zum aktuellen Screen navigiert wird. Dort wird das Array boxinfo übergeben.\\
+\begin{listing}[H]
 \begin{minted}{js}
     export default function BoxInfo({ route, navigation }) {
     const { box } = route.params;
     ...}
 \end{minted}
+\caption{Zugriff auf Variable Box}
+  \label{lst:zugriff}
+\end{listing}
 Beim aktuellen Screen wird nun die Variable Box mithilfe von route.params abgerufen. \\ \\
 Falls man das Fahrrad noch nicht abgeholt hat, wird außerdem ein Button zum Auslagern angezeigt. Durch das Drücken des Buttons kommt man zum Screen Assignment.\\
 \begin{figure}[H]
@@ -97,6 +106,7 @@ Die Abbildung links zeigt die Ansicht, wenn die anwendende Person nicht angemeld
 
 \paragraph{LogIn}Der Screen LogIn dient zum Anmelden mit einem bestehenden Account. Im Screen LogIn gibt es zwei Textfelder zum Eingeben der E-Mail und des Passworts. \\
 Mit einem Klick auf den Button „Sign in“ wird die Funktion SignIn ausgeführt. \\
+\begin{listing}[H]
 \begin{minted}{js}
     function SignIn() {
     auth
@@ -114,6 +124,9 @@ Mit einem Klick auf den Button „Sign in“ wird die Funktion SignIn ausgeführ
       });
   };
 \end{minted}
+\caption{Funktion SignIn}
+  \label{lst:signin}
+\end{listing}
 
 Dabei wird die Methode signInWithEmailAndPasswort des Authentizierungs-Service auth von Firebase verwendet. Es werden die eingegebene E-Mail und Passwort übergeben. Bei einer erfolgreichen Anmeldung bekommt die anwendende Person die Meldung „signed in“ und wird zum Screen „Settings“ zurückgeleitet.\\
 Beim Klicken auf den Button „Register“ wird man zur Seite SignIn geführt.\\
@@ -121,6 +134,7 @@ Beim Klicken auf den Button „Register“ wird man zur Seite SignIn geführt.\\
 
 \paragraph{SignIn}Der Screen SignIn dient zum Erstellen eines Accounts. In den Textfeldern kann man den eigenen Namen, die E-Mail und ein Passwort eingeben.\\
 Wenn man auf den button „create Account“ klickt, wird die Funktion createAccount ausgeführt.\\
+\begin{listing}[H]
 \begin{minted}{js}
    function createAccount() {
     auth
@@ -145,6 +159,9 @@ Wenn man auf den button „create Account“ klickt, wird die Funktion createAcc
       });
   };
 \end{minted}
+\caption{Funktion createAccount}
+  \label{lst:createaccount}
+\end{listing}
 
 Die Methode createUserWithEmailAndPasswort, die zum Erstellen eines Users verwendet wird, ist vergleichbar mit signInWithEmailAndPasswort. Sie erstellt beim Authentifizierungs-Service auth einen neuen User und meldet diesen an. Falls die Erstellung des Accounts erfolgreich ist, werden folgende Schritte ausgeführt:
 \begin{itemize}

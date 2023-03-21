@@ -32,6 +32,7 @@ In Firebase werden die Zeitpunkte der Einlagerung als Unix Timestamp gespeichert
 \paragraph{Geolib}\mbox{}\\
 Version: 3.3.3\\ Quelle: https://github.com/manuelbieh/geolib/blob/master/CHANGELOG.md\\ \\
 Bei diesem Paket wird die Methode GetPreciseDistance verwendet, um die Distanz zwischen der anwendenden Person und dem Fahrradturm zu berechnen. \\
+\begin{listing}[H]
 \begin{minted}{js}
     let distance = getPreciseDistance(
     {
@@ -42,6 +43,9 @@ Bei diesem Paket wird die Methode GetPreciseDistance verwendet, um die Distanz z
     longitude: tower.location.longitude }
     );
 \end{minted}
+\caption{Verwendung der Methode getPreciseDistance}
+  \label{lst:getprecisedistance}
+\end{listing}
 Der Code zeigt die Anwendung der Methode GetPreciseDistance. Dabei werden die Koordinaten der anwendenden Person und des Turmes übergeben. Die Funktion liefert die Distanz zwischen den zwei Punkten in Meter.
 
 \paragraph{expo-location}\mbox{}\\
@@ -92,7 +96,8 @@ Die Abbildung \ref{fig:smallmap} zeigt die zweite Karte, die im Screen „TowerI
 \paragraph{react-navigation/native}\mbox{}\\
 Version: 6.1.4\\
 Quelle: https://reactnavigation.org\\ \\
-React-navigation/navtive ist ein Paket, das Teil des React Navigation-Frameworks ist. Das Paket wird verwendet, um die Navigation zu initialisieren. Zusätzlich beinhaltet es die Funktion getFocusedRouteNameFromRoute. Damit bekommt man den Namen des Screens, auf dem sich die anwendende Person befindet.\\
+React-navigation/navtive ist ein Paket, das Teil des React Navigation-\Gls{Framework}s ist. Das Paket wird verwendet, um die Navigation zu initialisieren. Zusätzlich beinhaltet es die Funktion getFocusedRouteNameFromRoute. Damit bekommt man den Namen des Screens, auf dem sich die anwendende Person befindet.\\
+\begin{listing}[H]
 \begin{minted}{js}
     const routeName = getFocusedRouteNameFromRoute(route);
     if (routeName === "assignment"){
@@ -102,6 +107,9 @@ React-navigation/navtive ist ein Paket, das Teil des React Navigation-Frameworks
         navigation.setOptions({tabBarStyle: {display: 'flex'}});
     }
 \end{minted}
+\caption{Verwendung der Methode getFocusedRouteNameFromRoute}
+  \label{lst:getfocusedroutename}
+\end{listing}
 Der Code zeigt die Verwendung der Methode getFocusedRouteNameFromRoute. Falls sich die anwendende Person auf dem Screen Assignment befindet, wird die untere TabBar nicht angezeigt.\\
 
 
@@ -109,6 +117,7 @@ Der Code zeigt die Verwendung der Methode getFocusedRouteNameFromRoute. Falls si
 Version: 6.9.7\\
 Quelle: https://github.com/software-mansion/react-native-screens\#readme\\ \\
 Dieses Paket ist eine Erweiterung von react-navigation/native und wird für den StackNavigator verwendet. Es ermöglicht eine einfache und unkomplizierte Lösung zum Navigieren.
+\begin{listing}[H]
 \begin{minted}{js}
     <Stack.Navigator
    screenOptions={({ route }) => ({ 
@@ -125,6 +134,9 @@ Dieses Paket ist eine Erweiterung von react-navigation/native und wird für den 
       <Stack.Screen name="assignment" options={{headerShown: false, title: '' }} component={Assignment} />
     </Stack.Navigator>
 \end{minted}
+\caption{Verwendung vom StackNavigator}
+  \label{lst:stacknavigator}
+\end{listing}
 Der abgebildete Code zeigt den StackNavigator. Er beinhaltet Optionen für den Header. Jeder einzelne Screen hat einen Namen, einen Titel und eine Komponente.\\
 
 
