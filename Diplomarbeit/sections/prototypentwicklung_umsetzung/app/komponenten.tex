@@ -21,11 +21,15 @@ Hiermit können die aktuell gelagerten Gegenstände oder vergangene Buchungen an
   \label{fig:boxwithitem}
 \end{figure}
 
-Die Komponente wird auf den Seiten „Aktivität“ und „Fahrradturm“ verwendet. Dafür wird der folgende Code benutzt:\\
+Die Komponente wird auf den Seiten „Aktivität“ und „Fahrradturm“ verwendet.\\
 
+\begin{listing}[H]
 \begin{minted}{js}
    <Box navigation={navigation} boxinfo={item} />
 \end{minted}
+  \caption{Ausdruck für die Komponente Box}
+  \label{lst:jsxbox}
+\end{listing}
 
 Verwendete Props:
 \begin{itemize}
@@ -42,7 +46,8 @@ Verwendete Props:
   \label{fig:settinglink}
 \end{figure}
 
-Code zum Erstellen der Komponente SettingLink:\\
+
+\begin{listing}[H]
 \begin{minted}{js}
     <SettingLink
         navigation={navigation}
@@ -52,6 +57,9 @@ Code zum Erstellen der Komponente SettingLink:\\
         info="Change your current password"
       />
  \end{minted}
+ \caption{Ausdruck für die Komponente SettingLink}
+ \label{lst:jsxsettinglink}
+\end{listing}
 Verwendete Props:
 \begin{itemize}
   \item Element für Navigation (navigation)
@@ -69,7 +77,9 @@ Verwendete Props:
   \caption{Komponente OtherLink}
   \label{fig:otherlink}
 \end{figure}
-Code zum Erstellen der Komponente OtherLink:\\
+
+\begin{listing}
+  
 \begin{minted}{js}
     <OtherLink
         navigation={navigation}
@@ -79,6 +89,9 @@ Code zum Erstellen der Komponente OtherLink:\\
         info="Rent E-Scooter"
       />
 \end{minted}
+\caption{Ausdruck für die Komponente OtherLink}
+\label{lst:jsxotherlink}
+\end{listing}
 Verwendete Props:
 \begin{itemize}
   \item Element für Navigation (navigation)
@@ -102,10 +115,14 @@ Verwendete Props:
   \caption{Komponente BoxImage als Box für Gegenstände}
   \label{fig:boximageitem}
 \end{figure}
-Code zum Erstellen der Komponente BoxImage:\\
+
+\begin{listing}
 \begin{minted}{js}
     <BoxImage type={box.boxref.type}/>
 \end{minted}
+\caption{Ausdruck für die Komponente BoxImage}
+\label{lst:jsxboximage}
+\end{listing}
 Verwendete Props:
 \begin{itemize}
   \item Art der Box (type)
