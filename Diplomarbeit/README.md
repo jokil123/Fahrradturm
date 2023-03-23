@@ -47,3 +47,4 @@
 1. Komma Fehler in der `literatur.bib` Datei:
    Fehlendes Komma führt dazu, dass der gesammte Build scheitert
 2. `&` Zeichen in einer Quelle könnte zu einem Build error führen
+3. Mehrere male builden kann build fehler lösen??? 🤡
