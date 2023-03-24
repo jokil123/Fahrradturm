@@ -6,11 +6,11 @@ Die Funktion getActivity() wird verwendet, um alle Buchungen der anwendenden Per
 Die Buchungen werden auf zwei Listen anzeigt. Falls keine Buchung gefunden wurde, kommt der Text „no data“. \\
 Mit einem Klick auf den „Aktualisieren Button“ in der rechten oberen Ecke, werden die Buchungen der anwendenden Person neu aus der Datenbank abgerufen.\\
 \begin{figure}[H]
-    \centering
-    \includegraphics[width=0.25\textwidth]{images/app-screenshots/screenhomeno.png}
-    \includegraphics[width=0.25\textwidth]{images/app-screenshots/screenhomeyes.png}
-    \caption{Screen Home}
-    \label{fig:screenhome}
+  \centering
+  \includegraphics[width=0.2\textwidth]{images/app-screenshots/screenhomeno.png}
+  \includegraphics[width=0.2\textwidth]{images/app-screenshots/screenhomeyes.png}
+  \caption{Screen Home}
+  \label{fig:screenhome}
 \end{figure}
 Die Abbildung \ref{fig:screenhome} zeigt links die Ansicht ohne Anmeldung und rechts die Ansicht mit Anmeldung.
 
@@ -18,37 +18,37 @@ Die Abbildung \ref{fig:screenhome} zeigt links die Ansicht ohne Anmeldung und re
 \paragraph{BoxInfo}
 Auf dem Screen BoxInfo werden folgende Daten angezeigt:\\
 \begin{itemize}
-    \item Name des Fahrradparkhauses in dem sich die Box befindet
-    \item Beginn der Buchung und falls die Buchung in der Vergangenheit liegt, zusätzlich die Zeit der Abholung
-    \item Komponente BoxImage für Bild der Fahrradbox
+  \item Name des Fahrradparkhauses in dem sich die Box befindet
+  \item Beginn der Buchung und falls die Buchung in der Vergangenheit liegt, zusätzlich die Zeit der Abholung
+  \item Komponente BoxImage für Bild der Fahrradbox
 \end{itemize}
 Diese Infos werden über die Navigation übergeben.\\
 \begin{listing}[H]
-\begin{minted}{js}
+  \begin{minted}{js}
     navigation.navigate("boxinfo", { box: this.props.boxinfo })
 \end{minted}
-\caption{Methode zum Navigieren}
+  \caption{Methode zum Navigieren}
   \label{lst:navigation}
 \end{listing}
 
 Bei \ref*{lst:navigation} wird gezeigt, wie man von der Komponente Box zum aktuellen Screen navigiert wird. Dort wird das Array boxinfo übergeben.\\
 \begin{listing}[H]
-\begin{minted}{js}
+  \begin{minted}{js}
     export default function BoxInfo({ route, navigation }) {
     const { box } = route.params;
     ...}
 \end{minted}
-\caption{Zugriff auf Variable Box}
+  \caption{Zugriff auf Variable Box}
   \label{lst:zugriff}
 \end{listing}
 Beim aktuellen Screen wird nun die Variable Box mithilfe von route.params abgerufen. \\ \\
 Falls man das Fahrrad noch nicht abgeholt hat, wird außerdem ein Button zum Auslagern angezeigt. Durch das Drücken des Buttons kommt man zum Screen Assignment.\\
 \begin{figure}[H]
-    \centering
-    \includegraphics[width=0.25\textwidth]{images/app-screenshots/screenboxinfo.png}
-    \includegraphics[width=0.25\textwidth]{images/app-screenshots/screenboxinfov.png}
-    \caption{Screen BoxInfo}
-    \label{fig:screenboxinfo}
+  \centering
+  \includegraphics[width=0.25\textwidth]{images/app-screenshots/screenboxinfo.png}
+  \includegraphics[width=0.25\textwidth]{images/app-screenshots/screenboxinfov.png}
+  \caption{Screen BoxInfo}
+  \label{fig:screenboxinfo}
 \end{figure}
 Die Abbildung \ref{fig:screenboxinfo} zeigt links die Ansicht bei einer bereits vergangenen Buchung und rechts die Ansicht bei einer aktiven Buchung.\\
 
@@ -58,48 +58,48 @@ Mit der Funktion UseEffect, die am Rendern des Screens ausführt, wird die Funkt
 Falls sich der anwendenden Person innerhalb des definierten Umkreises befindet, wird die Anfrage in Firestore erstellt. Diese befindet sich im Pfad tower/towerid/jobs. Dabei wird ein Listener erstellt, der bei einer Änderung der Anfrage durch den Tower-Controller, die Anfrage erneut aus der Datenbank abruft.\\
 Anschließend wird auf die Antwort vom Tower-Controller gewartet. Dabei gibt es verschiedene Szenarien:\\
 \begin{figure}[H]
-    \centering
-    \includegraphics[width=0.25\textwidth]{images/app-screenshots/waitinga.png}
-    \includegraphics[width=0.25\textwidth]{images/app-screenshots/waitingb.png}
-    \caption{Schicken der Anfrage zum Aus-/Einlagern}
-    \label{fig:screenwaiting}
+  \centering
+  \includegraphics[width=0.25\textwidth]{images/app-screenshots/waitinga.png}
+  \includegraphics[width=0.25\textwidth]{images/app-screenshots/waitingb.png}
+  \caption{Schicken der Anfrage zum Aus-/Einlagern}
+  \label{fig:screenwaiting}
 \end{figure}
 Abbildung \ref{fig:screenwaiting}: Beim Schicken der Anfrage kommt die Nachricht „Waiting for an available space“ beim Einlagern und beim Auslagern die Nachricht „Waiting for bike to store out“.\\
 \begin{figure}[H]
-    \centering
-    \includegraphics[width=0.25\textwidth]{images/app-screenshots/recieved.png}
-    \includegraphics[width=0.25\textwidth]{images/app-screenshots/error.png}
-    \caption{JobRecieved}
-    \label{fig:screenrecieved}
+  \centering
+  \includegraphics[width=0.25\textwidth]{images/app-screenshots/recieved.png}
+  \includegraphics[width=0.25\textwidth]{images/app-screenshots/error.png}
+  \caption{JobRecieved}
+  \label{fig:screenrecieved}
 \end{figure}
 Abbildung \ref{fig:screenrecieved} links: Wenn der Tower-Controller die Anfrage bekommen hat, wird die Meldung „Job recieved“ angezeigt.\\
 Abbildung \ref{fig:screenrecieved} rechts: Falls der Tower-Controller eine Fehlermeldung sendet, wird diese mit roter Schrift angezeigt.\\
 
 \begin{figure}[H]
-    \centering
-    \includegraphics[width=0.25\textwidth]{images/app-screenshots/succes.png}
-    \caption{JobSuccessful}
-    \label{fig:success}
+  \centering
+  \includegraphics[width=0.25\textwidth]{images/app-screenshots/succes.png}
+  \caption{JobSuccessful}
+  \label{fig:success}
 \end{figure}
 Abbildung \ref{fig:success}: Falls der Job erfolgreich abgeschlossen wurde, wird entweder die Box mit dem Fahrrad oder den Paketboxen angezeigt.\\
 
 \paragraph{Services}Beim Screen Services werden verschiedene Dienstleistungen angezeigt. Dafür wird die Komponente OtherLink verwendet, mit der man zu einer Unterseite gelangt.\\
 \begin{figure}[H]
-    \centering
-    \includegraphics[width=0.25\textwidth]{images/app-screenshots/screenservices.png}
-    \caption{Screen Services}
-    \label{fig:screenservices}
+  \centering
+  \includegraphics[width=0.25\textwidth]{images/app-screenshots/screenservices.png}
+  \caption{Screen Services}
+  \label{fig:screenservices}
 \end{figure}
 
 
 \paragraph{Settings}Der Screen Settings wird zur Verlinkung auf diverse Unterseiten verwendet. Dafür wird die Komponente SettingLink mehrmals verwendet.\\
 Mit der Funktion UserStatus wird überprüft, ob die anwendende Person angemeldet ist und dementsprechend andere Einstellungen angezeigt. \\
 \begin{figure}[H]
-    \centering
-    \includegraphics[width=0.25\textwidth]{images/app-screenshots/screensettingsa.png}
-    \includegraphics[width=0.25\textwidth]{images/app-screenshots/screensettingsa.png}
-    \caption{Screen Settings}
-    \label{fig:screensettings}
+  \centering
+  \includegraphics[width=0.25\textwidth]{images/app-screenshots/screensettingsa.png}
+  \includegraphics[width=0.25\textwidth]{images/app-screenshots/screensettingsa.png}
+  \caption{Screen Settings}
+  \label{fig:screensettings}
 \end{figure}
 Die Abbildung links zeigt die Ansicht, wenn die anwendende Person nicht angemeldet ist. Bei der Abbildung rechts sieht man, dass mehrere Einstellungen zum Account angezeigt werden, falls die anwendende Person eingeloggt ist. \\
 
@@ -107,7 +107,7 @@ Die Abbildung links zeigt die Ansicht, wenn die anwendende Person nicht angemeld
 \paragraph{LogIn}Der Screen LogIn dient zum Anmelden mit einem bestehenden Account. Im Screen LogIn gibt es zwei Textfelder zum Eingeben der E-Mail und des Passworts. \\
 Mit einem Klick auf den Button „Sign in“ wird die Funktion SignIn ausgeführt. \\
 \begin{listing}[H]
-\begin{minted}{js}
+  \begin{minted}{js}
     function SignIn() {
     auth
       .signInWithEmailAndPassword(email, password)
@@ -124,7 +124,7 @@ Mit einem Klick auf den Button „Sign in“ wird die Funktion SignIn ausgeführ
       });
   };
 \end{minted}
-\caption{Funktion SignIn}
+  \caption{Funktion SignIn}
   \label{lst:signin}
 \end{listing}
 
@@ -135,7 +135,7 @@ Beim Klicken auf den Button „Register“ wird man zur Seite SignIn geführt.\\
 \paragraph{SignIn}Der Screen SignIn dient zum Erstellen eines Accounts. In den Textfeldern kann man den eigenen Namen, die E-Mail und ein Passwort eingeben.\\
 Wenn man auf den button „create Account“ klickt, wird die Funktion createAccount ausgeführt.\\
 \begin{listing}[H]
-\begin{minted}{js}
+  \begin{minted}{js}
    function createAccount() {
     auth
       .createUserWithEmailAndPassword(email, password)
@@ -159,15 +159,15 @@ Wenn man auf den button „create Account“ klickt, wird die Funktion createAcc
       });
   };
 \end{minted}
-\caption{Funktion createAccount}
+  \caption{Funktion createAccount}
   \label{lst:createaccount}
 \end{listing}
 
 Die Methode createUserWithEmailAndPasswort, die zum Erstellen eines Users verwendet wird, ist vergleichbar mit signInWithEmailAndPasswort. Sie erstellt beim Authentifizierungs-Service auth einen neuen User und meldet diesen an. Falls die Erstellung des Accounts erfolgreich ist, werden folgende Schritte ausgeführt:
 \begin{itemize}
-    \item Die Funktion addUser wird ausgeführt. Damit wird für den User in Firestore ein Dokument mit dem Namen und der userid erstellt.
-    \item Ausgabe der Meldung "User signed in and logged in".
-    \item Die anwendende Person wird zurück zu Settings navigiert.
+  \item Die Funktion addUser wird ausgeführt. Damit wird für den User in Firestore ein Dokument mit dem Namen und der userid erstellt.
+  \item Ausgabe der Meldung "User signed in and logged in".
+  \item Die anwendende Person wird zurück zu Settings navigiert.
 \end{itemize}
 Falls die Erstellung des Accounts nicht möglich ist, wird eine entsprechende Fehlermeldung ausgegeben.\\
 
@@ -176,11 +176,11 @@ Mithilfe vom Expo SplashScreen wird zuerst eine leere Karte angezeigt, bis die F
 Anschließend werden alle Marker auf der Karte angezeigt. Die Funktion MarkerImage liefert entweder einen grüner Marker, falls noch Plätze frei sind, oder einen grauen Marker wenn es keine freien Plätze gibt. Beim Klicken auf einen Marker, kommt man zum Screen TowerInfo.\\
 
 \begin{figure}[H]
-    \centering
-    \includegraphics[width=0.25\textwidth]{images/app-screenshots/screenmapa.jpg}
-    \includegraphics[width=0.25\textwidth]{images/app-screenshots/screenmapb.jpg}
-    \caption{Screen Map}
-    \label{fig:screenmap}
+  \centering
+  \includegraphics[width=0.25\textwidth]{images/app-screenshots/screenmapa.jpg}
+  \includegraphics[width=0.25\textwidth]{images/app-screenshots/screenmapb.jpg}
+  \caption{Screen Map}
+  \label{fig:screenmap}
 \end{figure}
 
 Die Abbildung links zeigt die Karte, wenn die Türme noch nicht aus der Datenbank geladen sind.
@@ -189,38 +189,38 @@ Auf der Abbildung rechts sieht man eine Karte mit vier Beispiel-Türmen. Der Tur
 \paragraph{TowerInfo}Beim Screen „Towerinfo“ werden Daten zum Fahrradturm angezeigt. Sie werden über das Objekt Route übergeben.\\
 Es werden folgende Daten angezeigt:
 \begin{itemize}
-    \item Name des Turmes
-    \item Karte mit Standort vom Turm
-    \item Anzahl verfügbarer Boxen und aller Boxen
+  \item Name des Turmes
+  \item Karte mit Standort vom Turm
+  \item Anzahl verfügbarer Boxen und aller Boxen
 \end{itemize}
 
 Falls man nicht angemeldet ist:
 \begin{itemize}
-    \item Button mit Aufforderung zum Anmelden
+  \item Button mit Aufforderung zum Anmelden
 \end{itemize}
 
 Falls man angemeldet ist:\\
 \begin{itemize}
-    \item Möglichkeit zum Lagern von Fahrrad oder Gegenstand
-    \item Gegenstände, die im Turm gelagert sind (Komponente Box)
+  \item Möglichkeit zum Lagern von Fahrrad oder Gegenstand
+  \item Gegenstände, die im Turm gelagert sind (Komponente Box)
 \end{itemize}
 
 Mit einem Klick auf das Aktualisieren-Symbol auf der rechten oberen Ecke, werden die aktuellen Daten des Turmes von der Datenbank abgerufen. \\
 \begin{figure}[H]
-    \centering
-    \includegraphics[width=0.25\textwidth]{images/app-screenshots/screentowerinfoa.png}
-    \includegraphics[width=0.25\textwidth]{images/app-screenshots/screentowerinfob.png}
-    \caption{Screen TowerInfo}
-    \label{fig:screentowerinfograu}
+  \centering
+  \includegraphics[width=0.25\textwidth]{images/app-screenshots/screentowerinfoa.png}
+  \includegraphics[width=0.25\textwidth]{images/app-screenshots/screentowerinfob.png}
+  \caption{Screen TowerInfo}
+  \label{fig:screentowerinfograu}
 \end{figure}
 Abbildung \ref{fig:screentowerinfograu} links: Falls die anwendende Person noch nicht angemeldet ist, erscheint ein grauer Button mit Aufforderung zum Anmelden. Beim Klicken auf den Button wird man zu den Einstellungen navigiert.\\
 Abbildung \ref{fig:screentowerinfograu} rechts: Falls die anwendende Person angemeldet ist, aber kein freie Fahrradbox verfügbar ist, wird der Button mit einer grauen Farbe angezeigt. Beim Klicken auf den Button erscheint die Meldung „no available space“.\\
 \begin{figure}[H]
-    \centering
-    \includegraphics[width=0.25\textwidth]{images/app-screenshots/screentowerinfoc.png}
-    \includegraphics[width=0.25\textwidth]{images/app-screenshots/screentowerinfod.png}
-    \caption{Screen TowerInfo}
-    \label{fig:screentowerinfo}
+  \centering
+  \includegraphics[width=0.25\textwidth]{images/app-screenshots/screentowerinfoc.png}
+  \includegraphics[width=0.25\textwidth]{images/app-screenshots/screentowerinfod.png}
+  \caption{Screen TowerInfo}
+  \label{fig:screentowerinfo}
 \end{figure}
 Abbildung \ref{fig:screentowerinfo} links: Falls die anwendende Person angemeldet ist und es einen freien Platz gibt, erscheint der Button in grüner Farbe. Mit dem SwitchSelector kann man die Art der Box auswählen. Beim Klicken auf den Button wird man zum Screen „Assignment“ navigiert.\\
 Abbildung \ref{fig:screentowerinfo} rechts: Falls die anwendende Person angemeldet ist und eine Box beim Turm gelagert hat, erscheint diese als Komponente Box in der Mitte des Bildschirms. Mit einem Klick auf die Box, kommt man zum Screen „BoxInfo“.

@@ -24,7 +24,7 @@ Hiermit können die aktuell gelagerten Gegenstände oder vergangene Buchungen an
 Die Komponente wird auf den Seiten „Aktivität“ und „Fahrradturm“ verwendet.\\
 
 \begin{listing}[H]
-\begin{minted}{js}
+  \begin{minted}{js}
    <Box navigation={navigation} boxinfo={item} />
 \end{minted}
   \caption{Ausdruck für die Komponente Box}
@@ -48,7 +48,7 @@ Verwendete Props:
 
 
 \begin{listing}[H]
-\begin{minted}{js}
+  \begin{minted}{js}
     <SettingLink
         navigation={navigation}
         navigate={"notdone"}
@@ -57,8 +57,8 @@ Verwendete Props:
         info="Change your current password"
       />
  \end{minted}
- \caption{Ausdruck für die Komponente SettingLink}
- \label{lst:jsxsettinglink}
+  \caption{Ausdruck für die Komponente SettingLink}
+  \label{lst:jsxsettinglink}
 \end{listing}
 Verwendete Props:
 \begin{itemize}
@@ -79,8 +79,8 @@ Verwendete Props:
 \end{figure}
 
 \begin{listing}
-  
-\begin{minted}{js}
+
+  \begin{minted}{js}
     <OtherLink
         navigation={navigation}
         navigate={"qr"}
@@ -89,8 +89,8 @@ Verwendete Props:
         info="Rent E-Scooter"
       />
 \end{minted}
-\caption{Ausdruck für die Komponente OtherLink}
-\label{lst:jsxotherlink}
+  \caption{Ausdruck für die Komponente OtherLink}
+  \label{lst:jsxotherlink}
 \end{listing}
 Verwendete Props:
 \begin{itemize}
@@ -105,23 +105,23 @@ Verwendete Props:
 \paragraph{BoxImage}Die Komponente BoxImage wird auf dem Screen „Assignment“ und „BoxInfo“ verwendet. Die Komponente rendert ein Bild der Box entweder mit einem Fahrrad oder mit Boxen, je nachdem ob die Variable type „bike“ oder „item“ lautet.\\
 \begin{figure}[H]
   \centering
-  \includegraphics[width=0.4\textwidth]{images/box_bike.png}
+  \includegraphics[width=0.35\textwidth]{images/box_bike.png}
   \caption{Komponente BoxImage als Fahrradbox}
   \label{fig:boximagebike}
 \end{figure}
 \begin{figure}[H]
   \centering
-  \includegraphics[width=0.4\textwidth]{images/box_item.png}
+  \includegraphics[width=0.35\textwidth]{images/box_item.png}
   \caption{Komponente BoxImage als Box für Gegenstände}
   \label{fig:boximageitem}
 \end{figure}
 
 \begin{listing}
-\begin{minted}{js}
+  \begin{minted}{js}
     <BoxImage type={box.boxref.type}/>
 \end{minted}
-\caption{Ausdruck für die Komponente BoxImage}
-\label{lst:jsxboximage}
+  \caption{Ausdruck für die Komponente BoxImage}
+  \label{lst:jsxboximage}
 \end{listing}
 Verwendete Props:
 \begin{itemize}

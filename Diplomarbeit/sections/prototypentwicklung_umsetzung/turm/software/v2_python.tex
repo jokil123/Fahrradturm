@@ -3,14 +3,16 @@ Die Python Version 2 wurde komplett überarbeitet und viel einfacher und übersi
 
 Zudem wurde die Architektur komplett überarbeitet. V2 ist basierend auf einer \Gls{statemachine}, die verschiedenen States sind in Abbildung \ref{fig:tower_controller_v1_state_machine} zu sehen.
 
-\begin{figure}
+\begin{figure}[H]
   \centering
-  \includegraphics[width=0.8\textwidth]{images/tower_controller_v2_state_machine.png}
+  \includegraphics[width=0.9\textwidth]{images/tower_controller_v2_state_machine.png}
   \caption{State Machine des Tower Controller V2}
   \label{fig:tower_controller_v1_state_machine}
 \end{figure}
 
-States:
+\clearpage
+
+\subparagraph{States:}
 \begin{itemize}
   \item \textbf{Idle} - Der Turm ist im Idle State, wenn er nicht gerade eine Aktion ausführt. In diesem Zustand werden auf \Glspl{event} gewartet. Wenn ein \Gls{event} eintritt, wird der Zustand entsprechend angepasst.
   \item \textbf{Waiting for Bicycle Insertion} - Ein Nutzer hat den Einlagerungsprozess eines Fahrrads gestartet, der Turm wartet nun auf das Einlegen des Fahrrads in die Radbox und die Einlagerungsbestätigung (Drücken des Buttons) des Nutzers.

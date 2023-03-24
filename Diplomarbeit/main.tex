@@ -9,6 +9,15 @@
 
 \usepackage[printonlyused,withpage]{acronym} % The acronym package is used to create an acronym list
 
+% \usepackage{etoolbox}
+
+% \makeatletter
+% \patchcmd\@acf{\AC@acl}{\AC@foo}{}{}
+% \patchcmd\@acf{\AC@acl}{\AC@foo}{}{}
+% \patchcmd\@acf{\AC@foo}{\hskip\z@\AC@acl}{}{}
+% \patchcmd\@acf{\AC@foo}{\hskip\z@\AC@acl}{}{}
+% \makeatother
+
 \usepackage[
   backend=biber,
   style=authoryear,
@@ -20,7 +29,12 @@
 
 \usepackage{hyperref} % The hyperref package is used to create hyperlinks
 
+\usepackage[T1]{fontenc} % The fontenc package is used to import the T1 font encoding
 \usepackage[ngerman]{babel} % The babel package is used to change the language of the document
+\addto\captionsngerman{\renewcommand{\listingscaption}{Code-Aufflistung}}
+
+\usepackage{hyphenat}
+\hyphenation{aus-führ-ungs-gesch-windig-keiten res-sour-cen-ver-wal-tung un-kon-ven-tio-nel-len}
 
 \usepackage{csquotes}
 
@@ -33,8 +47,6 @@
 
 \usepackage{minted}
 \usepackage{listings}
-
-\addto\captionsngerman{\renewcommand{\listingscaption}{Code-Aufflistung}}
 
 \input{sections/glossar_definitionen.tex}
 
