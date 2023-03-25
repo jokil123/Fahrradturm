@@ -2,7 +2,7 @@
 
 \paragraph{Home}Mit der Funktion UseEffect, die am Rendern des Screens ausgeführt wird, wird die Funktion UserStatus ausgeführt.\\
 Die Funktion UserStatus überprüft, ob die anwendende Person angemeldet ist. Falls die anwendende Person nicht angemeldet ist, wird eine Aufforderung zur Anmeldung angezeigt (siehe Abbildung x). Falls der die anwendende Person angemeldet ist, wird die Funktion getActivity() ausgeführt. \\
-Die Funktion getActivity() wird verwendet, um alle Buchungen der anwendenden Person abzufragen. Falls die Buchungen in der Vergangenheit liegen, werden sie im Array FormerList gespeichert, wenn das Fahrrad noch gelagert ist, wird die Buchung im Array ActivityList gespeichert. \\
+Die Funktion getActivity() wird verwendet, um alle Buchungen der anwendenden Person abzufragen. Falls die Buchungen in der Vergangenheit liegen, werden sie im \Gls{Array} FormerList gespeichert, wenn das Fahrrad noch gelagert ist, wird die Buchung im \Gls{Array} ActivityList gespeichert. \\
 Die Buchungen werden auf zwei Listen anzeigt. Falls keine Buchung gefunden wurde, kommt der Text „no data“. \\
 Mit einem Klick auf den „Aktualisieren Button“ in der rechten oberen Ecke, werden die Buchungen der anwendenden Person neu aus der Datenbank abgerufen.\\
 \begin{figure}[H]
@@ -31,7 +31,7 @@ Diese Infos werden über die Navigation übergeben.\\
   \label{lst:navigation}
 \end{listing}
 
-Bei \ref*{lst:navigation} wird gezeigt, wie man von der Komponente Box zum aktuellen Screen navigiert wird. Dort wird das Array boxinfo übergeben.\\
+Bei \ref*{lst:navigation} wird gezeigt, wie man von der Komponente Box zum aktuellen Screen navigiert wird. Dort wird das \Gls{Array} boxinfo übergeben.\\
 \begin{listing}[H]
   \begin{minted}{js}
     export default function BoxInfo({ route, navigation }) {
