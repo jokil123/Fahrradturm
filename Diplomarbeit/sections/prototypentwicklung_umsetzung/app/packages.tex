@@ -90,7 +90,7 @@ Wie auf der Abbildung \ref*{fig:tabmap} ersichtlich, wird bei der App die Biblio
   \caption{Karte im Tab „TowerInfo“}
   \label{fig:smallmap}
 \end{figure}
-Die Abbildung \ref{fig:smallmap} zeigt die zweite Karte, die im Screen „TowerInfo“ verwendet wird, wo der Standort des Turmes anzeigt wird.\\
+Die Abbildung \ref{fig:smallmap} zeigt die zweite Karte, die im Screen „TowerInfo“ verwendet wird, wo der Standort des Turmes angezeigt wird.\\
 
 
 \paragraph{react-navigation/native}\mbox{}\\
@@ -129,7 +129,8 @@ Dieses Paket ist eine Erweiterung von react-navigation/native und wird für den 
       <Stack.Screen name="map" options={{ title: 'Map' }} component={Map} />
       <Stack.Screen name="tower" options={{ title: '' }} component={TowerInfo} />
       <Stack.Screen name="boxinfo" options={{ title: '' }} component={BoxInfo} />
-      <Stack.Screen name="assignment" options={{headerShown: false, title: '' }} component={Assignment} />
+      <Stack.Screen name="assignment" options={{headerShown: false, title: '' }} 
+      component={Assignment} />
     </Stack.Navigator>
 \end{minted}
   \caption{Verwendung vom StackNavigator}

@@ -1,6 +1,6 @@
 \subsubsection{Screens}Zur besseren Übersichtlichkeit hat sich das Projektteam entschieden, die App zuerst in Englisch zu entwickeln.\\
 
-\paragraph{Home}Mit der Funktion UseEffect, die am Rendern des Screens ausgeführt wird, wird die Funktion UserStatus ausgeführt.\\
+\paragraph{Home}Die Funktion UseEffect, die beim Rendern des Screens ausgeführt wird, führt die Funktion UserStatus aus.\\
 Die Funktion UserStatus überprüft, ob die anwendende Person angemeldet ist. Falls die anwendende Person nicht angemeldet ist, wird eine Aufforderung zur Anmeldung angezeigt (siehe Abbildung x). Falls der die anwendende Person angemeldet ist, wird die Funktion getActivity() ausgeführt. \\
 Die Funktion getActivity() wird verwendet, um alle Buchungen der anwendenden Person abzufragen. Falls die Buchungen in der Vergangenheit liegen, werden sie im \Gls{Array} FormerList gespeichert, wenn das Fahrrad noch gelagert ist, wird die Buchung im \Gls{Array} ActivityList gespeichert. \\
 Die Buchungen werden auf zwei Listen anzeigt. Falls keine Buchung gefunden wurde, kommt der Text „no data“. \\
@@ -18,7 +18,7 @@ Die Abbildung \ref{fig:screenhome} zeigt links die Ansicht ohne Anmeldung und re
 \paragraph{BoxInfo}
 Auf dem Screen BoxInfo werden folgende Daten angezeigt:\\
 \begin{itemize}
-  \item Name des Fahrradparkhauses in dem sich die Box befindet
+  \item Name des Fahrradparkhauses, in dem sich die Box befindet
   \item Beginn der Buchung und falls die Buchung in der Vergangenheit liegt, zusätzlich die Zeit der Abholung
   \item Komponente BoxImage für Bild der Fahrradbox
 \end{itemize}
@@ -173,7 +173,7 @@ Falls die Erstellung des Accounts nicht möglich ist, wird eine entsprechende Fe
 
 \paragraph{Map}Auf dem Screen Map werden die Standorte von Fahrradparkhäusern angezeigt.\\
 Mithilfe vom Expo SplashScreen wird zuerst eine leere Karte angezeigt, bis die Funktion getTowers fertig ist. Die Funktion getTowers liefert die Daten zu allen Fahrradtürmen. \\
-Anschließend werden alle Marker auf der Karte angezeigt. Die Funktion MarkerImage liefert entweder einen grüner Marker, falls noch Plätze frei sind, oder einen grauen Marker wenn es keine freien Plätze gibt. Beim Klicken auf einen Marker, kommt man zum Screen TowerInfo.\\
+Anschließend werden alle Marker auf der Karte angezeigt. Die Funktion MarkerImage liefert entweder einen grüner Marker, falls noch Plätze frei sind, oder einen grauen Marker wenn es keine freien Plätze für Fahrräder gibt. Beim Klicken auf einen Marker, kommt man zum Screen TowerInfo.\\
 
 \begin{figure}[H]
   \centering
@@ -187,19 +187,20 @@ Die Abbildung links zeigt die Karte, wenn die Türme noch nicht aus der Datenban
 Auf der Abbildung rechts sieht man eine Karte mit vier Beispiel-Türmen. Der Turm links oben ist grau, da dort kein Platz frei ist. \\
 
 \paragraph{TowerInfo}Beim Screen „Towerinfo“ werden Daten zum Fahrradturm angezeigt. Sie werden über das Objekt Route übergeben.\\
+\mbox{}\\
 Es werden folgende Daten angezeigt:
 \begin{itemize}
   \item Name des Turmes
   \item Karte mit Standort vom Turm
   \item Anzahl verfügbarer Boxen und aller Boxen
 \end{itemize}
-
+\mbox{}\\
 Falls man nicht angemeldet ist:
 \begin{itemize}
   \item Button mit Aufforderung zum Anmelden
 \end{itemize}
-
-Falls man angemeldet ist:\\
+\mbox{}\\
+Falls man angemeldet ist:
 \begin{itemize}
   \item Möglichkeit zum Lagern von Fahrrad oder Gegenstand
   \item Gegenstände, die im Turm gelagert sind (Komponente Box)
