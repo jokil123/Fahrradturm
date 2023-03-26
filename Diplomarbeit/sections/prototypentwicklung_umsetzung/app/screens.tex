@@ -1,4 +1,4 @@
-\subsubsection{Screens}Zur besseren Übersichtlichkeit hat sich das Projektteam entschieden, die App zuerst in Englisch zu entwickeln.\\
+\subsubsection{Screens}Zur besseren Übersichtlichkeit sind die Texte in der App im Gegensatz zu den Mockups in Englisch.\\
 
 \paragraph{Home}Die Funktion UseEffect, die beim Rendern des Screens ausgeführt wird, führt die Funktion UserStatus aus.\\
 Die Funktion UserStatus überprüft, ob die anwendende Person angemeldet ist. Falls die anwendende Person nicht angemeldet ist, wird eine Aufforderung zur Anmeldung angezeigt (siehe Abbildung x). Falls der die anwendende Person angemeldet ist, wird die Funktion getActivity() ausgeführt. \\
@@ -31,7 +31,7 @@ Diese Infos werden über die Navigation übergeben.\\
   \label{lst:navigation}
 \end{listing}
 
-Bei \ref*{lst:navigation} wird gezeigt, wie man von der Komponente Box zum aktuellen Screen navigiert wird. Dort wird das \Gls{Array} boxinfo übergeben.\\
+Bei der Code-Auflistung \ref*{lst:navigation} wird gezeigt, wie man von der Komponente Box zum aktuellen Screen navigiert wird. Dort wird das \Gls{Array} boxinfo übergeben.\\
 \begin{listing}[H]
   \begin{minted}{js}
     export default function BoxInfo({ route, navigation }) {
@@ -41,7 +41,7 @@ Bei \ref*{lst:navigation} wird gezeigt, wie man von der Komponente Box zum aktue
   \caption{Zugriff auf Variable Box}
   \label{lst:zugriff}
 \end{listing}
-Beim aktuellen Screen wird nun die Variable Box mithilfe von route.params abgerufen. \\ \\
+Wie bei der Code-Auflistung \ref*{lst:zugriff}, wird beim aktuellen Screen nun die Variable Box mithilfe von route.params abgerufen. \\ \\
 Falls man das Fahrrad noch nicht abgeholt hat, wird außerdem ein Button zum Auslagern angezeigt. Durch das Drücken des Buttons kommt man zum Screen Assignment.\\
 \begin{figure}[H]
   \centering
@@ -57,6 +57,14 @@ Die Abbildung \ref{fig:screenboxinfo} zeigt links die Ansicht bei einer bereits 
 Mit der Funktion UseEffect, die am Rendern des Screens ausführt, wird die Funktion storeBike durchgeführt. Die Funktion überprüft zuerst mit dem Standort der anwendenden Person, ob er sich tatsächlich in der Nähe des Fahrradturms befindet. Das Projektteam hat sich für eine maximale Entfernung von 250m entschieden, damit es bei Testzwecken zu keinen Problemen kommt. \\
 Falls sich der anwendenden Person innerhalb des definierten Umkreises befindet, wird die Anfrage in Firestore erstellt. Diese befindet sich im Pfad tower/towerid/jobs. Dabei wird ein Listener erstellt, der bei einer Änderung der Anfrage durch den Tower-Controller, die Anfrage erneut aus der Datenbank abruft.\\
 Anschließend wird auf die Antwort vom Tower-Controller gewartet. Dabei gibt es verschiedene Szenarien:\\
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.9\textwidth]{images/assignmentdiagramm.png}
+  \caption{Szenarien beim Screen Assignment}
+  \label{fig:assignmentsze}
+\end{figure}
+Wie bei der Abbildung \ref*{fig:assignmentsze} ersichtlich, gibt es nach dem überprüfen des Standorts mehrere Szenarien. Je nach Art der Anfrage und Antwort des Controllers wird dem User etwas anderes angezeigt.\\
+
 \begin{figure}[H]
   \centering
   \includegraphics[width=0.25\textwidth]{images/app-screenshots/waitinga.png}
@@ -130,6 +138,12 @@ Mit einem Klick auf den Button „Sign in“ wird die Funktion SignIn ausgeführ
 
 Dabei wird die Methode signInWithEmailAndPasswort des Authentizierungs-Service auth von Firebase verwendet. Es werden die eingegebene E-Mail und Passwort übergeben. Bei einer erfolgreichen Anmeldung bekommt die anwendende Person die Meldung „signed in“ und wird zum Screen „Settings“ zurückgeleitet.\\
 Beim Klicken auf den Button „Register“ wird man zur Seite SignIn geführt.\\
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.25\textwidth]{images/app-screenshots/screenlogin.png}
+  \caption{Screen LogIn}
+  \label{fig:login}
+\end{figure}
 
 
 \paragraph{SignIn}Der Screen SignIn dient zum Erstellen eines Accounts. In den Textfeldern kann man den eigenen Namen, die E-Mail und ein Passwort eingeben.\\
@@ -170,6 +184,13 @@ Die Methode createUserWithEmailAndPasswort, die zum Erstellen eines Users verwen
   \item Die anwendende Person wird zurück zu Settings navigiert.
 \end{itemize}
 Falls die Erstellung des Accounts nicht möglich ist, wird eine entsprechende Fehlermeldung ausgegeben.\\
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.25\textwidth]{images/app-screenshots/screenregister.png}
+  \caption{Screen SignIn}
+  \label{fig:signin}
+\end{figure}
+\mbox{}\\
 
 \paragraph{Map}Auf dem Screen Map werden die Standorte von Fahrradparkhäusern angezeigt.\\
 Mithilfe vom Expo SplashScreen wird zuerst eine leere Karte angezeigt, bis die Funktion getTowers fertig ist. Die Funktion getTowers liefert die Daten zu allen Fahrradtürmen. \\
@@ -182,7 +203,6 @@ Anschließend werden alle Marker auf der Karte angezeigt. Die Funktion MarkerIma
   \caption{Screen Map}
   \label{fig:screenmap}
 \end{figure}
-
 Die Abbildung links zeigt die Karte, wenn die Türme noch nicht aus der Datenbank geladen sind.
 Auf der Abbildung rechts sieht man eine Karte mit vier Beispiel-Türmen. Der Turm links oben ist grau, da dort kein Platz frei ist. \\
 
