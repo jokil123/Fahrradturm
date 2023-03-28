@@ -1,6 +1,6 @@
 \subsection{Kommunikation}
 
-App und Turm müssen miteinander kommunizieren. Es hätte mehrere verschiedene möglichkeiten gegeben, jedoch hat sich das Team darauf geeinigt, die bestehende Firebase Datenbank (\ref{sec:firebase}) und deren "Realtime Updates" Funktion zu verwenden.
+App und Turm müssen miteinander kommunizieren. Es hätte mehrere verschiedene möglichkeiten gegeben, jedoch hat sich das Team darauf geeinigt, die bestehende Firebase Datenbank (\ref{sec:firebase}) und deren  \enquote{Realtime Updates} Funktion zu verwenden.
 
 Austauschmöglichkeiten:
 \begin{itemize}
@@ -22,7 +22,7 @@ Realtime Updates ist ein Feature von Firestore, welches es ermöglicht, dass sic
 
 \subsubsection{Fahrradturm Protokoll}
 
-Das Fahrradturm Protokoll basiert auf Dokumenten in der Firestore Datenbank. Jedes Dokument repräsentiert einen einzelnen Job, der vom Fahrradturm ausgeführt werden soll. Die Dokumente werden in einer Subcollection des Turms namens "jobs" gespeichert. Um Jobs zu starten muss der Client ein Dokument Turms erstellen.
+Das Fahrradturm Protokoll basiert auf Dokumenten in der Firestore Datenbank. Jedes Dokument repräsentiert einen einzelnen Job, der vom Fahrradturm ausgeführt werden soll. Die Dokumente werden in einer Subcollection des Turms namens \enquote{jobs} gespeichert. Um Jobs zu starten muss der Client ein Dokument Turms erstellen.
 
 \paragraph{Gemeinsame Felder}
 
