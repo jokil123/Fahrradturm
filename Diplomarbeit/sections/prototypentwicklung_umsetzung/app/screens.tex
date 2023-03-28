@@ -1,10 +1,16 @@
-\subsubsection{Screens}Zur besseren Übersichtlichkeit sind die Texte in der App im Gegensatz zu den Mockups in Englisch.\\
+\subsubsection{Screens}Zur besseren Übersichtlichkeit sind die Texte in der App im Gegensatz zu den Mockups in Englisch.
 
-\paragraph{Home}Die Seite „Home“ ist der erste Screen auf den die anwendende Person kommt. Die Funktion UseEffect, die beim Rendern des Screens ausgeführt wird, führt die Funktion UserStatus aus.\\
-Die Funktion UserStatus überprüft, ob die anwendende Person angemeldet ist. Falls die anwendende Person nicht angemeldet ist, wird eine Aufforderung zur Anmeldung angezeigt (siehe Abbildung x). Falls der die anwendende Person angemeldet ist, wird die Funktion getActivity() ausgeführt. \\
-Die Funktion getActivity() wird verwendet, um alle Buchungen der anwendenden Person abzufragen. Falls die Buchungen in der Vergangenheit liegen, werden sie im \Gls{Array} FormerList gespeichert, wenn das Fahrrad noch gelagert ist, wird die Buchung im \Gls{Array} ActivityList gespeichert. \\
-Die Buchungen werden auf zwei Listen anzeigt. Falls keine Buchung gefunden wurde, kommt der Text „no data“. \\
-Mit einem Klick auf den „Aktualisieren Button“ in der rechten oberen Ecke, werden die Buchungen der anwendenden Person neu aus der Datenbank abgerufen.\\
+\paragraph{Home}Die Seite „Home“ ist der erste Screen auf den die anwendende Person kommt. Die Funktion UseEffect, die beim Rendern des Screens ausgeführt wird, führt die Funktion UserStatus aus.
+
+\noindent Die Funktion UserStatus überprüft, ob die anwendende Person angemeldet ist. Falls die anwendende Person nicht angemeldet ist, wird eine Aufforderung zur Anmeldung angezeigt (siehe Abbildung x). Falls der die anwendende Person angemeldet ist, wird die Funktion getActivity() ausgeführt.
+
+\noindent Die Funktion getActivity() wird verwendet, um alle Buchungen der anwendenden Person abzufragen. Falls die Buchungen in der Vergangenheit liegen, werden sie im \Gls{Array} FormerList gespeichert, wenn das Fahrrad noch gelagert ist, wird die Buchung im \Gls{Array} ActivityList gespeichert.
+
+\noindent Die Buchungen werden auf zwei Listen anzeigt. Falls keine Buchung gefunden wurde, kommt der Text „no data“.
+
+\noindent Mit einem Klick auf den „Aktualisieren Button“ in der rechten oberen Ecke, werden die Buchungen der anwendenden Person neu aus der Datenbank abgerufen.
+
+
 \begin{figure}[H]
   \centering
   \includegraphics[width=0.2\textwidth]{images/app-screenshots/screenhomeno.png}
@@ -14,15 +20,20 @@ Mit einem Klick auf den „Aktualisieren Button“ in der rechten oberen Ecke, w
 \end{figure}
 Die Abbildung \ref{fig:screenhome} zeigt links die Ansicht ohne Anmeldung und rechts die Ansicht mit Anmeldung.
 
+\bigskip
+
 
 \paragraph{BoxInfo}
-Auf dem Screen „BoxInfo“ werden folgende Daten angezeigt:\\
+Auf dem Screen „BoxInfo“ werden folgende Daten angezeigt:
+
 \begin{itemize}
   \item Name des Fahrradparkhauses, in dem sich die Box befindet
   \item Beginn der Buchung und falls die Buchung in der Vergangenheit liegt, zusätzlich die Zeit der Abholung
   \item Komponente BoxImage für Bild der Fahrradbox
 \end{itemize}
-Diese Infos werden über die Navigation übergeben.\\
+
+Diese Infos werden über die Navigation übergeben.
+
 \begin{listing}[H]
   \begin{minted}{js}
     navigation.navigate("boxinfo", { box: this.props.boxinfo })
@@ -31,7 +42,8 @@ Diese Infos werden über die Navigation übergeben.\\
   \label{lst:navigation}
 \end{listing}
 
-Bei der Code-Auflistung \ref*{lst:navigation} wird gezeigt, wie man von der Komponente Box zum aktuellen Screen navigiert wird. Dort wird das \Gls{Array} boxinfo übergeben.\\
+Bei der Code-Auflistung \ref*{lst:navigation} wird gezeigt, wie man von der Komponente Box zum aktuellen Screen navigiert wird. Dort wird das \Gls{Array} boxinfo übergeben.
+
 \begin{listing}[H]
   \begin{minted}{js}
     export default function BoxInfo({ route, navigation }) {
@@ -41,8 +53,12 @@ Bei der Code-Auflistung \ref*{lst:navigation} wird gezeigt, wie man von der Komp
   \caption{Zugriff auf Variable Box}
   \label{lst:zugriff}
 \end{listing}
-Wie bei der Code-Auflistung \ref*{lst:zugriff}, wird beim aktuellen Screen nun die Variable Box mithilfe von route.params abgerufen. \\ \\
-Falls man das Fahrrad noch nicht abgeholt hat, wird außerdem ein Button zum Auslagern angezeigt. Durch das Drücken des Buttons kommt man zum Screen „Assignment“.\\
+
+
+Wie bei der Code-Auflistung \ref*{lst:zugriff}, wird beim aktuellen Screen nun die Variable Box mithilfe von route.params abgerufen.
+
+\noindent Falls man das Fahrrad noch nicht abgeholt hat, wird außerdem ein Button zum Auslagern angezeigt. Durch das Drücken des Buttons kommt man zum Screen „Assignment“.
+
 \begin{figure}[H]
   \centering
   \includegraphics[width=0.25\textwidth]{images/app-screenshots/screenboxinfo.png}
@@ -50,11 +66,13 @@ Falls man das Fahrrad noch nicht abgeholt hat, wird außerdem ein Button zum Aus
   \caption{Screen BoxInfo}
   \label{fig:screenboxinfo}
 \end{figure}
-Die Abbildung \ref{fig:screenboxinfo} zeigt links die Ansicht bei einer bereits vergangenen Buchung und rechts die Ansicht bei einer aktiven Buchung.\\
+Die Abbildung \ref{fig:screenboxinfo} zeigt links die Ansicht bei einer bereits vergangenen Buchung und rechts die Ansicht bei einer aktiven Buchung.
+
+\bigskip
 
 
+\paragraph{Services}Beim Screen „Services“ werden verschiedene Dienstleistungen angezeigt. Dafür wird die Komponente OtherLink verwendet, mit der man zu einer Unterseite gelangt.
 
-\paragraph{Services}Beim Screen „Services“ werden verschiedene Dienstleistungen angezeigt. Dafür wird die Komponente OtherLink verwendet, mit der man zu einer Unterseite gelangt.\\
 \begin{figure}[H]
   \centering
   \includegraphics[width=0.25\textwidth]{images/app-screenshots/screenservices.png}
@@ -62,9 +80,13 @@ Die Abbildung \ref{fig:screenboxinfo} zeigt links die Ansicht bei einer bereits 
   \label{fig:screenservices}
 \end{figure}
 
+\bigskip
 
-\paragraph{Settings}Der Screen „Settings“ wird zur Verlinkung auf diverse Unterseiten verwendet. Dafür wird die Komponente SettingLink mehrmals verwendet.\\
-Mit der Funktion UserStatus wird überprüft, ob die anwendende Person angemeldet ist und dementsprechend andere Einstellungen angezeigt. \\
+
+\paragraph{Settings}Der Screen „Settings“ wird zur Verlinkung auf diverse Unterseiten verwendet. Dafür wird die Komponente SettingLink mehrmals verwendet.
+
+\noindent Mit der Funktion UserStatus wird überprüft, ob die anwendende Person angemeldet ist und dementsprechend andere Einstellungen angezeigt.
+
 \begin{figure}[H]
   \centering
   \includegraphics[width=0.25\textwidth]{images/app-screenshots/screensettingsa.png}
@@ -72,11 +94,14 @@ Mit der Funktion UserStatus wird überprüft, ob die anwendende Person angemelde
   \caption{Screen Settings}
   \label{fig:screensettings}
 \end{figure}
-Die Abbildung links zeigt die Ansicht, wenn die anwendende Person nicht angemeldet ist. Bei der Abbildung rechts sieht man, dass mehrere Einstellungen zum Account angezeigt werden, falls die anwendende Person eingeloggt ist. \\
+Die Abbildung links zeigt die Ansicht, wenn die anwendende Person nicht angemeldet ist. Bei der Abbildung rechts sieht man, dass mehrere Einstellungen zum Account angezeigt werden, falls die anwendende Person eingeloggt ist.
+
+\bigskip
 
 
-\paragraph{LogIn}Der Screen „LogIn“ dient zum Anmelden mit einem bestehenden Account. Im Screen „LogIn“ gibt es zwei Textfelder zum Eingeben der E-Mail und des Passworts. \\
-Mit einem Klick auf den Button „Sign in“ wird die Funktion SignIn ausgeführt. \\
+\paragraph{LogIn}Der Screen „LogIn“ dient zum Anmelden mit einem bestehenden Account. Im Screen „LogIn“ gibt es zwei Textfelder zum Eingeben der E-Mail und des Passworts.
+\noindent Mit einem Klick auf den Button „Sign in“ wird die Funktion SignIn ausgeführt.
+
 \begin{listing}[H]
   \begin{minted}{js}
     function SignIn() {
@@ -99,8 +124,9 @@ Mit einem Klick auf den Button „Sign in“ wird die Funktion SignIn ausgeführ
   \label{lst:signin}
 \end{listing}
 
-Dabei wird die Methode signInWithEmailAndPasswort des Authentizierungs-Service auth von Firebase verwendet. Es werden die eingegebene E-Mail und Passwort übergeben. Bei einer erfolgreichen Anmeldung bekommt die anwendende Person die Meldung „signed in“ und wird zum Screen „Settings“ zurückgeleitet.\\
-Beim Klicken auf den Button „Register“ wird man zur Seite „SignIn“ geführt.\\
+Dabei wird die Methode signInWithEmailAndPasswort des Authentizierungs-Service auth von Firebase verwendet. Es werden die eingegebene E-Mail und Passwort übergeben. Bei einer erfolgreichen Anmeldung bekommt die anwendende Person die Meldung „signed in“ und wird zum Screen „Settings“ zurückgeleitet.
+\noindent Beim Klicken auf den Button „Register“ wird man zur Seite „SignIn“ geführt.
+
 \begin{figure}[H]
   \centering
   \includegraphics[width=0.25\textwidth]{images/app-screenshots/screenlogin.png}
@@ -108,9 +134,12 @@ Beim Klicken auf den Button „Register“ wird man zur Seite „SignIn“ gefü
   \label{fig:login}
 \end{figure}
 
+\bigskip
 
-\paragraph{SignIn}Der Screen „SignIn“ dient zum Erstellen eines Accounts. In den Textfeldern kann man den eigenen Namen, die E-Mail und ein Passwort eingeben.\\
-Wenn man auf den button „create Account“ klickt, wird die Funktion createAccount ausgeführt.\\
+
+\paragraph{SignIn}Der Screen „SignIn“ dient zum Erstellen eines Accounts. In den Textfeldern kann man den eigenen Namen, die E-Mail und ein Passwort eingeben.
+\noindent Wenn man auf den button „create Account“ klickt, wird die Funktion createAccount ausgeführt.
+
 \begin{listing}[H]
   \begin{minted}{js}
    function createAccount() {
@@ -141,23 +170,30 @@ Wenn man auf den button „create Account“ klickt, wird die Funktion createAcc
 \end{listing}
 
 Die Methode createUserWithEmailAndPasswort, die zum Erstellen eines Users verwendet wird, ist vergleichbar mit signInWithEmailAndPasswort. Sie erstellt beim Authentifizierungs-Service auth einen neuen User und meldet diesen an. Falls die Erstellung des Accounts erfolgreich ist, werden folgende Schritte ausgeführt:
+
 \begin{itemize}
   \item Die Funktion addUser wird ausgeführt. Damit wird für den User in Firestore ein Dokument mit dem Namen und der userid erstellt.
   \item Ausgabe der Meldung „User signed in and logged in“.
   \item Die anwendende Person wird zurück zu Settings navigiert.
 \end{itemize}
-Falls die Erstellung des Accounts nicht möglich ist, wird eine entsprechende Fehlermeldung ausgegeben.\\
+
+Falls die Erstellung des Accounts nicht möglich ist, wird eine entsprechende Fehlermeldung ausgegeben.
+
 \begin{figure}[H]
   \centering
   \includegraphics[width=0.25\textwidth]{images/app-screenshots/screenregister.png}
   \caption{Screen SignIn}
   \label{fig:signin}
 \end{figure}
-\mbox{}\\
 
-\paragraph{Map}Auf dem Screen „Map“ werden die Standorte von Fahrradparkhäusern angezeigt.\\
-Mithilfe vom Expo SplashScreen wird zuerst eine leere Karte angezeigt, bis die Funktion getTowers fertig ist. Die Funktion getTowers liefert die Daten zu allen Fahrradtürmen. \\
-Anschließend werden alle Marker auf der Karte angezeigt. Die Funktion MarkerImage liefert entweder einen grüner Marker, falls noch Plätze frei sind, oder einen grauen Marker, wenn es keine freien Plätze für Fahrräder gibt. Beim Klicken auf einen Marker, kommt man zum Screen „TowerInfo“.\\
+\bigskip
+
+
+\paragraph{Map}Auf dem Screen „Map“ werden die Standorte von Fahrradparkhäusern angezeigt.
+
+\noindent Mithilfe vom Expo SplashScreen wird zuerst eine leere Karte angezeigt, bis die Funktion getTowers fertig ist. Die Funktion getTowers liefert die Daten zu allen Fahrradtürmen.
+
+\noindent Anschließend werden alle Marker auf der Karte angezeigt. Die Funktion MarkerImage liefert entweder einen grüner Marker, falls noch Plätze frei sind, oder einen grauen Marker, wenn es keine freien Plätze für Fahrräder gibt. Beim Klicken auf einen Marker, kommt man zum Screen „TowerInfo“.
 
 \begin{figure}[H]
   \centering
@@ -166,30 +202,44 @@ Anschließend werden alle Marker auf der Karte angezeigt. Die Funktion MarkerIma
   \caption{Screen Map}
   \label{fig:screenmap}
 \end{figure}
-Die Abbildung links zeigt die Karte, wenn die Türme noch nicht aus der Datenbank geladen sind.
-Auf der Abbildung rechts sieht man eine Karte mit vier Beispiel-Türmen. Der Turm links oben ist grau, da dort kein Platz frei ist. \\
 
-\paragraph{TowerInfo}Beim Screen „Towerinfo“ werden Daten zum Fahrradturm angezeigt. Sie werden über das Objekt Route übergeben.\\
-\mbox{}\\
-Es werden folgende Daten angezeigt:
+Die Abbildung links zeigt die Karte, wenn die Türme noch nicht aus der Datenbank geladen sind.
+Auf der Abbildung rechts sieht man eine Karte mit vier Beispiel-Türmen. Der Turm links oben ist grau, da dort kein Platz frei ist.
+
+\bigskip
+
+
+\paragraph{TowerInfo}Beim Screen „Towerinfo“ werden Daten zum Fahrradturm angezeigt. Sie werden über das Objekt Route übergeben.
+
+\medskip
+
+
+\noindent Es werden folgende Daten angezeigt:
 \begin{itemize}
   \item Name des Turmes
   \item Karte mit Standort vom Turm
   \item Anzahl verfügbarer Boxen und aller Boxen
 \end{itemize}
-\mbox{}\\
-Falls man nicht angemeldet ist:
+
+\medskip
+
+
+\noindent Falls man nicht angemeldet ist:
 \begin{itemize}
   \item Button mit Aufforderung zum Anmelden
 \end{itemize}
-\mbox{}\\
-Falls man angemeldet ist:
+
+\medskip
+
+
+\noindent Falls man angemeldet ist:
 \begin{itemize}
   \item Möglichkeit zum Lagern von Fahrrad oder Gegenstand
   \item Gegenstände, die im Turm gelagert sind (Komponente Box)
 \end{itemize}
 
-Mit einem Klick auf das Aktualisieren-Symbol auf der rechten oberen Ecke, werden die aktuellen Daten des Turmes von der Datenbank abgerufen. \\
+\noindent Mit einem Klick auf das Aktualisieren-Symbol auf der rechten oberen Ecke, werden die aktuellen Daten des Turmes von der Datenbank abgerufen.
+
 \begin{figure}[H]
   \centering
   \includegraphics[width=0.25\textwidth]{images/app-screenshots/screentowerinfoa.png}
@@ -197,8 +247,11 @@ Mit einem Klick auf das Aktualisieren-Symbol auf der rechten oberen Ecke, werden
   \caption{Screen TowerInfo}
   \label{fig:screentowerinfograu}
 \end{figure}
-Abbildung \ref{fig:screentowerinfograu} links: Falls die anwendende Person noch nicht angemeldet ist, erscheint ein grauer Button mit Aufforderung zum Anmelden. Beim Klicken auf den Button wird man zu den Einstellungen navigiert.\\
-Abbildung \ref{fig:screentowerinfograu} rechts: Falls die anwendende Person angemeldet ist, aber keine freie Fahrradbox verfügbar ist, wird der Button mit einer grauen Farbe angezeigt. Beim Klicken auf den Button erscheint die Meldung „no available space“.\\
+
+\noindent Abbildung \ref{fig:screentowerinfograu} links: Falls die anwendende Person noch nicht angemeldet ist, erscheint ein grauer Button mit Aufforderung zum Anmelden. Beim Klicken auf den Button wird man zu den Einstellungen navigiert.
+
+\noindent Abbildung \ref{fig:screentowerinfograu} rechts: Falls die anwendende Person angemeldet ist, aber keine freie Fahrradbox verfügbar ist, wird der Button mit einer grauen Farbe angezeigt. Beim Klicken auf den Button erscheint die Meldung „no available space“.
+
 \begin{figure}[H]
   \centering
   \includegraphics[width=0.25\textwidth]{images/app-screenshots/screentowerinfoc.png}
@@ -206,21 +259,34 @@ Abbildung \ref{fig:screentowerinfograu} rechts: Falls die anwendende Person ange
   \caption{Screen TowerInfo}
   \label{fig:screentowerinfo}
 \end{figure}
-Abbildung \ref{fig:screentowerinfo} links: Falls die anwendende Person angemeldet ist und es einen freien Platz gibt, erscheint der Button in grüner Farbe. Mit dem SwitchSelector kann man die Art der Box auswählen. Beim Klicken auf den Button wird man zum Screen „Assignment“ navigiert.\\
-Abbildung \ref{fig:screentowerinfo} rechts: Falls die anwendende Person angemeldet ist und eine Box beim Turm gelagert hat, erscheint diese als Komponente Box in der Mitte des Bildschirms. Mit einem Klick auf die Box, kommt man zum Screen „BoxInfo“.\\
 
-\paragraph{Assignment}Der Screen „Assignment“ wird zum Aus- und Einlagern von Gegenständen verwendet.\\
-Mit der Funktion UseEffect, die am Rendern des Screens ausführt, wird die Funktion storeBike durchgeführt. Die Funktion überprüft zuerst mit dem Standort der anwendenden Person, ob er sich tatsächlich in der Nähe des Fahrradturms befindet. Das Projektteam hat sich für eine maximale Entfernung von 250m entschieden, damit es bei Testzwecken zu keinen Problemen kommt. \\
-Falls sich der anwendenden Person innerhalb des definierten Umkreises befindet, wird die Anfrage in Firestore erstellt. Diese befindet sich im Pfad tower/towerid/jobs. Dabei wird ein Listener erstellt, der bei einer Änderung der Anfrage durch den Tower-Controller, die Anfrage erneut aus der Datenbank abruft.\\
-Anschließend wird auf die Antwort vom Tower-Controller gewartet. Dabei gibt es verschiedene Szenarien:\\
+\noindent Abbildung \ref{fig:screentowerinfo} links: Falls die anwendende Person angemeldet ist und es einen freien Platz gibt, erscheint der Button in grüner Farbe. Mit dem SwitchSelector kann man die Art der Box auswählen. Beim Klicken auf den Button wird man zum Screen „Assignment“ navigiert.
+
+\noindent Abbildung \ref{fig:screentowerinfo} rechts: Falls die anwendende Person angemeldet ist und eine Box beim Turm gelagert hat, erscheint diese als Komponente Box in der Mitte des Bildschirms. Mit einem Klick auf die Box, kommt man zum Screen „BoxInfo“.
+
+\bigskip
+
+
+\paragraph{Assignment}Der Screen „Assignment“ wird zum Aus- und Einlagern von Gegenständen verwendet.
+
+\noindent Mit der Funktion UseEffect, die am Rendern des Screens ausführt, wird die Funktion storeBike durchgeführt. Die Funktion überprüft zuerst mit dem Standort der anwendenden Person, ob er sich tatsächlich in der Nähe des Fahrradturms befindet. Das Projektteam hat sich für eine maximale Entfernung von 250m entschieden, damit es bei Testzwecken zu keinen Problemen kommt.
+
+\noindent Falls sich der anwendenden Person innerhalb des definierten Umkreises befindet, wird die Anfrage in Firestore erstellt. Diese befindet sich im Pfad tower/towerid/jobs. Dabei wird ein Listener erstellt, der bei einer Änderung der Anfrage durch den Tower-Controller, die Anfrage erneut aus der Datenbank abruft.
+
+\noindent Anschließend wird auf die Antwort vom Tower-Controller gewartet. Dabei gibt es verschiedene Szenarien:
+
 \begin{figure}[H]
   \centering
   \includegraphics[width=0.9\textwidth]{images/assignmentdiagramm.png}
   \caption{Szenarien beim Screen Assignment}
   \label{fig:assignmentsze}
 \end{figure}
+
 \clearpage
-Wie bei der Abbildung \ref*{fig:assignmentsze} ersichtlich, gibt es nach dem Überprüfen des Standorts mehrere Szenarien. Je nach Art der Anfrage und Antwort des Controllers wird dem User etwas anderes angezeigt.\\
+
+
+
+Wie bei der Abbildung \ref*{fig:assignmentsze} ersichtlich, gibt es nach dem Überprüfen des Standorts mehrere Szenarien. Je nach Art der Anfrage und Antwort des Controllers wird dem User etwas anderes angezeigt.
 
 \begin{figure}[H]
   \centering
@@ -229,7 +295,10 @@ Wie bei der Abbildung \ref*{fig:assignmentsze} ersichtlich, gibt es nach dem Üb
   \caption{Schicken der Anfrage zum Aus-/Einlagern}
   \label{fig:screenwaiting}
 \end{figure}
-Abbildung \ref{fig:screenwaiting}: Beim Schicken der Anfrage kommt die Nachricht „Waiting for an available space“ beim Einlagern und beim Auslagern die Nachricht „Waiting for bike to store out“.\\
+
+
+\noindent Abbildung \ref{fig:screenwaiting}: Beim Schicken der Anfrage kommt die Nachricht „Waiting for an available space“ beim Einlagern und beim Auslagern die Nachricht „Waiting for bike to store out“.
+
 \begin{figure}[H]
   \centering
   \includegraphics[width=0.25\textwidth]{images/app-screenshots/recieved.png}
@@ -237,8 +306,10 @@ Abbildung \ref{fig:screenwaiting}: Beim Schicken der Anfrage kommt die Nachricht
   \caption{JobRecieved}
   \label{fig:screenrecieved}
 \end{figure}
-Abbildung \ref{fig:screenrecieved} links: Wenn der Tower-Controller die Anfrage bekommen hat, wird die Meldung „Job recieved“ angezeigt.\\
-Abbildung \ref{fig:screenrecieved} rechts: Falls der Tower-Controller eine Fehlermeldung sendet, wird diese mit roter Schrift angezeigt.\\
+
+
+\noindent Abbildung \ref{fig:screenrecieved} links: Wenn der Tower-Controller die Anfrage bekommen hat, wird die Meldung „Job recieved“ angezeigt.
+\noindent Abbildung \ref{fig:screenrecieved} rechts: Falls der Tower-Controller eine Fehlermeldung sendet, wird diese mit roter Schrift angezeigt.
 
 \begin{figure}[H]
   \centering
@@ -246,4 +317,5 @@ Abbildung \ref{fig:screenrecieved} rechts: Falls der Tower-Controller eine Fehle
   \caption{JobSuccessful}
   \label{fig:success}
 \end{figure}
-Abbildung \ref{fig:success}: Falls der Job erfolgreich abgeschlossen wurde, wird entweder die Box mit dem Fahrrad oder den Paketboxen angezeigt.\\
+
+\noindent Abbildung \ref{fig:success}: Falls der Job erfolgreich abgeschlossen wurde, wird entweder die Box mit dem Fahrrad oder den Paketboxen angezeigt.

@@ -1,12 +1,13 @@
 \subsubsection{Komponenten}
-Komponenten erlauben es in der Benutzeroberfläche wiederverwendbare Teile zu verwenden. Komponenten akzeptieren Eingaben, die „props“ genannt werden, und geben React-Elemente zurück. \citev{komponenten}\\
+Komponenten erlauben es in der Benutzeroberfläche wiederverwendbare Teile zu verwenden. Komponenten akzeptieren Eingaben, die „props“ genannt werden, und geben React-Elemente zurück. \citev{komponenten}
 
+\bigskip
 
-In der App werden folgende Komponenten verwendet:
+\noindent In der App werden folgende Komponenten verwendet:
 
 \paragraph{Box}
 
-Hiermit können die aktuell gelagerten Gegenstände oder vergangene Buchungen angezeigt werden. Angezeigt wird der Name des Einlagerungsortes, ein Icon (entweder ein Fahrrad oder Boxen) und das Datum der Einlagerung. Falls die Buchung zu Ende ist, wird außerdem das Enddatum angezeigt.\\
+Hiermit können die aktuell gelagerten Gegenstände oder vergangene Buchungen angezeigt werden. Angezeigt wird der Name des Einlagerungsortes, ein Icon (entweder ein Fahrrad oder Boxen) und das Datum der Einlagerung. Falls die Buchung zu Ende ist, wird außerdem das Enddatum angezeigt.
 
 \begin{figure}[H]
   \centering
@@ -21,7 +22,7 @@ Hiermit können die aktuell gelagerten Gegenstände oder vergangene Buchungen an
   \label{fig:boxwithitem}
 \end{figure}
 
-Die Komponente wird auf den Seiten „Aktivität“ und „Fahrradturm“ verwendet.\\
+Die Komponente wird auf den Seiten „Aktivität“ und „Fahrradturm“ verwendet.
 
 \begin{listing}[H]
   \begin{minted}{js}
@@ -37,7 +38,7 @@ Verwendete Props:
   \item \Gls{Array} der Box (boxinfo)
 \end{itemize}
 
-\paragraph{SettingLink}Mit der Komponente SettingLink erstellt man einen Link, mit dem man zu einer Unterseite mit Einstellungen kommt. Die Komponente wird auf der Seite „Einstellungen“ verwendet.\\
+\paragraph{SettingLink}Mit der Komponente SettingLink erstellt man einen Link, mit dem man zu einer Unterseite mit Einstellungen kommt. Die Komponente wird auf der Seite „Einstellungen“ verwendet.
 
 \begin{figure}[H]
   \centering
@@ -70,7 +71,8 @@ Verwendete Props:
 \end{itemize}
 
 
-\paragraph{OtherLink}Die Komponente OtherLink funktioniert ähnlich wie die Komponente SettingLink. Sie wird auf dem Screen Services verwendet. Die Komponente dient als Link zu Unterseiten.\\
+\paragraph{OtherLink}Die Komponente OtherLink funktioniert ähnlich wie die Komponente SettingLink. Sie wird auf dem Screen Services verwendet. Die Komponente dient als Link zu Unterseiten.
+
 \begin{figure}[H]
   \centering
   \includegraphics[width=0.4\textwidth]{images/app-screenshots/otherlink.png}
@@ -102,7 +104,8 @@ Verwendete Props:
 \end{itemize}
 
 
-\paragraph{BoxImage}Die Komponente BoxImage wird auf dem Screen „Assignment“ und „BoxInfo“ verwendet. Die Komponente rendert ein Bild der Box entweder mit einem Fahrrad oder mit Boxen, je nachdem ob die Variable type „bike“ oder „item“ lautet.\\
+\paragraph{BoxImage}Die Komponente BoxImage wird auf dem Screen „Assignment“ und „BoxInfo“ verwendet. Die Komponente rendert ein Bild der Box entweder mit einem Fahrrad oder mit Boxen, je nachdem ob die Variable type „bike“ oder „item“ lautet.
+
 \begin{figure}[H]
   \centering
   \includegraphics[width=0.35\textwidth]{images/box_bike.png}
