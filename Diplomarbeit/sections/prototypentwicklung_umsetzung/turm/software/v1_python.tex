@@ -8,9 +8,9 @@ Die Pythonversion ist basierend auf einem Queue System, bei dem verschiedene Kom
   \label{fig:tower_controller_v1}
 \end{figure}
 
-\ac{Stdin} und \ac{Stdout} werden verwendet um mit dem Benutzer zu kommunizieren. \ac{Stdin} wird verwendet, damit ein Benutzer manuell Jobs zur Queue hinzufügen kann. Dies ist vorallem bei zum \Gls{debuggen} nützlich. \ac{Stdout} wird verwendet um dem Benutzer Informationen über den aktuellen Status des Turms zu geben. Eingaben sind eine blockierende Operation, deshalb wurde aioconsole verwendet um \ac{Stdin} asynchron auszuführen.
+\ac{Stdin} und \ac{Stdout} werden verwendet um mit dem Benutzer zu kommunizieren. \ac{Stdin} wird verwendet, damit ein Benutzer manuell Jobs zur Queue hinzufügen kann. Dies ist vorallem beim \Gls{debuggen} nützlich. \ac{Stdout} wird verwendet um dem Benutzer Informationen über den aktuellen Status des Turms zu geben. Eingaben sind eine blockierende Operation, deshalb wurde aioconsole verwendet um \ac{Stdin} asynchron auszuführen.
 
-In einem weiteren \Gls{thread} kommuniziert ein \ac{GPIO} \Gls{listener} mit einem physikalischen Button, welcher zur bestätigung des Einlagerungsvorgangs verwendet werden sollte. Der \Gls{listener} wartet auf einen Tastendruck und fügt anschließend einen Job (\Gls{event}) zur \Gls{queue} hinzu.
+In einem weiteren \Gls{thread} kommuniziert ein \ac{GPIO} \Gls{listener} mit einem physikalischen Button, welcher zur Bestätigung des Einlagerungsvorgangs verwendet werden sollte. Der \Gls{listener} wartet auf einen Tastendruck und fügt anschließend einen Job (\Gls{event}) zur \Gls{queue} hinzu.
 
 Der wichtigste \Gls{listener}ist der Datenbanklistener, dieser wartet auf Änderungen in der Datenbank und fügt entsprechende Jobs zur Queue hinzu. Dieser \Gls{listener} ist essenziell für die Kommunikation zwischen der App und dem Turm. Der \Gls{listener} wird von der offiziellen Python Bibliothek für Firebase bereitgestellt.
 

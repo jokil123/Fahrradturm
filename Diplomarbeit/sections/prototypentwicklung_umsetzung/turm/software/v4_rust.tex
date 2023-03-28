@@ -42,7 +42,7 @@ Das Projekt wurde mit \texttt{cargo new} erstellt, deshalb ist die Projektstrukt
 
 \subparagraph{Event Handling Pipeline}
 
-Wenn der Turm Controller ein Event empfängt wird dieses in der Event Handling Pipeline verarbeitet. Die Event Handling Pipeline besteht aus validierungs- und ausführungsstufen. Die validierungsstufen prüfen ob das Event gültig ist und ob es überhaupt verarbeitet werden muss. Die ausführungsstufen führen die eigentliche Verarbeitung des Events aus. Die funktionsweise der Event Handling Pipeline ist in Abbildung \ref{fig:tower_controller_v4_event_handling} dargestellt.
+Wenn der Turm Controller ein Event empfängt wird dieses in der Event Handling Pipeline verarbeitet. Die Event Handling Pipeline besteht aus Validierungs- und Ausführungsstufen. Die Validierungsstufen prüfen ob das Event gültig ist und ob es überhaupt verarbeitet werden muss. Die Ausführungsstufen führen die eigentliche Verarbeitung des Events aus. Die Funktionsweise der Event Handling Pipeline ist in Abbildung \ref{fig:tower_controller_v4_event_handling} dargestellt.
 
 \begin{figure}[H]
   \centering
@@ -57,7 +57,7 @@ In Abbildung \ref{fig:tower_controller_v4_event_handling} werden nicht mögliche
 
 \subparagraph{TowerDatabase}
 
-\texttt{TowerDatabase} kümmert sich um die Kommunikation mit der Datenbank. Es ist ein \Gls{wrapper} für die Datenbankverbindung der \texttt{firestore\_rs} Softwarebilbiothek. Es soll die interaktion mit der Datenbank vereinfachen und die möglichkeit von Fehlern minimieren.
+\texttt{TowerDatabase} kümmert sich um die Kommunikation mit der Datenbank. Es ist ein \Gls{wrapper} für die Datenbankverbindung der \texttt{firestore\_rs} Softwarebilbiothek. Es soll die Interaktion mit der Datenbank vereinfachen und die Möglichkeit von Fehlern minimieren.
 
 \begin{listing}[H]
   \begin{minted}{rust}
