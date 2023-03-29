@@ -1,15 +1,15 @@
 \subsection{Datenbank}
 
-Als Datenbank wurde Firestore verwendet, ein Untermodul von Firebase (\ref{sec:firebase}), welches nutzern bis zu einem gewissen Umfang kostenlos zur Verfügung steht. Firestore ist eine NoSQL-Datenbank, welche auf Dokumenten basiert. Ähnlich wie bei MongoDB werden Daten als kleine Dokumente gespeichert, welche wiederum in Kollektionen gespeichert werden. Firestore erlaubt nesting, damit komplexere Datenstrukturen abgebildet werden können ohne, dass einzelnen Dokumente zu groß werden.
+Als Datenbank wurde Firestore verwendet, ein Untermodul von Firebase (\ref{sec:firebase}), welches Nutzern bis zu einem gewissen Umfang kostenlos zur Verfügung steht. Firestore ist eine [NoSQL]-Datenbank, welche auf Dokumenten basiert. Ähnlich wie bei [MongoDB] werden Daten als kleine Dokumente gespeichert, die wiederum in Kollektionen gespeichert werden. Firestore erlaubt *[nesting], damit komplexere Datenstrukturen abgebildet werden können ohne, dass einzelnen Dokumente zu groß werden.
 
 
-\subsubsection{Serialisierung / Deserialisierung}
+\subsubsection{[Serialisierung] / [Deserialisierung]}
 
-Um die Daten der Datenbank auf der Seite des Tower Controllers zu verarbeiten, müssen diese zunächst in ein strukturiertes Format umgewandelt werden. Dies geschieht durch die Verwendung von \texttt{serde} und \texttt{serde\_json}. \texttt{serde} ist eine Bibliothek, welche es ermöglicht, beliebige Datenstrukturen zu serialisieren und deserialisieren. Es ist sehr einfach Datenstrukturen mittels \texttt{serde} serialiserbar zu machen.
+Um die Daten der Datenbank auf der Seite des Tower Controllers zu verarbeiten, müssen diese zunächst in ein strukturiertes Format umgewandelt werden. Dies geschieht durch die Verwendung von \texttt{serde} und \texttt{serde\_json}. \texttt{Serde} ist eine Bibliothek, die es ermöglicht, beliebige Datenstrukturen zu [serialisieren] und [deserialisieren]. Es ist sehr einfach Datenstrukturen mittels \texttt{serde} serialiserbar zu machen.
 
 
 \subsubsection{Datenbankschema}
-Das Datenbankschema ist trotz der Verwendung einer Dokumenten-Datenbank änhlich zu relationalen Datenbanken. Aus diesem Grund kann das Schema der Datenbank auch als ER-Diagramm dargestellt werden.
+Das Datenbankschema ist, trotz der Verwendung einer Dokumenten-Datenbank, ähnlich zu [relationalen] Datenbanken (SQL). Aus diesem Grund kann das Schema der Datenbank auch als \ac{ER}-Diagramm dargestellt werden.
 
 \begin{figure}[H]
     \centering
@@ -19,7 +19,7 @@ Das Datenbankschema ist trotz der Verwendung einer Dokumenten-Datenbank änhlich
 \end{figure}
 
 \paragraph{Tower}
-Tower repräsentieren die einzelnen Standorte der Fahrradtürme. Sie enthalten die Koordinaten des Standortes, den namen des Standortes und die Kapazität des Standortes.
+Tower repräsentieren die einzelnen Standorte der Fahrradtürme. Sie enthalten die Koordinaten des Standortes, den Namen des Standortes und die Kapazität des Standortes.
 
 \begin{listing}[H]
     \begin{minted}{typescript}
@@ -49,7 +49,7 @@ Box {
 
 
 \paragraph{Job}
-Jobs sind für die Kommunikation zwischen Turm und App verantwortlich. Sie enthalten Informationen über den Typ des Jobs, den Nutzer, der den Job anfrägt, die Box, die betroffen ist und den Status des Jobs. Je nach Typ des Jobs und Job-Fortschritt sind manche Felder nötigt oder leer.
+Jobs sind für die Kommunikation zwischen Turm und App verantwortlich. Sie enthalten Informationen über den Typ des Jobs, den Nutzer, der den Job anfrägt, die Box, die betroffen ist und den Status des Jobs. Je nach Typ des Jobs und Job-Fortschritt sind manche Felder erforderlich oder leer. Die Kommunikation wird im Abschnitt \nameref{sec:kommunikation} (\ref{sec:kommunikation}) erläutert.
 
 \begin{listing}[H]
     \begin{minted}{typescript}
@@ -100,7 +100,7 @@ Rental {
 
 
 \paragraph{Key}
-Keys sind dafür da um Dritten Zugriff auf vermietete Boxen eines Nutzers zu gewähren. Je nach verwendungszweck kann ein ablaufdatum für den Key gesetzt werden. Zudem kann auch ein Limit für die Anzahl der Verwendungen gesetzt werden (separat für ein- und auslagerung). Keys werden zum Beispiel dazu verwendet um Paketlieferanten Zugriff auf die Boxen zu gewähren, damit diese ein Paket abliefern können.
+Keys sind dafür da, um Dritten Zugriff auf vermietete Boxen eines Nutzers zu gewähren. Je nach Verwendungszweck kann ein Ablaufdatum für den Key gesetzt werden. Zudem kann auch ein Limit für die Anzahl der Verwendungen gesetzt werden (separat für Ein- und Auslagerung). Keys werden zum Beispiel dazu verwendet um Paketlieferanten Zugriff auf die Boxen zu gewähren, damit diese ein Paket abliefern können.
 
 \begin{listing}[H]
     \begin{minted}{typescript}

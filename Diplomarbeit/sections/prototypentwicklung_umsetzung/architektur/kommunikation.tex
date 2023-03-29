@@ -1,6 +1,6 @@
 \subsection{Kommunikation}
 
-App und Turm müssen miteinander kommunizieren. Es hätte mehrere verschiedene möglichkeiten gegeben, jedoch hat sich das Team darauf geeinigt, die bestehende Firebase Datenbank (\ref{sec:firebase}) und deren  \enquote{Realtime Updates} Funktion zu verwenden.
+App und Turm müssen miteinander kommunizieren. Es gibt mehrere verschiedene Möglichkeiten, jedoch hat sich das Team darauf geeinigt, die bestehende Firebase Datenbank (\ref{sec:firebase}) und deren \enquote{Realtime Updates} Funktion zu verwenden.
 
 Austauschmöglichkeiten:
 \begin{itemize}
@@ -22,16 +22,16 @@ Realtime Updates ist ein Feature von Firestore, welches es ermöglicht, dass sic
 
 \subsubsection{Fahrradturm Protokoll}
 
-Das Fahrradturm Protokoll basiert auf Dokumenten in der Firestore Datenbank. Jedes Dokument repräsentiert einen einzelnen Job, der vom Fahrradturm ausgeführt werden soll. Die Dokumente werden in einer Subcollection des Turms namens \enquote{jobs} gespeichert. Um Jobs zu starten muss der Client ein Dokument Turms erstellen.
+Das Fahrradturm Protokoll basiert auf Dokumenten in der Firestore Datenbank. Jedes Dokument repräsentiert einen einzelnen Job, der vom Fahrradturm ausgeführt werden soll. Die Dokumente werden in einer Subcollection des Turms namens \enquote{jobs} gespeichert. Um Jobs zu starten muss der Client ein Dokument im Turm erstellen.
 
 \paragraph{Gemeinsame Felder}
 
-Es gibt einige Felder welche bei jedem Job vorhanden sind bzw. immer die gleiche Bedeutung haben. Diese Felder sind wie folgt:
+Es gibt einige Felder, welche bei jedem Job vorhanden sind bzw. immer die gleiche Bedeutung haben. Diese Felder sind wie folgt:
 
 \begin{itemize}
-  \item \texttt{error} ist ein optionales Feld, welches vom Fahrradturm gesetzt wird, wenn ein Fehler auftritt. Es gibt verschiedene mögliche Werte, welche die Art des Fehlers beschreiben. Anhand dieser Fehlermeldungen kann der Client die Fehlermeldung dem Nutzer anzeigen.
+  \item \texttt{error} ist ein optionales Feld, welches vom Fahrradturm gesetzt wird, wenn ein Fehler auftritt. Es gibt verschiedene, mögliche Werte, welche die Art des Fehlers beschreiben. Anhand dieser Fehlermeldungen kann der Client die Fehlermeldung dem Nutzer anzeigen.
   \item \texttt{userId} ist die ID des Nutzers, der den Job ausführen möchte. Sie wird verwendet um festzustellen, ob der Nutzer berechtigt ist den Job auszuführen.
-  \item \texttt{confirmation} ist ein optionales Feld, welches vom Fahrradturm gesetzt wird, um dem Client mitzuteilen, dass der Job erfolgreich empfangen bzw. ausgeführt wurde. Es gibt zwei mögliche Werte: \texttt{jobRecieved} und \texttt{jobCompleted}. \texttt{jobRecieved} wird gesetzt, wenn der Fahrradturm den Job empfangen hat. \texttt{jobCompleted} wird gesetzt, wenn der Fahrradturm den Job erfolgreich ausgeführt hat.
+  \item \texttt{confirmation} ist ein optionales Feld, welches vom Fahrradturm gesetzt wird, um dem Client mitzuteilen, dass der Job erfolgreich empfangen bzw. ausgeführt wurde. Es gibt zwei mögliche Werte: \texttt{jobRecieved} und \texttt{jobCompleted}. \texttt{jobRecieved} wird gesetzt, wenn der Fahrradturm den Job empfangen hat. \texttt{jobCompleted} wird gesetzt, sobald der Fahrradturm den Job erfolgreich ausgeführt hat.
   \item \texttt{assignmentType} gibt an, welche Art von Job ausgeführt werden soll. Es gibt zwei mögliche Werte: \texttt{store} und \texttt{retrieve}.
 \end{itemize}
 
@@ -54,10 +54,10 @@ Job {
 
 \begin{itemize}
   \item \texttt{assignmentType} gibt an, dass es sich um einen Einlagerjob handelt.
-  \item \texttt{boxType} gibt an, ob es sich um ein Fahrrad oder ein anderes Item handelt.
+  \item \texttt{boxType} gibt an, ob es sich um ein Fahrrad oder ein anderes Objekt handelt.
 \end{itemize}
 
-Falls der Fahrradturm den Job erfolgreich empfangen hat, wird das Feld \texttt{confirmation} auf \texttt{jobRecieved} gesetzt. Nun wird der Job auf der Seite des Fahrradturms ausgeführt. Sobald der Job abgeschlossen ist, wird das Feld \texttt{confirmation} auf \texttt{jobCompleted} gesetzt. Das Feld \texttt{boxId} wird ebenfalls gesetzt, welches die ID der Box ist, in der das Item/Fahrrad abgelegt wurde. Ein abgeschlossener Einlagerjob sieht wie folgt aus:
+Falls der Fahrradturm den Job erfolgreich empfangen hat, wird das Feld \texttt{confirmation} auf \texttt{jobRecieved} gesetzt. Nun wird der Job auf der Seite des Fahrradturms ausgeführt. Sobald der Job abgeschlossen ist, wird das Feld \texttt{confirmation} auf \texttt{jobCompleted} gesetzt. Das Feld \texttt{boxId} wird ebenfalls gesetzt, welches die ID der Box ist, in der das Objekt/Fahrrad abgelegt wurde. Ein abgeschlossener Einlagerjob sieht wie folgt aus:
 
 \begin{listing}[H]
   \begin{minted}{typescript}

@@ -2,14 +2,14 @@
 
 \bquote{Cloud Firestore is optimized for storing large collections of small documents.}{cloud_firestore_datenmodell}
 
-Die Grundidee ist es, die Daten schon so weit vorbereitet zu speichern, dass sie mit so wenig Aufwand wie möglich abgerufen und ausgegeben werden können. Um hingegen möglichst effizient zu sein, sollten die Collections möglichst groß, die Dokumente hingegen möglichst klein sein.
+\noindent Die Grundidee ist, die Daten schon so weit vorbereitet zu speichern, dass sie mit so wenig Aufwand wie möglich abgerufen und ausgegeben werden können. Um hingegen möglichst effizient zu sein, sollen die Collections möglichst groß, die Dokumente hingegen möglichst klein sein.
 
 \subsubsection{Arten von Datenverknüpfung}
 
 Um Daten zu verknüpfen gibt es für das Projektteam zwei Varianten:
 
 \paragraph{Tiefe Ebene}
-Die Verknüpfung wird als Spalte mit dem eindeutigen Namen des zu Verknüpfenden, als Booleanwert true gespeichert.  Dadurch kann die Datenbank einfach auf andere Datenbanken verschoben werden, es wird aber auch bei der Abfrage mehr Processing benötigt.
+Die Verknüpfung wird als Spalte mit dem eindeutigen Namen des zu Verknüpfenden, als Booleanwert true gespeichert.  Dadurch kann die Datenbank einfach auf andere Datenbanken verschoben werden, es wird aber auch bei der Abfrage mehr Rechenpower benötigt.
 
 \paragraph{Höhere Ebene}
 In Firestore gibt es die Möglichkeit Referenzen zu erstellen. Dies stellt die beste Art dar, da diese speziell auf Firestore optimiert wurde und das Fehlerpotential durch eine automatische Überprüfung der Referenz minimiert werden kann. Die Verknüpfung erfolgt dabei auf den Dokumentennamen.
