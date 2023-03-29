@@ -18,7 +18,7 @@
   \caption{Screen Home}
   \label{fig:screenhome}
 \end{figure}
-Die Abbildung \ref{fig:screenhome} zeigt links die Ansicht ohne Anmeldung und rechts die Ansicht mit Anmeldung.
+\noindent Die Abbildung \ref{fig:screenhome} zeigt links die Ansicht ohne Anmeldung und rechts die Ansicht mit Anmeldung.
 
 \bigskip
 
@@ -32,7 +32,7 @@ Auf dem Screen „BoxInfo“ werden folgende Daten angezeigt:
   \item Komponente BoxImage für Bild der Fahrradbox
 \end{itemize}
 
-Diese Infos werden über die Navigation übergeben.
+\noindent Diese Infos werden über die Navigation übergeben.
 
 \begin{listing}[H]
   \begin{minted}{js}
@@ -42,7 +42,7 @@ Diese Infos werden über die Navigation übergeben.
   \label{lst:navigation}
 \end{listing}
 
-Bei der Code-Auflistung \ref{lst:navigation} wird gezeigt, wie man von der Komponente Box zum aktuellen Screen navigiert wird. Dort wird das \Gls{Array} boxinfo übergeben.
+\noindent Bei der Code-Auflistung \ref{lst:navigation} wird gezeigt, wie man von der Komponente Box zum aktuellen Screen navigiert wird. Dort wird das \Gls{Array} boxinfo übergeben.
 
 \begin{listing}[H]
   \begin{minted}{js}
@@ -55,7 +55,7 @@ Bei der Code-Auflistung \ref{lst:navigation} wird gezeigt, wie man von der Kompo
 \end{listing}
 
 
-Wie bei der Code-Auflistung \ref{lst:zugriff}, wird beim aktuellen Screen nun die Variable Box mithilfe von route.params abgerufen.
+\noindent Wie bei der Code-Auflistung \ref{lst:zugriff}, wird beim aktuellen Screen nun die Variable Box mithilfe von route.params abgerufen.
 
 \noindent Falls man das Fahrrad noch nicht abgeholt hat, wird außerdem ein Button zum Auslagern angezeigt. Durch das Drücken des Buttons kommt man zum Screen „Assignment“.
 
@@ -66,7 +66,7 @@ Wie bei der Code-Auflistung \ref{lst:zugriff}, wird beim aktuellen Screen nun di
   \caption{Screen BoxInfo}
   \label{fig:screenboxinfo}
 \end{figure}
-Die Abbildung \ref{fig:screenboxinfo} zeigt links die Ansicht bei einer bereits vergangenen Buchung und rechts die Ansicht bei einer aktiven Buchung.
+\noindent Die Abbildung \ref{fig:screenboxinfo} zeigt links die Ansicht bei einer bereits vergangenen Buchung und rechts die Ansicht bei einer aktiven Buchung.
 
 \bigskip
 
@@ -94,7 +94,7 @@ Die Abbildung \ref{fig:screenboxinfo} zeigt links die Ansicht bei einer bereits 
   \caption{Screen Settings}
   \label{fig:screensettings}
 \end{figure}
-Die Abbildung links zeigt die Ansicht, wenn die anwendende Person nicht angemeldet ist. Bei der Abbildung rechts sieht man, dass mehrere Einstellungen zum Account angezeigt werden, falls die anwendende Person eingeloggt ist.
+\noindent Die Abbildung links zeigt die Ansicht, wenn die anwendende Person nicht angemeldet ist. Bei der Abbildung rechts sieht man, dass mehrere Einstellungen zum Account angezeigt werden, falls die anwendende Person eingeloggt ist.
 
 \bigskip
 
@@ -124,7 +124,7 @@ Die Abbildung links zeigt die Ansicht, wenn die anwendende Person nicht angemeld
   \label{lst:signin}
 \end{listing}
 
-Dabei wird die Methode signInWithEmailAndPasswort des Authentizierungs-Service auth von Firebase verwendet. Es werden die eingegebene E-Mail und Passwort übergeben. Bei einer erfolgreichen Anmeldung bekommt die anwendende Person die Meldung „signed in“ und wird zum Screen „Settings“ zurückgeleitet.
+\noindent Dabei wird die Methode signInWithEmailAndPasswort des Authentizierungs-Service auth von Firebase verwendet. Es werden die eingegebene E-Mail und Passwort übergeben. Bei einer erfolgreichen Anmeldung bekommt die anwendende Person die Meldung „signed in“ und wird zum Screen „Settings“ zurückgeleitet.
 \noindent Beim Klicken auf den Button „Register“ wird man zur Seite „SignIn“ geführt.
 
 \begin{figure}[H]
@@ -169,7 +169,7 @@ Dabei wird die Methode signInWithEmailAndPasswort des Authentizierungs-Service a
   \label{lst:createaccount}
 \end{listing}
 
-Die Methode createUserWithEmailAndPasswort, die zum Erstellen eines Users verwendet wird, ist vergleichbar mit signInWithEmailAndPasswort. Sie erstellt beim Authentifizierungs-Service auth einen neuen User und meldet diesen an. Falls die Erstellung des Accounts erfolgreich ist, werden folgende Schritte ausgeführt:
+\noindent Die Methode createUserWithEmailAndPasswort, die zum Erstellen eines Users verwendet wird, ist vergleichbar mit signInWithEmailAndPasswort. Sie erstellt beim Authentifizierungs-Service auth einen neuen User und meldet diesen an. Falls die Erstellung des Accounts erfolgreich ist, werden folgende Schritte ausgeführt:
 
 \begin{itemize}
   \item Die Funktion addUser wird ausgeführt. Damit wird für den User in Firestore ein Dokument mit dem Namen und der userid erstellt.
@@ -177,7 +177,7 @@ Die Methode createUserWithEmailAndPasswort, die zum Erstellen eines Users verwen
   \item Die anwendende Person wird zurück zu Settings navigiert.
 \end{itemize}
 
-Falls die Erstellung des Accounts nicht möglich ist, wird eine entsprechende Fehlermeldung ausgegeben.
+\noindent Falls die Erstellung des Accounts nicht möglich ist, wird eine entsprechende Fehlermeldung ausgegeben.
 
 \begin{figure}[H]
   \centering
@@ -193,7 +193,7 @@ Falls die Erstellung des Accounts nicht möglich ist, wird eine entsprechende Fe
 
 \noindent Mithilfe vom Expo SplashScreen wird zuerst eine leere Karte angezeigt, bis die Funktion getTowers fertig ist. Die Funktion getTowers liefert die Daten zu allen Fahrradtürmen.
 
-\noindent Anschließend werden alle Marker auf der Karte angezeigt. Die Funktion MarkerImage liefert entweder einen grüner Marker, falls noch Plätze frei sind, oder einen grauen Marker, wenn es keine freien Plätze für Fahrräder gibt. Beim Klicken auf einen Marker, kommt man zum Screen „TowerInfo“.
+\noindent Anschließend werden alle Marker auf der Karte angezeigt. Die Funktion MarkerImage liefert entweder einen grünen Marker, falls noch Plätze frei sind, oder einen grauen Marker, wenn es keine freien Plätze für Fahrräder gibt. Beim Klicken auf einen Marker, kommt man zum Screen „TowerInfo“.
 
 \begin{figure}[H]
   \centering
@@ -262,7 +262,7 @@ Auf der Abbildung rechts sieht man eine Karte mit vier Beispiel-Türmen. Der Tur
 
 \noindent Abbildung \ref{fig:screentowerinfo} links: Falls die anwendende Person angemeldet ist und es einen freien Platz gibt, erscheint der Button in grüner Farbe. Mit dem SwitchSelector kann man die Art der Box auswählen. Beim Klicken auf den Button wird man zum Screen „Assignment“ navigiert.
 
-\noindent Abbildung \ref{fig:screentowerinfo} rechts: Falls die anwendende Person angemeldet ist und eine Box beim Turm gelagert hat, erscheint diese als Komponente Box in der Mitte des Bildschirms. Mit einem Klick auf die Box, kommt man zum Screen „BoxInfo“.
+\noindent Abbildung \ref{fig:screentowerinfo} rechts: Falls die anwendende Person angemeldet ist und eine Box beim Turm gelagert hat, erscheint diese als Komponente Box in der Mitte des Bildschirms. Mit einem Klick auf die Box kommt man zum Screen „BoxInfo“.
 
 \bigskip
 
@@ -286,18 +286,18 @@ Auf der Abbildung rechts sieht man eine Karte mit vier Beispiel-Türmen. Der Tur
 
 
 
-Wie bei der Abbildung \ref{fig:assignmentsze} ersichtlich, gibt es nach dem Überprüfen des Standorts mehrere Szenarien. Je nach Art der Anfrage und Antwort des Controllers wird dem User etwas anderes angezeigt.
+\noindent Wie bei der Abbildung \ref{fig:assignmentsze} ersichtlich, gibt es nach dem Überprüfen des Standorts mehrere Szenarien. Je nach Art der Anfrage und Antwort des Controllers wird dem User etwas anderes angezeigt.
 
 \begin{figure}[H]
   \centering
   \includegraphics[width=0.25\textwidth]{images/app-screenshots/waitinga.png}
   \includegraphics[width=0.25\textwidth]{images/app-screenshots/waitingb.png}
-  \caption{Schicken der Anfrage zum Aus-/Einlagern}
+  \caption{Senden der Anfrage zum Aus-/Einlagern}
   \label{fig:screenwaiting}
 \end{figure}
 
 
-\noindent Abbildung \ref{fig:screenwaiting}: Beim Schicken der Anfrage kommt die Nachricht „Waiting for an available space“ beim Einlagern und beim Auslagern die Nachricht „Waiting for bike to store out“.
+\noindent Abbildung \ref{fig:screenwaiting}: Beim Senden der Anfrage kommt die Nachricht „Waiting for an available space“ beim Einlagern und beim Auslagern die Nachricht „Waiting for bike to store out“.
 
 \begin{figure}[H]
   \centering
