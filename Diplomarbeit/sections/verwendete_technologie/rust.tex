@@ -1,7 +1,7 @@
 \subsection{Rust}
 \label{sec:rust}
 
-Rust ist eine [kompilierte] System-Programiersprache, die trotz [high level] Features hohe Ausführungsgeschwindigkeiten verspricht. Anders als herkömmliche Programiersprachen verwendet Rust keinen Garbage Compiler, jedoch garantiert sie mit \ac{RAII} und einem unkonventionellen \textit{Borrow Checker} trotzdem [Memory Safety].
+Rust ist eine \gls{kompiliert}e System-Programiersprache, die trotz \gls{high-level} Features hohe Ausführungsgeschwindigkeiten verspricht. Anders als herkömmliche Programiersprachen verwendet Rust keinen Garbage Compiler, jedoch garantiert sie mit \ac{RAII} und einem unkonventionellen \textit{Borrow Checker} trotzdem \Gls{Memory-Safety}.
 
 \bigskip
 
@@ -20,15 +20,15 @@ Rust ist eine [kompilierte] System-Programiersprache, die trotz [high level] Fea
 \subsubsection{\texttt{firestore\_rs} Softwarebibliothek}
 \label{sec:firestore_rs}
 
-Die \texttt{firestore\_rs} Softwarebibliothek ist eine Rust Softwarebibliothek, welche die Kommunikation mit der Google Firestore Datenbank vereinfacht. Die Softwarebibliothek ist Open Source auf GitHub und kann sehr einfach mittels [crates.io] zu einem Projekt hinzugefügt werden. Die Softwarebibliothek ist sehr einfach zu bedienen und bietet eine große Anzahl an Funktionen, welche die Kommunikation mit der Firestore Datenbank vereinfachen.
+Die \texttt{firestore\_rs} Softwarebibliothek ist eine Rust Softwarebibliothek, welche die Kommunikation mit der Google Firestore Datenbank vereinfacht. Die Softwarebibliothek ist \Gls{Open-Source} auf GitHub und kann sehr einfach mittels \gls{cratesio} zu einem Projekt hinzugefügt werden. Die Softwarebibliothek ist sehr einfach zu bedienen und bietet eine große Anzahl an Funktionen, welche die Kommunikation mit der Firestore Datenbank vereinfachen.
 
 Die Bibliothek umfasst unter anderem folgende Funktionen:
 \begin{itemize}
     \item \ac{CRUD} Operationen
-    \item [Querys] erstellen
-    \item Datenbank [Listener]
+    \item \Glspl{Query} erstellen
+    \item Datenbank \Gls{listener}
 \end{itemize}
 
-Vorallem die [Listener] Funktion ist für das Projekt sehr wichtig, da dieses Feature zu kompliziert ist, um es selbst zu implementieren. Die [Listener] Funktion ermöglicht es, dass sich das System automatisch aktualisiert, wenn sich Daten in der Datenbank ändern. Dieses Feature ist für das Projekt essenziell, da es die Kommunikation zwischen den einzelnen Komponenten ermöglicht.
+Vorallem die \Gls{listener} Funktion ist für das Projekt sehr wichtig, da dieses Feature zu kompliziert ist, um es selbst zu implementieren. Die \Gls{listener} Funktion ermöglicht es, dass sich das System automatisch aktualisiert, wenn sich Daten in der Datenbank ändern. Dieses Feature ist für das Projekt essenziell, da es die Kommunikation zwischen den einzelnen Komponenten ermöglicht.
 
-Es wurden kleinere Änderungen an der Softwarebibliothek vorgenommen, um die Kommunikation mit der Datenbank zu vereinfachen. Die Änderungen wurden in einem [Fork] der Softwarebibliothek vorgenommen und können im GitHub Repository\footnote{\url{https://github.com/jokil123/firestore-rs}} eingesehen werden. Manche dieser Änderungen wurden mittels einer \Gls{pullrequest} bereits in den \Gls{masterbranch} der Softwarebibliothek übernommen und sind ab Version \texttt{v0.29.0} verfügbar.
+Es wurden kleinere Änderungen an der Softwarebibliothek vorgenommen, um die Kommunikation mit der Datenbank zu vereinfachen. Die Änderungen wurden in einem \Gls{fork} der Softwarebibliothek vorgenommen und können im GitHub Repository\footnote{\url{https://github.com/jokil123/firestore-rs}} eingesehen werden. Manche dieser Änderungen wurden mittels einer \Gls{pullrequest} bereits in den \Gls{masterbranch} der Softwarebibliothek übernommen und sind ab Version \texttt{v0.29.0} verfügbar.

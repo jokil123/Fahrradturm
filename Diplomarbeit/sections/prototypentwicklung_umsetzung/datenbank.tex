@@ -1,15 +1,15 @@
 \subsection{Datenbank}
 
-Als Datenbank wurde Firestore verwendet, ein Untermodul von Firebase (\ref{sec:firebase}), welches Nutzern bis zu einem gewissen Umfang kostenlos zur Verfügung steht. Firestore ist eine [NoSQL]-Datenbank, welche auf Dokumenten basiert. Ähnlich wie bei [MongoDB] werden Daten als kleine Dokumente gespeichert, die wiederum in Kollektionen gespeichert werden. Firestore erlaubt *[nesting], damit komplexere Datenstrukturen abgebildet werden können ohne, dass einzelnen Dokumente zu groß werden.
+Als Datenbank wurde Firestore verwendet, ein Untermodul von Firebase (\ref{sec:firebase}), welches Nutzern bis zu einem gewissen Umfang kostenlos zur Verfügung steht. Firestore ist eine \Gls{NoSQL}-Datenbank, welche auf Dokumenten basiert. Ähnlich wie bei \Gls{MongoDB} werden Daten als kleine Dokumente gespeichert, die wiederum in Kollektionen gespeichert werden. Firestore erlaubt \gls{nesting}, damit komplexere Datenstrukturen abgebildet werden können ohne, dass einzelnen Dokumente zu groß werden.
 
 
-\subsubsection{[Serialisierung] / [Deserialisierung]}
+\subsubsection{\Gls{Serialisierung} / \Gls{Deserialisierung}}
 
-Um die Daten der Datenbank auf der Seite des Tower Controllers zu verarbeiten, müssen diese zunächst in ein strukturiertes Format umgewandelt werden. Dies geschieht durch die Verwendung von \texttt{serde} und \texttt{serde\_json}. \texttt{Serde} ist eine Bibliothek, die es ermöglicht, beliebige Datenstrukturen zu [serialisieren] und [deserialisieren]. Es ist sehr einfach Datenstrukturen mittels \texttt{serde} serialiserbar zu machen.
+Um die Daten der Datenbank auf der Seite des Tower Controllers zu verarbeiten, müssen diese zunächst in ein strukturiertes Format umgewandelt werden. Dies geschieht durch die Verwendung von \texttt{serde} und \texttt{serde\_json}. \texttt{Serde} ist eine Bibliothek, die es ermöglicht, beliebige Datenstrukturen zu serialisieren und deserialisieren. Es ist sehr einfach Datenstrukturen mittels \texttt{serde} serialiserbar zu machen.
 
 
 \subsubsection{Datenbankschema}
-Das Datenbankschema ist, trotz der Verwendung einer Dokumenten-Datenbank, ähnlich zu [relationalen] Datenbanken (SQL). Aus diesem Grund kann das Schema der Datenbank auch als \ac{ER}-Diagramm dargestellt werden.
+Das Datenbankschema ist, trotz der Verwendung einer Dokumenten-Datenbank, ähnlich zu \gls{relational}en Datenbanken (SQL). Aus diesem Grund kann das Schema der Datenbank auch als \ac{ER}-Diagramm dargestellt werden.
 
 \begin{figure}[H]
     \centering
