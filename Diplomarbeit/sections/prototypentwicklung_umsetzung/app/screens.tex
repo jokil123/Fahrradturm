@@ -269,7 +269,7 @@ Auf der Abbildung rechts sieht man eine Karte mit vier Beispiel-Türmen. Der Tur
 
 \paragraph{Assignment}Der Screen „Assignment“ wird zum Aus- und Einlagern von Gegenständen verwendet.
 
-\noindent Mit der Funktion UseEffect, die am Rendern des Screens ausführt, wird die Funktion storeBike durchgeführt. Die Funktion überprüft zuerst mit dem Standort der anwendenden Person, ob er sich tatsächlich in der Nähe des Fahrradturms befindet. Das Projektteam hat sich für eine maximale Entfernung von 250m entschieden, damit es bei Testzwecken zu keinen Problemen kommt.
+\noindent Mit der Funktion UseEffect, die beim Rendern des Screens ausführt, wird die Funktion storeBike durchgeführt. Die Funktion überprüft zuerst mit dem Standort der anwendenden Person, ob er sich tatsächlich in der Nähe des Fahrradturms befindet. Das Projektteam hat sich für eine maximale Entfernung von 250m entschieden, damit es bei Testzwecken zu keinen Problemen kommt.
 
 \noindent Falls sich der anwendenden Person innerhalb des definierten Umkreises befindet, wird die Anfrage in Firestore erstellt. Diese befindet sich im Pfad tower/towerid/jobs. Dabei wird ein Listener erstellt, der bei einer Änderung der Anfrage durch den Tower-Controller, die Anfrage erneut aus der Datenbank abruft.
 
