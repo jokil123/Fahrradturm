@@ -73,16 +73,17 @@ Expo-location ermöglicht es, auf die GPS-Koordinaten des verwendeten Gerätes z
 \paragraph{Firebase}\mbox{}\\
 Version: 9.15.0\\
 Quelle: https://docs.expo.dev/guides/using-firebase/\\
-Von dieser Bibliothek werden die Methoden auth und firestore verwendet.\\\\
+Von dieser Bibliothek werden die Methoden auth und firestore verwendet.\\
+\smallskip
 
-\textbf{Auth} steht für Authentifizierung. Es wird bei der Entwicklung der App für folgende Zwecke verwendet:
+\noindent\textbf{Auth} steht für Authentifizierung. Es wird bei der Entwicklung der App für folgende Zwecke verwendet:
 \begin{itemize}
   \item Erstellen von Accounts
   \item Anmelden mit Accounts
   \item Abmelden
   \item Zugriff auf ID der anwendenden Person
 \end{itemize}
-
+\medskip
 \noindent\textbf{Firestore} wird für das Schreiben und Lesen von Daten aus der Datenbank verwendet. Dies wird für folgende Zwecke benötigt:
 
 \begin{itemize}
@@ -105,7 +106,7 @@ Mit react-native-maps kann man eine Karte auf dem jeweiligen Gerät erzeugen und
   \label{fig:tabmap}
 \end{figure}
 
-Wie auf der Abbildung \ref{fig:tabmap} ersichtlich, wird bei der App die Bibliothek react-native-maps für die Karte mit den Möglichkeiten zum Lagern eines Fahrrades verwendet.
+\noindent Wie auf der Abbildung \ref{fig:tabmap} ersichtlich, wird bei der App die Bibliothek react-native-maps für die Karte mit den Möglichkeiten zum Lagern eines Fahrrades verwendet.
 
 \begin{figure}[H]
   \centering
@@ -114,7 +115,7 @@ Wie auf der Abbildung \ref{fig:tabmap} ersichtlich, wird bei der App die Bibliot
   \label{fig:smallmap}
 \end{figure}
 
-Die Abbildung \ref{fig:smallmap} zeigt die zweite Karte, die im Screen „TowerInfo“ verwendet wird, wo der Standort des Turmes angezeigt wird.
+\noindent Die Abbildung \ref{fig:smallmap} zeigt die zweite Karte, die im Screen „TowerInfo“ verwendet wird, wo der Standort des Turmes angezeigt wird.
 
 \bigskip
 
@@ -137,7 +138,7 @@ React-navigation/navtive ist ein Paket, das Teil des React Navigation-\Gls{Frame
   \label{lst:getfocusedroutename}
 \end{listing}
 
-Der Code zeigt die Verwendung der Methode getFocusedRouteNameFromRoute. Falls sich die anwendende Person auf dem Screen Assignment befindet, wird die untere TabBar nicht angezeigt.
+\noindent Der Code zeigt die Verwendung der Methode getFocusedRouteNameFromRoute. Falls sich die anwendende Person auf dem Screen Assignment befindet, wird die untere TabBar nicht angezeigt.
 
 \bigskip
 
@@ -166,7 +167,7 @@ Dieses Paket ist eine Erweiterung von react-navigation/native und wird für den 
   \label{lst:stacknavigator}
 \end{listing}
 
-Der abgebildete Code zeigt den StackNavigator. Er beinhaltet Optionen für den Header. Jeder einzelne Screen hat einen Namen, einen Titel und eine Komponente.
+\noindent Der abgebildete Code zeigt den StackNavigator. Er beinhaltet Optionen für den Header. Jeder einzelne Screen hat einen Namen, einen Titel und eine Komponente.
 
 \bigskip
 
@@ -182,3 +183,4 @@ Version: 0.17.5\\
 Quelle: https://docs.expo.dev/versions/latest/sdk/splash-screen/\\
 expo-splash-screen ist ein Paket, das Teil der Expo \ac{SDK} ist und zur Verwendung eines Splash-Screens in React Native-Anwendungen verwendet wird. Ein Splash-Screen ist ein Startbildschirm, der beim Starten der Anwendung angezeigt wird, um dem Benutzer visuelles Feedback zu geben, dass die App geladen wird.
 \noindent Das Paket wird beim Screen „Map“ verwendet, wo beim Laden der Türme aus firestore eine leere Karte angezeigt wird.
+\bigskip
