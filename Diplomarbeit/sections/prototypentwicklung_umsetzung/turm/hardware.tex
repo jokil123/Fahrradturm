@@ -31,6 +31,53 @@ Das folgende Ersatzschaltbild zeigt die Verkabelung des Turms. Die LEDs werden �
 
 Die einzelnen Komponenten werden verlötet. Jede Ebene des Turmes ist einzeln verlötet, sodass die einzelnen Ebenen des Turmes einfach zusammengesteckt werden können.
 
+\clearpage
+
 \paragraph{3D-Druck}
 
-Die eigentliche Form des Turm Models wird mit dem 3D-Drucker (\ref{sec:3d_druck}) gedruckt. Dazu wird das Miniaturmodell zuerst in Autodesk Inventor (\ref{sec:inventor}) konstruiert \ref{fig:modell_segment}. Anschließend wird dies als STL-Datei exportiert und in SuperSlicer für den 3D-Druck vorbereitet. Aufgrund der knappen Zeit, werden die Druckparameter so gewählt, dass der Druck möglichst schnell fertig ist. Der G-Code wird exportiert und mittels Octoprint auf einem Wanhao i3 Drucker ausgeführt. Die finale Druckzeit pro Teil beträgt ca. 10 Stunden.
+Die eigentliche Form des Turm Models wird mit dem 3D-Drucker (\ref{sec:3d_druck}) gedruckt. Dazu wird das Miniaturmodell zuerst in Autodesk Inventor (\ref{sec:inventor}) konstruiert (Abbildung \ref{fig:modell_konstruktion}). Anschließend wird dies als STL-Datei exportiert und in SuperSlicer für den 3D-Druck vorbereitet. Aufgrund der knappen Zeit, werden die Druckparameter so gewählt, dass der Druck möglichst schnell fertig ist. Der G-Code wird exportiert und mittels Octoprint auf einem Wanhao i3 Drucker ausgeführt. Die finale Druckzeit pro Teil beträgt ca. 10 Stunden.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.4\textwidth]{images/turm_prototyp_konstruktion.png}
+  \caption{Konstruktion des Turmsegmentes}
+  \label{fig:modell_konstruktion}
+\end{figure}
+
+\clearpage
+
+\paragraph{Fertiggestellter Turm}
+
+Auf den folgenden Abbildungen (\ref{fig:turm_prototyp_transparent_1},\ref{fig:turm_prototyp_transparent_2}, \ref{fig:turm_prototyp_aufbau}, \ref{fig:turm_prototyp_dunkel}) ist der fertige Turm zu sehen.
+
+\begin{figure}[H]
+  \centering
+  \begin{subfigure}[b]{0.49\textwidth}
+    \centering
+    \includegraphics[width=\textwidth]{images/turm_prototyp_transparent_1.png}
+    \caption{Modell des Turmsegmentes}
+    \label{fig:turm_prototyp_transparent_1}
+  \end{subfigure}
+  \begin{subfigure}[b]{0.49\textwidth}
+    \centering
+    \includegraphics[width=\textwidth]{images/turm_prototyp_transparent_2.png}
+    \caption{Druck des Turmsegmentes}
+    \label{fig:turm_prototyp_transparent_2}
+  \end{subfigure}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  \begin{subfigure}[b]{0.49\textwidth}
+    \centering
+    \includegraphics[width=\textwidth]{images/turm_prototyp_aufbau.png}
+    \caption{Modell des Turmsegmentes}
+    \label{fig:turm_prototyp_aufbau}
+  \end{subfigure}
+  \begin{subfigure}[b]{0.49\textwidth}
+    \centering
+    \includegraphics[width=\textwidth]{images/turm_prototyp_dunkel.png}
+    \caption{Druck des Turmsegmentes}
+    \label{fig:turm_prototyp_dunkel}
+  \end{subfigure}
+\end{figure}
